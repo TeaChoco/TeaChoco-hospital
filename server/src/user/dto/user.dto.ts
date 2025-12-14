@@ -5,23 +5,6 @@ export interface Allow {
     edit: string[];
 }
 
-export class UserLoginDto {
-    // @IsString()
-    // @ApiProperty({
-    //     description: 'User ID',
-    //     example: 1,
-    //     default: 1,
-    // })
-    // readonly user_id: number;
-    // @IsString()
-    // @ApiProperty({
-    //     description: 'Email',
-    //     example: 'test@gmail.com',
-    //     default: 'test@gmail.com',
-    // })
-    // readonly email: string;
-}
-
 export class ReqUserDto {
     readonly user_id: number;
     readonly googleId: string;

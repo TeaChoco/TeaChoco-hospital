@@ -1,1 +1,15 @@
-{}
+{
+    "login": {
+        "google": {
+            "signIn": "Sign in with Google",
+            "signingIn": "Signing in...",
+            "continueWith": "Continue with Google"
+        },
+        "or": "Or",
+        "email": "Sign in with Email"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred"
+    }
+}

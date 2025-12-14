@@ -1,9 +1,25 @@
 //-Path: "TeaChoco-Hospital/client/src/types/auth.ts"
+
+export interface Allow {
+    read: string[];
+    edit: string[];
+}
+
 export interface User {
-    id: string;
-    email: string;
-    name: string;
-    avatar?: string;
+    user_id: string;
+    googleId?: string;
+    email?: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    picture?: string;
+    locale?: string;
+    gender?: string;
+    birthday?: string;
+    allows?: Allow[];
+    createdAt?: Date;
+    updatedAt?: Date;
+    lastLoginAt?: Date;
 }
 
 export interface AuthState {

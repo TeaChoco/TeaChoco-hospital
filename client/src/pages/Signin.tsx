@@ -1,20 +1,18 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/Signin.tsx"
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import Background from '../layout/Background';
 import { IoArrowBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import QRScanner from '../components/QRScanner';
 import QRGenerator from '../components/QRGenerator';
 import ThemeToggle from '../components/ThemeToggle';
 import GoogleSignin from '../components/GoogleSignin';
-import Background from '../layout/Background';
 
 export default function Signin() {
     const navigate = useNavigate();
     const { isAuthenticated, user, loading, error, logout } = useAuth();
-    const [activeTab, setActiveTab] = useState<'google' | 'scan' | 'generate'>(
-        'google',
-    );
+    const [activeTab, setActiveTab] = useState<'google' | 'scan' | 'generate'>('google');
 
     const handleGoBack = () => navigate(-1); // ย้อนกลับ 1 หน้า
 
@@ -36,10 +34,10 @@ export default function Signin() {
 
                     <div className="bg-bg-card-hover-light dark:bg-bg-card-hover-dark rounded-lg p-4 mb-6">
                         <div className="flex items-center space-x-3">
-                            {user.avatar && (
+                            {user.picture && (
                                 <img
-                                    src={user.avatar}
                                     alt={user.name}
+                                    src={user.picture}
                                     className="w-12 h-12 rounded-full border-2 border-primary"
                                 />
                             )}
@@ -56,8 +54,7 @@ export default function Signin() {
 
                     <button
                         onClick={logout}
-                        className="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg transition-colors font-medium shadow-lg shadow-red-500/20"
-                    >
+                        className="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg transition-colors font-medium shadow-lg shadow-red-500/20">
                         Logout
                     </button>
                 </div>
@@ -78,14 +75,11 @@ export default function Signin() {
                         title="Go back"
                         aria-label="Go back"
                         onClick={handleGoBack}
-                        className="btn btn-secondary absolute top-4 left-4 hover:bg-white/20"
-                    >
+                        className="btn btn-secondary absolute top-4 left-4 hover:bg-white/20">
                         <IoArrowBack />
                     </button>
 
-                    <h1 className="text-3xl font-bold mb-2">
-                        TeaChoco Hospital
-                    </h1>
+                    <h1 className="text-3xl font-bold mb-2">TeaChoco Hospital</h1>
                     <p className="text-white/80">Please sign in to continue</p>
                 </div>
 
@@ -98,8 +92,7 @@ export default function Signin() {
                                 activeTab === 'google'
                                     ? 'text-primary border-b-2 border-primary'
                                     : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
-                            }`}
-                        >
+                            }`}>
                             Google Login
                         </button>
                         <button
@@ -108,8 +101,7 @@ export default function Signin() {
                                 activeTab === 'scan'
                                     ? 'text-primary border-b-2 border-primary'
                                     : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
-                            }`}
-                        >
+                            }`}>
                             Scan QR
                         </button>
                         <button
@@ -118,8 +110,7 @@ export default function Signin() {
                                 activeTab === 'generate'
                                     ? 'text-primary border-b-2 border-primary'
                                     : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
-                            }`}
-                        >
+                            }`}>
                             Generate QR
                         </button>
                     </nav>
@@ -140,9 +131,7 @@ export default function Signin() {
 
                     {error && (
                         <div className="mb-6 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-4 transition-colors duration-200">
-                            <p className="text-red-600 dark:text-red-400 font-medium">
-                                {error}
-                            </p>
+                            <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
                         </div>
                     )}
 
@@ -152,17 +141,7 @@ export default function Signin() {
                                 <h3 className="text-lg font-semibold text-center mb-4 text-text-light dark:text-text-dark transition-colors duration-200">
                                     Sign in with Google
                                 </h3>
-                                <GoogleSignin
-                                    onSuccess={() =>
-                                        console.log('Google login successful')
-                                    }
-                                    onError={(error) =>
-                                        console.error(
-                                            'Google login error:',
-                                            error,
-                                        )
-                                    }
-                                />
+                                <GoogleSignin />
                             </div>
                         )}
 
@@ -175,9 +154,7 @@ export default function Signin() {
                                     onScanSuccess={(data) =>
                                         console.log('QR scan successful:', data)
                                     }
-                                    onScanError={(error) =>
-                                        console.error('QR scan error:', error)
-                                    }
+                                    onScanError={(error) => console.error('QR scan error:', error)}
                                 />
                             </div>
                         )}
@@ -188,14 +165,9 @@ export default function Signin() {
                                     Generate QR Code
                                 </h3>
                                 <QRGenerator
-                                    onGenerate={(qrData) =>
-                                        console.log('QR generated:', qrData)
-                                    }
+                                    onGenerate={(qrData) => console.log('QR generated:', qrData)}
                                     onError={(error) =>
-                                        console.error(
-                                            'QR generation error:',
-                                            error,
-                                        )
+                                        console.error('QR generation error:', error)
                                     }
                                 />
                             </div>

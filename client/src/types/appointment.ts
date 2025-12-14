@@ -1,0 +1,391 @@
+//-Path: "TeaChoco-Hospital/client/src/types/appointment.ts"
+import type { Doctor } from './doctor';
+import type { Hospital } from './hospital';
+import type { Medicine } from './medicine';
+
+// สถานะการนัดหมาย
+export enum AppointmentStatus {
+    PENDING = 'pending', // รอการยืนยัน
+    CONFIRMED = 'confirmed', // ยืนยันแล้ว
+    SCHEDULED = 'scheduled', // จัดตารางเวลาแล้ว
+    CHECKED_IN = 'checked_in', // เช็คอินแล้ว
+    IN_PROGRESS = 'in_progress', // กำลังพบแพทย์
+    COMPLETED = 'completed', // เสร็จสิ้น
+    CANCELLED = 'cancelled', // ยกเลิก
+    NO_SHOW = 'no_show', // ไม่มาตามนัด
+    RESCHEDULED = 'rescheduled', // เลื่อนนัด
+}
+
+// ประเภทการนัดหมาย
+export enum AppointmentType {
+    CONSULTATION = 'consultation', // ตรวจทั่วไป
+    FOLLOW_UP = 'follow_up', // นัดติดตาม
+    SPECIALIST = 'specialist', // ตรวจเฉพาะทาง
+    EMERGENCY = 'emergency', // ฉุกเฉิน
+    VACCINATION = 'vaccination', // รับวัคซีน
+    LAB_TEST = 'lab_test', // ตรวจแลป
+    IMAGING = 'imaging', // ตรวจภาพถ่าย
+    SURGERY = 'surgery', // ผ่าตัด
+    PHYSICAL_THERAPY = 'physical_therapy', // กายภาพบำบัด
+    DENTAL = 'dental', // ทันตกรรม
+    EYE_EXAM = 'eye_exam', // ตรวจตา
+    OTHER = 'other', // อื่นๆ
+}
+
+// ความเร่งด่วน
+export enum UrgencyLevel {
+    ROUTINE = 'routine', // ปกติ
+    URGENT = 'urgent', // เร่งด่วน
+    EMERGENCY = 'emergency', // ฉุกเฉิน
+}
+
+// ประเภทการชำระเงิน
+export enum PaymentStatus {
+    PENDING = 'pending', // รอชำระ
+    PARTIAL = 'partial', // ชำระบางส่วน
+    PAID = 'paid', // ชำระครบ
+    INSURANCE = 'insurance', // ประกันครอบคลุม
+    FREE = 'free', // ไม่มีค่าใช้จ่าย
+    CANCELLED = 'cancelled', // ยกเลิกการชำระ
+}
+
+// วิธีการชำระเงิน
+export enum PaymentMethod {
+    CASH = 'cash', // เงินสด
+    CREDIT_CARD = 'credit_card', // บัตรเครดิต
+    DEBIT_CARD = 'debit_card', // บัตรเดบิต
+    BANK_TRANSFER = 'bank_transfer', // โอนเงิน
+    QR_CODE = 'qr_code', // QR Payment
+    MOBILE_BANKING = 'mobile_banking', // Mobile Banking
+    INSURANCE = 'insurance', // ประกันสุขภาพ
+    GOVERNMENT = 'government', // หลักประกันสุขภาพถ้วนหน้า
+    OTHER = 'other', // อื่นๆ
+}
+
+// ประเภทผู้ป่วย
+export enum PatientType {
+    NEW = 'new', // ผู้ป่วยใหม่
+    RETURNING = 'returning', // ผู้ป่วยเก่า
+    REFERRAL = 'referral', // ผู้ป่วยส่งต่อ
+    EMERGENCY = 'emergency', // ผู้ป่วยฉุกเฉิน
+}
+
+// สถานที่ตรวจ
+export enum AppointmentLocation {
+    OPD = 'opd', // ตรวจผู้ป่วยนอก
+    ER = 'emergency_room', // ห้องฉุกเฉิน
+    IPD = 'inpatient', // ผู้ป่วยใน
+    OR = 'operating_room', // ห้องผ่าตัด
+    LAB = 'laboratory', // ห้องแลป
+    IMAGING = 'imaging_room', // ห้องถ่ายภาพ
+    PHARMACY = 'pharmacy', // ร้านขายยา
+    PHYSICAL_THERAPY = 'pt_room', // ห้องกายภาพ
+    DENTAL = 'dental_clinic', // คลินิกทันตกรรม
+    EYE_CLINIC = 'eye_clinic', // คลินิกตา
+    HOME_VISIT = 'home_visit', // ตรวจที่บ้าน
+    TELEMEDICINE = 'telemedicine', // Telemedicine
+}
+
+// การเตรียมตัวก่อนนัดหมาย
+export enum PreparationType {
+    FASTING = 'fasting', // งดน้ำและอาหาร
+    WATER_ONLY = 'water_only', // ดื่มน้ำได้เท่านั้น
+    MEDICATION_HOLD = 'medication_hold', // หยุดยาบางชนิด
+    FULL_BLADDER = 'full_bladder', // กลั้นปัสสาวะ
+    EMPTY_BLADDER = 'empty_bladder', // ปัสสาวะให้หมด
+    NO_MAKEUP = 'no_makeup', // ไม่แต่งหน้า
+    NO_LOTION = 'no_lotion', // ไม่ทาครีม
+    BRING_MEDICINES = 'bring_medicines', // นำยามาแสดง
+    BRING_RECORDS = 'bring_records', // นำเอกสารมา
+    BRING_INSURANCE = 'bring_insurance', // นำบัตรประกัน
+    SPECIAL_CLOTHING = 'special_clothing', // สวมเสื้อผ้าพิเศษ
+    OTHER = 'other', // อื่นๆ
+}
+
+export interface AppointmentTimeSlot {
+    startTime: Date;
+    endTime: Date;
+    duration: number; // นาที
+    isAvailable: boolean;
+    slotNumber: number;
+}
+
+export interface AppointmentPreparation {
+    types: PreparationType[];
+    description?: string;
+    instructions: string[];
+    fastingHours?: number; // จำนวนชั่วโมงที่ต้องงด
+    medicationInstructions?: string;
+    specialNotes?: string;
+}
+
+export interface InsuranceInfo {
+    providerId: string; // รหัสบริษัทประกัน
+    providerName: string; // ชื่อบริษัทประกัน
+    policyNumber: string; // เลขที่กรมธรรม์
+    coverageType: string; // ประเภทความคุ้มครอง
+    coverageAmount?: number; // วงเงินคุ้มครอง
+    remainingAmount?: number; // วงเงินคงเหลือ
+    isVerified: boolean; // ตรวจสอบแล้วหรือยัง
+    verificationDate?: Date; // วันที่ตรวจสอบ
+    notes?: string; // หมายเหตุ
+}
+
+export interface AppointmentPayment {
+    totalAmount: number; // ยอดรวม
+    insuranceCoverage?: number; // ประกันจ่าย
+    patientResponsibility: number; // ส่วนที่ผู้ป่วยจ่าย
+    discount?: number; // ส่วนลด
+    vat?: number; // VAT
+    netAmount: number; // ยอดสุทธิ
+    paidAmount: number; // จำนวนที่ชำระแล้ว
+    balance: number; // ค้างชำระ
+    paymentStatus: PaymentStatus;
+    paymentMethod?: PaymentMethod[];
+    paymentDate?: Date; // วันที่ชำระ
+    transactionId?: string; // รหัสธุรกรรม
+    receiptNumber?: string; // เลขที่ใบเสร็จ
+    notes?: string; // หมายเหตุการชำระ
+}
+
+export interface Symptom {
+    description: string; // อาการ
+    severity: 'mild' | 'moderate' | 'severe';
+    duration?: string; // ระยะเวลาที่มีอาการ
+    onset?: Date; // วันที่เริ่มมีอาการ
+    notes?: string; // หมายเหตุ
+}
+
+export interface VitalSign {
+    bloodPressure?: string; // ความดันโลหิต
+    heartRate?: number; // อัตราการเต้นของหัวใจ
+    respiratoryRate?: number; // อัตราการหายใจ
+    temperature?: number; // อุณหภูมิร่างกาย
+    oxygenSaturation?: number; // ออกซิเจนในเลือด
+    weight?: number; // น้ำหนัก
+    height?: number; // ส่วนสูง
+    bmi?: number; // ดัชนีมวลกาย
+    measuredAt: Date; // เวลาที่วัด
+    measuredBy?: string; // ผู้วัด
+    notes?: string; // หมายเหตุ
+}
+
+export interface MedicalRecordRef {
+    recordId: string; // รหัสเวชระเบียน
+    type: string; // ประเภทระเบียน
+    title: string; // หัวข้อ
+    date: Date; // วันที่
+    attachmentUrl?: string; // ลิงค์ไฟล์แนบ
+}
+
+export interface FollowUpInfo {
+    isRequired: boolean; // ต้องนัดติดตามหรือไม่
+    recommendedDate?: Date; // วันที่แนะนำให้นัดครั้งต่อไป
+    reason?: string; // เหตุผลที่ต้องติดตาม
+    instructions?: string; // คำแนะนำก่อนนัดครั้งต่อไป
+}
+
+export interface AppointmentNote {
+    noteId: string; // รหัสบันทึก
+    content: string; // เนื้อหา
+    author: string; // ผู้เขียน
+    createdAt: Date; // วันที่เขียน
+    isInternal: boolean; // เป็นบันทึกภายในหรือไม่
+    category?: 'doctor' | 'nurse' | 'reception' | 'pharmacist';
+}
+
+// Interface หลักสำหรับการนัดหมาย
+export interface Appointment {
+    // ข้อมูลพื้นฐาน
+    _id: string;
+    appointmentNumber: string; // เลขที่นัดหมาย (เช่น APT-2024-001)
+
+    // ข้อมูลผู้ป่วย
+    patientId: string; // รหัสผู้ป่วย
+    patientName: string; // ชื่อผู้ป่วย
+    patientType: PatientType; // ประเภทผู้ป่วย
+
+    // ข้อมูลโรงพยาบาลและแพทย์
+    hospitalId: string; // รหัสโรงพยาบาล
+    hospital?: Hospital; // ข้อมูลโรงพยาบาล (populated)
+    doctorId: string; // รหัสแพทย์
+    doctor?: Doctor; // ข้อมูลแพทย์ (populated)
+    department: string; // แผนก
+
+    // ข้อมูลการนัดหมาย
+    type: AppointmentType; // ประเภทการนัดหมาย
+    subType?: string; // ประเภทย่อย (ถ้ามี)
+    purpose: string; // วัตถุประสงค์การนัด
+    description?: string; // คำอธิบายเพิ่มเติม
+
+    // เวลา
+    scheduledDate: Date; // วันที่นัด
+    scheduledTime: Date; // เวลานัด
+    expectedDuration: number; // ระยะเวลาที่คาดว่าใช้ (นาที)
+    actualStartTime?: Date; // เวลาเริ่มจริง
+    actualEndTime?: Date; // เวลาสิ้นสุดจริง
+    checkInTime?: Date; // เวลาเช็คอิน
+    checkOutTime?: Date; // เวลาเช็คเอาท์
+
+    // สถานที่
+    location: AppointmentLocation; // สถานที่ตรวจ
+    roomNumber?: string; // เลขห้อง
+    floor?: string; // ชั้น
+
+    // สถานะ
+    status: AppointmentStatus; // สถานะการนัดหมาย
+    statusHistory: Array<{
+        // ประวัติสถานะ
+        status: AppointmentStatus;
+        changedAt: Date;
+        changedBy: string;
+        notes?: string;
+    }>;
+
+    // ความเร่งด่วน
+    urgency: UrgencyLevel; // ระดับความเร่งด่วน
+    priority?: number; // ลำดับความสำคัญ (1-10)
+
+    // การเตรียมตัว
+    preparation: AppointmentPreparation; // การเตรียมตัวก่อนนัด
+    remindersSent: boolean; // ส่งการแจ้งเตือนแล้วหรือยัง
+
+    // อาการและการวินิจฉัยเบื้องต้น
+    symptoms: Symptom[]; // อาการที่มาพบ
+    preliminaryDiagnosis?: string; // การวินิจฉัยเบื้องต้น
+
+    // การชำระเงิน
+    payment: AppointmentPayment; // ข้อมูลการชำระเงิน
+    insurance?: InsuranceInfo; // ข้อมูลประกัน
+
+    // ยาและการรักษา
+    prescribedMedicines?: string[]; // รายการยาที่จ่าย (Medicine IDs)
+    medicines?: Medicine[]; // ข้อมูลยา (populated)
+    treatmentPlan?: string; // แผนการรักษา
+
+    // การตรวจร่างกาย
+    vitalSigns?: VitalSign[]; // สัญญาณชีพ
+    labResults?: MedicalRecordRef[]; // ผลแลป
+    imagingResults?: MedicalRecordRef[]; // ผลตรวจภาพ
+
+    // การติดตาม
+    followUp: FollowUpInfo; // ข้อมูลการนัดติดตาม
+    nextAppointmentId?: string; // รหัสการนัดครั้งต่อไป
+
+    // บันทึกต่างๆ
+    doctorNotes?: AppointmentNote[]; // บันทึกแพทย์
+    nurseNotes?: AppointmentNote[]; // บันทึกพยาบาล
+    patientNotes?: string; // บันทึกจากผู้ป่วย
+
+    // การอ้างอิง
+    referralFrom?: string; // อ้างอิงจาก (แพทย์/โรงพยาบาล)
+    referralTo?: string; // อ้างอิงไปยัง
+    previousAppointmentId?: string; // การนัดครั้งก่อน
+
+    // เมตาดาต้า
+    createdAt: Date;
+    updatedAt: Date;
+    createdBy: string; // ผู้สร้างนัดหมาย
+    updatedBy?: string; // ผู้แก้ไขล่าสุด
+    cancelledBy?: string; // ผู้ยกเลิก (ถ้ามี)
+    cancellationReason?: string; // เหตุผลการยกเลิก
+    noShowReason?: string; // เหตุผลที่ไม่มาตามนัด
+
+    // ฟิลด์พิเศษ
+    escorts?: string[]; // ชื่อผู้ติดตาม
+
+    __v: number;
+}
+
+// สำหรับการจองคิว (Queue)
+export interface AppointmentQueue {
+    _id: string;
+    appointmentId: string;
+    queueNumber: string; // เลขคิว
+    department: string; // แผนก
+    calledAt?: Date; // เวลาที่เรียก
+    servingAt?: Date; // เวลาเริ่มให้บริการ
+    completedAt?: Date; // เวลาสิ้นสุด
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+// สำหรับปฏิทินนัดหมาย
+export interface AppointmentCalendar {
+    date: Date;
+    appointments: Appointment[];
+    availableSlots: AppointmentTimeSlot[];
+    specialNotes?: string;
+}
+
+// สำหรับการค้นหาและกรอง
+export interface AppointmentFilter {
+    doctorId?: string;
+    hospitalId?: string;
+    department?: string;
+    type?: AppointmentType;
+    status?: AppointmentStatus;
+    dateFrom?: Date;
+    dateTo?: Date;
+    urgency?: UrgencyLevel;
+    searchText?: string;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+}
+
+// สำหรับฟอร์มสร้าง/แก้ไขนัดหมาย
+export interface AppointmentFormData {
+    doctorId: string;
+    hospitalId: string;
+    department: string;
+    type: AppointmentType;
+    subType?: string;
+    purpose: string;
+    description?: string;
+    scheduledDate: string; // ISO string
+    scheduledTime: string; // ISO string
+    expectedDuration: number;
+    location: AppointmentLocation;
+    roomNumber?: string;
+    urgency: UrgencyLevel;
+    priority?: number;
+    preparation: Omit<AppointmentPreparation, 'types'> & {
+        types: string[]; // รับเป็น array ของ string
+    };
+    symptoms: Omit<Symptom, 'onset'> &
+        {
+            onset?: string; // ISO string
+        }[];
+    preliminaryDiagnosis?: string;
+    insurance?: Omit<InsuranceInfo, 'verificationDate'> & {
+        verificationDate?: string; // ISO string
+    };
+    isTelemedicine: boolean;
+    telemedicineLink?: string;
+    requiresEscort: boolean;
+    escortName?: string;
+    specialRequirements?: string[];
+    languagePreference?: string;
+    allergies?: string[];
+}
+
+// สำหรับ API responses
+export interface AppointmentResponse {
+    success: boolean;
+    data?: Appointment | Appointment[] | AppointmentCalendar;
+    message?: string;
+    total?: number;
+    page?: number;
+    limit?: number;
+}
+// Utility Types และ Functions
+export interface TimeSlotAvailability {
+    date: Date;
+    slots: AppointmentTimeSlot[];
+    doctorId: string;
+    department: string;
+    availableCount: number;
+    fullyBooked: boolean;
+}

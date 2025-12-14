@@ -10,4 +10,9 @@ export class AppController {
     getHello(): string {
         return this.appService.getHello();
     }
+
+    @Get('env')
+    getAllEnv(): Record<string, string> {
+        return this.appService.getAllEnv();
+    }
 }
