@@ -1,14 +1,12 @@
 //-Path: "motiva/server/src/user/auth/guard/user-auth.guard.ts"
 import { Observable } from 'rxjs';
-import { Auth } from 'src/user/dto/user.dto';
+import { Auth } from '../../dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserAuthGuard extends AuthGuard('jwt') {
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         return super.canActivate(context);
     }
 

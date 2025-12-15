@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/hooks/jwt.ts"
 import { JwtModule } from '@nestjs/jwt';
-import { SecureService } from 'src/secure/secure.service';
+import { SecureService } from '../secure/secure.service';
 
 export function importJwt() {
     return JwtModule.registerAsync({
@@ -8,8 +8,7 @@ export function importJwt() {
         useFactory: async (secureService: SecureService) => ({
             secret: secureService.getEnvConfig().JWT_SECRET,
             signOptions: {
-                expiresIn: secureService.getEnvConfig()
-                    .JWT_REFRESH_EXPIRES_IN as `${number}`,
+                expiresIn: secureService.getEnvConfig().JWT_REFRESH_EXPIRES_IN as `${number}`,
             },
         }),
     });

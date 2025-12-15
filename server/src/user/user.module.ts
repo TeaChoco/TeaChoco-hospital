@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthModule } from './auth/auth.module';
 import { UserController } from './user.controller';
-import { ImportsMongoose } from 'src/hooks/mongodb';
+import { ImportsMongoose } from '../hooks/mongodb';
 import { User, UserSchema } from './schemas/user.schema';
 
 @Module({

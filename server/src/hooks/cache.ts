@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/hooks/cache.ts"
 import { CacheModule } from '@nestjs/cache-manager';
-import { SecureService } from 'src/secure/secure.service';
+import { SecureService } from '../secure/secure.service';
 
 export function imnportCache() {
     return CacheModule.registerAsync({

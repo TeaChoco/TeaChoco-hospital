@@ -1,15 +1,15 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.service.ts"
-import * as crypto from 'crypto';
 import { Model } from 'mongoose';
+import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { nameDB } from 'src/hooks/mongodb';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { SecureService } from 'src/secure/secure.service';
-import { User, UserDocument } from 'src/user/schemas/user.schema';
-import { Auth, ReqUserDto } from '../dto/user.dto';
-import { ResponseUserDto } from '../dto/response-user.dto';
+import { nameDB } from '../../hooks/mongodb';
 import { UserService } from '../user.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Auth, ReqUserDto } from '../dto/user.dto';
+import { SecureService } from '../../secure/secure.service';
+import { User, UserDocument } from '../schemas/user.schema';
+import { ResponseUserDto } from '../dto/response-user.dto';
 
 @Injectable()
 export class AuthService {

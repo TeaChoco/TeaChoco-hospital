@@ -4,9 +4,9 @@ import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { SecureService } from 'src/secure/secure.service';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
+import { SecureService } from '../../secure/secure.service';
 import { Get, Res, Req, Logger, UseGuards, Controller, Redirect } from '@nestjs/common';
 
 @ApiTags('User Auth')
