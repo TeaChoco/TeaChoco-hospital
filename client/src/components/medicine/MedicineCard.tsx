@@ -1,11 +1,11 @@
 //-Path: "TeaChoco-Hospital/client/src/components/MedicineCard.tsx"
 import React from 'react';
-import type { Medicine } from '../types/medicine';
+import type { Medicine } from '../../types/medicine';
 import { FaPills, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 
 interface MedicineCardProps {
     medicine: Medicine;
-    onClick?: (medicine: Medicine) => void;
+    onClick?: () => void;
 }
 
 export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onClick }) => {
@@ -19,7 +19,7 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onClick })
 
     return (
         <div
-            onClick={() => onClick?.(medicine)}
+            onClick={onClick}
             className="bg-bg-card-light dark:bg-bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden hover:shadow-md hover:border-primary transition-all duration-300 cursor-pointer group">
             <div className="relative h-48 overflow-hidden bg-slate-50 dark:bg-slate-800">
                 {medicine.imageUrl ? (
@@ -92,9 +92,6 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onClick })
                         Tablet left:{' '}
                         {medicine.package?.tabletsPerStrip ? medicine.package.tabletsPerStrip : '-'}
                     </div>
-                    <button className="text-sm font-medium text-primary hover:text-primary-dark transition-colors">
-                        View Details
-                    </button>
                 </div>
             </div>
         </div>

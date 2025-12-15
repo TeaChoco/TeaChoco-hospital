@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/components/QRGenerator.tsx"
+//-Path: "TeaChoco-Hospital/client/src/components/auth/QRGenerator.tsx"
 import { QRCodeSVG } from 'qrcode.react';
 import { useState, useEffect } from 'react';
 
@@ -7,11 +7,9 @@ interface QRGeneratorProps {
     onGenerate?: (qrData: string) => void;
 }
 
-const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate, onError }) => {
+const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate }) => {
     const [qrData, setQrData] = useState<string>('');
-    const [sessionId] = useState(
-        () => 'session-' + Math.random().toString(36).substr(2, 9),
-    );
+    const [sessionId] = useState(() => 'session-' + Math.random().toString(36).substr(2, 9));
 
     useEffect(() => {
         // สร้าง QR data สำหรับการล็อกอิน
@@ -37,9 +35,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate, onError }) => {
     const checkSessionStatus = async () => {
         try {
             // จำลองการตรวจสอบสถานะ session จาก backend
-            const response = await fetch(
-                `/api/auth/session-status/${sessionId}`,
-            );
+            const response = await fetch(`/api/auth/session-status/${sessionId}`);
             if (response.ok) {
                 const data = await response.json();
                 if (data.authenticated) {
@@ -53,8 +49,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate, onError }) => {
     };
 
     const refreshQR = () => {
-        const newSessionId =
-            'session-' + Math.random().toString(36).substr(2, 9);
+        const newSessionId = 'session-' + Math.random().toString(36).substr(2, 9);
         const loginData = {
             sessionId: newSessionId,
             timestamp: Date.now(),
@@ -77,18 +72,11 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate, onError }) => {
                 <div className="flex justify-center mb-4">
                     {qrData ? (
                         <div className="p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg">
-                            <QRCodeSVG
-                                value={qrData}
-                                size={200}
-                                level="M"
-                                includeMargin
-                            />
+                            <QRCodeSVG value={qrData} size={200} level="M" includeMargin />
                         </div>
                     ) : (
                         <div className="w-52 h-52 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <span className="text-gray-500">
-                                Generating QR...
-                            </span>
+                            <span className="text-gray-500">Generating QR...</span>
                         </div>
                     )}
                 </div>
@@ -96,8 +84,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate, onError }) => {
                 <div className="flex flex-col gap-2">
                     <button
                         onClick={refreshQR}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                         Refresh QR Code
                     </button>
                     <button
@@ -105,8 +92,7 @@ const QRGenerator: React.FC<QRGeneratorProps> = ({ onGenerate, onError }) => {
                             // แสดงข้อมูล QR สำหรับ manual input
                             alert(`QR Data: ${qrData}`);
                         }}
-                        className="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
-                    >
+                        className="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
                         Show QR Data
                     </button>
                 </div>

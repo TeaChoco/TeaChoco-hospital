@@ -11,9 +11,6 @@ export class ResponseUserDto {
     firstName?: string;
     lastName?: string;
     picture?: string;
-    locale?: string;
-    gender?: string;
-    birthday?: string;
     allows?: Allow[];
     createdAt?: Date;
     updatedAt?: Date;
@@ -59,21 +56,6 @@ export class QueryOptions {
     @ApiProperty()
     @IsOptional()
     @IsString()
-    locale?: string;
-
-    @ApiProperty()
-    @IsOptional()
-    @IsString()
-    gender?: string;
-
-    @ApiProperty()
-    @IsOptional()
-    @IsString()
-    birthday?: string;
-
-    @ApiProperty()
-    @IsOptional()
-    @IsString()
     allows?: string;
 
     @ApiProperty()
@@ -100,9 +82,6 @@ export class ResponseOptions {
     firstName?: boolean;
     lastName?: boolean;
     picture?: boolean;
-    locale?: boolean;
-    gender?: boolean;
-    birthday?: boolean;
     allows?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;

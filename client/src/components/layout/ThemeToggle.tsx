@@ -1,5 +1,5 @@
-//-Path: "TeaChoco-Hospital/client/src/components/ThemeToggle.tsx"
-import { useTheme } from '../hooks/useTheme';
+//-Path: "TeaChoco-Hospital/client/src/components/layout/ThemeToggle.tsx"
+import { useTheme } from '../../hooks/useTheme';
 import { FaSun, FaMoon } from 'react-icons/fa6';
 
 export default function ThemeToggle() {

@@ -1,22 +1,20 @@
-//-Path: "motiva/server/src/user/auth/strategies/jwt.strategies.ts"
-import { Injectable } from '@nestjs/common';
+//-Path: "TeaChoco-Hospital/server/src/user/auth/strategies/jwt.strategies.ts"
 import { UserService } from 'src/user/user.service';
+import { Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { SecureService } from 'src/secure/secure.service';
-import { UserDocument } from 'src/user/schemas/user.schema';
-import { ResponseUserDto } from 'src/user/dto/response-user.dto';
+import { Auth, UserJWTPayload } from 'src/user/dto/user.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+    private readonly logger = new Logger(JwtStrategy.name);
     constructor(
         readonly secureService: SecureService,
         private readonly userService: UserService,
     ) {
         const { JWT_SECRET } = secureService.getEnvConfig();
-        if (!JWT_SECRET) {
-            throw new Error('JWT secret is not defined');
-        }
+        if (!JWT_SECRET) throw new Error('JWT secret is not defined');
         super({
             secretOrKey: JWT_SECRET,
             ignoreExpiration: false,
@@ -26,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: UserDocument): Promise<ResponseUserDto | null> {
-        return this.userService.responseUser({ auth: true }, payload);
+    async validate(payload: UserJWTPayload): Promise<Auth> {
+        return (await this.userService.responseUser({ auth: true }, payload)) as Auth;
     }
 }

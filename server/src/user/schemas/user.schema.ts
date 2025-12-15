@@ -1,16 +1,14 @@
-//-Path: "motiva/server/src/user/schemas/user.schema.ts"
+//-Path: "TeaChoco-Hospital/server/src/user/schemas/user.schema.ts"
 import { Document } from 'mongoose';
 import { Allow } from '../dto/user.dto';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 export type UserDocument = User & Document;
 
-export type UserJWTPayload = UserDocument & { iat: number; exp: number };
-
 @Schema({ collection: 'users', timestamps: true })
 export class User {
     @Prop({ required: true, unique: true })
-    googleId?: string;
+    googleId: string;
 
     @Prop({ required: true, unique: true })
     email: string;
@@ -26,15 +24,6 @@ export class User {
 
     @Prop()
     picture?: string;
-
-    @Prop()
-    locale?: string;
-
-    @Prop()
-    gender?: string;
-
-    @Prop()
-    birthday?: string;
 
     @Prop({ required: true })
     allows: Allow[];

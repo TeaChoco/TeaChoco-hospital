@@ -9,6 +9,6 @@ export interface Doctor {
     department: string;
     contactNumber?: string;
     picture?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }

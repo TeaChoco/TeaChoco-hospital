@@ -8,10 +8,10 @@ export class CreateUserDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'google-unique-id-12345',
+        example: '1234567890',
         description: 'Google ID',
     })
-    readonly googleId: string;
+    googleId: string;
 
     @IsString()
     @ApiProperty({
@@ -20,7 +20,7 @@ export class CreateUserDto {
         example: 'test@gmail.com',
         description: 'Email',
     })
-    readonly email: string;
+    email: string;
 
     @IsString()
     @ApiProperty({
@@ -29,7 +29,7 @@ export class CreateUserDto {
         example: 'John Doe',
         description: 'Name',
     })
-    readonly name: string;
+    name: string;
 
     @IsString()
     @ApiProperty({
@@ -38,7 +38,7 @@ export class CreateUserDto {
         example: 'John',
         description: 'First name',
     })
-    readonly firstName: string;
+    firstName: string;
 
     @IsString()
     @ApiProperty({
@@ -47,7 +47,7 @@ export class CreateUserDto {
         example: 'Doe',
         description: 'Last name',
     })
-    readonly lastName: string;
+    lastName: string;
 
     @IsString()
     @ApiProperty({
@@ -56,34 +56,7 @@ export class CreateUserDto {
         example: 'https://example.com/profile.jpg',
         description: 'Profile picture URL',
     })
-    readonly picture: string;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: 'en',
-        description: 'Locale',
-    })
-    readonly locale: string;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: 'male',
-        description: 'Gender',
-    })
-    readonly gender: string;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: '1990-01-01',
-        description: 'Birthday',
-    })
-    readonly birthday: string;
+    picture: string;
 
     @IsArray()
     @ApiProperty({
@@ -93,7 +66,7 @@ export class CreateUserDto {
         example: [''],
         description: 'Allows',
     })
-    readonly allows: Allow[];
+    allows: Allow[];
 
     @IsNumber()
     @ApiProperty({
@@ -102,10 +75,27 @@ export class CreateUserDto {
         example: 1633036800,
         description: 'Last login timestamp',
     })
-    readonly lastLoginAt: number;
+    lastLoginAt: number;
 }
 
-export interface Tokens {
+export class Tokens {
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: 'access-token-12345',
+        description: 'Access token',
+    })
     accessToken: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: 'refresh-token-12345',
+        description: 'Refresh token',
+    })
     refreshToken: string;
 }
+
+export type UserType = CreateUserDto & Tokens;

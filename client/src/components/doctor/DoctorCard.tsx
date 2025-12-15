@@ -1,17 +1,17 @@
 //-Path: "TeaChoco-Hospital/client/src/components/DoctorCard.tsx"
 import React from 'react';
-import type { Doctor } from '../types/doctor';
+import type { Doctor } from '../../types/doctor';
 import { FaUserMd, FaPhone } from 'react-icons/fa';
 
 interface DoctorCardProps {
     doctor: Doctor;
-    onClick?: (doctor: Doctor) => void;
+    onClick?: () => void;
 }
 
 export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onClick }) => {
     return (
         <div
-            onClick={() => onClick?.(doctor)}
+            onClick={onClick}
             className="bg-bg-card-light dark:bg-bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-4 hover:shadow-md hover:border-primary transition-all duration-300 cursor-pointer flex flex-col items-center text-center group">
             <div className="relative w-24 h-24 mb-4 rounded-full overflow-hidden ring-4 ring-slate-50 dark:ring-slate-800 group-hover:ring-primary/20 transition-all">
                 {doctor.picture ? (
@@ -46,10 +46,6 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onClick }) => {
                     <span>{doctor.contactNumber}</span>
                 </div>
             )}
-
-            <button className="mt-4 w-full py-2 rounded-lg bg-transparent border border-border-light dark:border-border-dark text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:bg-bg-card-hover-light dark:hover:bg-bg-card-hover-dark hover:border-primary transition-all">
-                Book Appointment
-            </button>
         </div>
     );
 };

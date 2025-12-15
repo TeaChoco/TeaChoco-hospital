@@ -3,6 +3,7 @@ import { Model, Types } from 'mongoose';
 import { nameDB } from 'src/hooks/mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { UserJWTPayload } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
@@ -17,27 +18,28 @@ export class UserService {
 
     async responseUser(
         options: ResponseOptions = {},
-        user?: UserDocument | null,
+        user?: UserJWTPayload | UserDocument | null,
     ): Promise<ResponseUserDto | null> {
+        const keys: (keyof ResponseOptions)[] = [
+            'googleId',
+            'email',
+            'name',
+            'firstName',
+            'lastName',
+            'picture',
+            'allows',
+            'createdAt',
+            'updatedAt',
+            'lastLoginAt',
+        ];
         if (user) {
+            console.log('user is UserJWTPayload ', user instanceof UserJWTPayload);
+
             const responseUser: ResponseUserDto = {
-                user_id: user._id.toString(),
+                user_id: (user as UserDocument)._id
+                    ? (user as UserDocument)._id.toString()
+                    : (user as UserJWTPayload).user_id,
             };
-            const keys: (keyof ResponseOptions)[] = [
-                'googleId',
-                'email',
-                'name',
-                'firstName',
-                'lastName',
-                'picture',
-                'locale',
-                'gender',
-                'birthday',
-                'allows',
-                'createdAt',
-                'updatedAt',
-                'lastLoginAt',
-            ];
             keys.forEach((key) => {
                 if (options[key] || options.auth) responseUser[key] = user[key];
             });
@@ -55,9 +57,7 @@ export class UserService {
             firstName,
             lastName,
             picture,
-            locale,
-            gender,
-            birthday,
+
             allows,
             createdAt,
             updatedAt,
@@ -72,9 +72,6 @@ export class UserService {
             firstName: firstName !== undefined,
             lastName: lastName !== undefined,
             picture: picture !== undefined,
-            locale: locale !== undefined,
-            gender: gender !== undefined,
-            birthday: birthday !== undefined,
             allows: allows !== undefined,
             createdAt: createdAt !== undefined,
             updatedAt: updatedAt !== undefined,

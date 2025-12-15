@@ -6,20 +6,33 @@ export interface Allow {
 }
 
 export class ReqUserDto {
-    readonly user_id: number;
+    readonly user_id: string;
     readonly googleId: string;
     readonly email: string;
     readonly name: string;
-    readonly firstName: string;
-    readonly lastName: string;
-    readonly picture: string;
-    readonly locale: string;
-    readonly gender: string;
-    readonly birthday: string;
+    readonly firstName?: string;
+    readonly lastName?: string;
+    readonly picture?: string;
     readonly allows: Allow[];
-    readonly createdAt: Date;
-    readonly updatedAt: Date;
+    readonly createdAt?: Date;
+    readonly updatedAt?: Date;
     readonly lastLoginAt: Date;
+}
+
+export class UserJWTPayload {
+    readonly user_id: string;
+    readonly googleId: string;
+    readonly email: string;
+    readonly name: string;
+    readonly firstName?: string;
+    readonly lastName?: string;
+    readonly picture?: string;
+    readonly allows: Allow[];
+    readonly createdAt?: string;
+    readonly updatedAt?: string;
+    readonly lastLoginAt: string;
+    readonly iat: number;
+    readonly exp: number;
 }
 
 export type Auth = ReqUserDto | null;

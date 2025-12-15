@@ -1,5 +1,5 @@
 //-Path: "TeaChoco-Hospital/client/src/components/QRScanner.tsx"
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { useState, useRef, useEffect } from 'react';
 
 interface QRScannerProps {
@@ -7,15 +7,12 @@ interface QRScannerProps {
     onScanError?: (error: string) => void;
 }
 
-const QRScanner: React.FC<QRScannerProps> = ({
-    onScanError,
-    onScanSuccess,
-}) => {
+const QRScanner: React.FC<QRScannerProps> = ({ onScanError, onScanSuccess }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isScanning, setIsScanning] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { setLoading, login, setError: setAuthError } = useAuth();
+    const { setLoading, setError: setAuthError } = useAuth();
 
     useEffect(() => {
         return () => stopScanner();
@@ -66,12 +63,7 @@ const QRScanner: React.FC<QRScannerProps> = ({
                 canvas.height = video.videoHeight;
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                const imageData = context.getImageData(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height,
-                );
+                // const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
                 // ใช้ jsqr สำหรับการสแกน QR Code
                 // import jsqr from 'jsqr';
@@ -110,25 +102,24 @@ const QRScanner: React.FC<QRScannerProps> = ({
             });
 
             if (response.ok) {
-                const data = await response.json();
+                // const data = await response.json();
 
                 // จำลอง user data จาก QR login
-                const mockUser = {
-                    id: 'qr-user-id',
-                    email: 'qruser@example.com',
-                    name: 'QR User',
-                };
+                // const mockUser = {
+                //     id: 'qr-user-id',
+                //     email: 'qruser@example.com',
+                //     name: 'QR User',
+                // };
 
-                const mockToken = 'mock-jwt-token-from-qr-login';
+                // const mockToken = 'mock-jwt-token-from-qr-login';
 
-                login(mockUser, mockToken);
+                // login(mockUser, mockToken);
                 onScanSuccess?.(qrData);
             } else {
                 throw new Error('QR login failed');
             }
         } catch (error) {
-            const errorMessage =
-                error instanceof Error ? error.message : 'QR login failed';
+            const errorMessage = error instanceof Error ? error.message : 'QR login failed';
             setAuthError(errorMessage);
             onScanError?.(errorMessage);
         } finally {
@@ -165,15 +156,13 @@ const QRScanner: React.FC<QRScannerProps> = ({
                     {!isScanning ? (
                         <button
                             onClick={startScanner}
-                            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-                        >
+                            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                             Start Scanner
                         </button>
                     ) : (
                         <button
                             onClick={stopScanner}
-                            className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
-                        >
+                            className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
                             Stop Scanner
                         </button>
                     )}
@@ -186,8 +175,7 @@ const QRScanner: React.FC<QRScannerProps> = ({
                                 handleQRScanSuccess(manualQR);
                             }
                         }}
-                        className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
-                    >
+                        className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
                         Manual Input
                     </button>
                 </div>

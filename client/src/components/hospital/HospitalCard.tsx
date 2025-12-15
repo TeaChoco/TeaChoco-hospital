@@ -1,20 +1,20 @@
 //-Path: "TeaChoco-Hospital/client/src/components/HospitalCard.tsx"
 import React from 'react';
-import type { Hospital } from '../types/hospital';
+import type { Hospital } from '../../types/hospital';
 import { FaHospital, FaMapMarkerAlt, FaPhone, FaExternalLinkAlt } from 'react-icons/fa';
 
 interface HospitalCardProps {
     hospital: Hospital;
-    onClick?: (hospital: Hospital) => void;
+    onClick?: () => void;
 }
 
 export const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick }) => {
     return (
         <div
-            onClick={() => onClick?.(hospital)}
+            onClick={onClick}
             className="bg-bg-card-light dark:bg-bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-5 hover:shadow-md hover:border-primary transition-all duration-300 cursor-pointer flex flex-col h-full group">
             <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                     <FaHospital size={24} />
                 </div>
                 <div className="flex-1">
@@ -27,7 +27,7 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick })
                             <div className="flex items-start gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
                                 <FaMapMarkerAlt
                                     size={14}
-                                    className="mt-1 flex-shrink-0 text-text-muted-light dark:text-text-muted-dark"
+                                    className="mt-1 shrink-0 text-text-muted-light dark:text-text-muted-dark"
                                 />
                                 <span>{hospital.address}</span>
                             </div>
@@ -37,7 +37,7 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick })
                             <div className="flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
                                 <FaPhone
                                     size={14}
-                                    className="flex-shrink-0 text-text-muted-light dark:text-text-muted-dark"
+                                    className="shrink-0 text-text-muted-light dark:text-text-muted-dark"
                                 />
                                 <span>{hospital.contactNumber}</span>
                             </div>
@@ -58,9 +58,6 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick })
                         Visit Website
                     </a>
                 )}
-                <button className="flex-1 py-2 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors">
-                    View Details
-                </button>
             </div>
         </div>
     );

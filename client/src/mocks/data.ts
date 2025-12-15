@@ -47,6 +47,7 @@ export const mockDoctors: Doctor[] = [
         firstName: 'สมชาย',
         lastName: 'ใจดี',
         nickname: 'หมอสม',
+        hospitalId: 'hosp_001',
         department: 'อายุรกรรม (Internal Medicine)',
         contactNumber: '081-234-5678',
         picture:
@@ -58,6 +59,7 @@ export const mockDoctors: Doctor[] = [
         _id: 'doc_002',
         firstName: 'วิภา',
         lastName: 'รักรักษา',
+        hospitalId: 'hosp_002',
         nickname: 'หมอวิ',
         department: 'กุมารเวชกรรม (Pediatrics)',
         contactNumber: '089-876-5432',
@@ -70,10 +72,21 @@ export const mockDoctors: Doctor[] = [
         _id: 'doc_003',
         firstName: 'ณัฐ',
         lastName: 'มั่นคง',
+        hospitalId: 'hosp_001',
         department: 'ศัลยกรรมกระดูก (Orthopedics)',
         picture:
             'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fZG9jdG9yfGVufDB8fDB8fHww',
         createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
+    },
+    {
+        _id: 'doc_004',
+        firstName: 'สุธา',
+        lastName: 'เจริญ',
+        hospitalId: 'hosp_002',
+        department: 'ศัลยกรรมกระดูก (Orthopedics)',
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
     },
 ];
 

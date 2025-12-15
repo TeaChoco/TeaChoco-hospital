@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Hospital/client/src/layout/Laout.tsx"
 import Background from './Background';
-import Navbar from '../components/Navbar';
 import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Navbar from '../components/layout/Navbar';
 
 export default function Layout() {
     const { t } = useTranslation();
@@ -15,7 +15,7 @@ export default function Layout() {
                 <Outlet />
             </main>
             <footer className="text-center py-8 text-text-muted-light dark:text-text-muted-dark border-t border-border-light dark:border-border-dark">
-                <p>copyright</p>
+                <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
             </footer>
         </div>
     );

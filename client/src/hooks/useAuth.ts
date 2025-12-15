@@ -1,73 +1,49 @@
 //-Path: "TeaChoco-Hospital/client/src/hooks/useAuth.ts"
+import { useAtom } from 'jotai';
+import { authAPI } from '../services/auth';
 import { useState, useEffect } from 'react';
-import type { AuthState, User } from '../types/auth';
+import { userAtom } from '../context/userAtom';
+import type { AxiosError } from 'axios';
 
 export const useAuth = () => {
-    const [authState, setAuthState] = useState<AuthState>({
-        isAuthenticated: false,
-        user: null,
-        loading: false,
-        error: null,
-    });
+    const [user, setUser] = useAtom(userAtom);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const isAuthenticated = user !== null && user !== undefined;
 
-    // ตรวจสอบ token เมื่อ component ถูก mount
-    useEffect(() => {
-        const token = localStorage.getItem('auth_token');
-        const userData = localStorage.getItem('user_data');
-
-        if (token && userData) {
-            try {
-                const user: User = JSON.parse(userData);
-                setAuthState({
-                    isAuthenticated: true,
-                    user,
-                    loading: false,
-                    error: null,
-                });
-            } catch (error) {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('user_data');
+    const fetchAuth = async () => {
+        setLoading(true);
+        try {
+            const res = await authAPI.auth();
+            setUser(res.data);
+        } catch (error) {
+            if ((error as AxiosError).status !== 401) {
+                if (error instanceof Error) setError(error.message);
+                console.error(error);
             }
+        } finally {
+            setLoading(false);
         }
-    }, []);
-
-    const login = (user: User, token: string) => {
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_data', JSON.stringify(user));
-
-        setAuthState({
-            isAuthenticated: true,
-            user,
-            loading: false,
-            error: null,
-        });
     };
 
-    const logout = () => {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_data');
+    useEffect(() => {
+        if (user === undefined) fetchAuth();
+    }, [user]);
 
-        setAuthState({
-            isAuthenticated: false,
-            user: null,
-            loading: false,
-            error: null,
-        });
-    };
-
-    const setLoading = (loading: boolean) => {
-        setAuthState((prev) => ({ ...prev, loading }));
-    };
-
-    const setError = (error: string | null) => {
-        setAuthState((prev) => ({ ...prev, error }));
+    const signout = async () => {
+        setLoading(true);
+        await authAPI.signout();
+        setLoading(false);
+        setUser(null);
     };
 
     return {
-        ...authState,
-        login,
-        logout,
-        setLoading,
+        user,
+        error,
+        loading,
+        signout,
         setError,
+        setLoading,
+        isAuthenticated,
     };
 };

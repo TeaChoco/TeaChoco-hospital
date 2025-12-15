@@ -1,15 +1,45 @@
 {
-    "login": {
+    "auth": {
         "google": {
             "signIn": "เข้าสู่ระบบด้วย Google",
             "signingIn": "กำลังเข้าสู่ระบบ...",
-            "continueWith": "ดำเนินการต่อด้วย Google"
+            "continueWith": "ดำเนินการต่อด้วย Google",
+            "info": "การเข้าสู่ระบบจะเชื่อมต่อกับบัญชี Google ของคุณ"
         },
-        "or": "หรือ",
-        "email": "เข้าสู่ระบบด้วยอีเมล"
+        "signin": "เข้าสู่ระบบ",
+        "signup": "สมัครสมาชิก",
+        "signout": "ออกจากระบบ"
     },
     "common": {
+        "language": "ภาษา",
         "loading": "กำลังโหลด...",
-        "error": "เกิดข้อผิดพลาด"
+        "error": "เกิดข้อผิดพลาด",
+        "filter": "Filter"
+    },
+    "footer": {
+        "copyright": "© {{year}} TeaChoco Hospital. สงวนลิขสิทธิ์"
+    },
+    "navbar": {
+        "appName": "TeaChoco Hospital",
+        "hospitals": "โรงพยาบาล",
+        "appointments": "นัดหมาย",
+        "doctors": "หมอ",
+        "medicines": "ยา",
+        "calendar": "ปฏิทิน"
+    },
+    "calendar": {
+        "today": "วันนี้",
+        "previous": "ย้อน",
+        "next": "ต่อไป",
+        "month": "เดือน",
+        "week": "สัปดาห์",
+        "day": "วัน",
+        "agenda": "รายการ",
+        "date": "วันที่",
+        "time": "เวลา",
+        "event": "นัดหมาย",
+        "noEventsInRange": "ไม่มีนัดหมายในช่วงเวลานี้",
+        "showMore": "+{{total}} นัดหมาย",
+        "allDay": "ทั้งวัน"
     }
 }

@@ -1,5 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/types/auth.ts"
 
+import type { QueryOptions } from './types';
+
 export interface Allow {
     read: string[];
     edit: string[];
@@ -13,31 +15,28 @@ export interface User {
     firstName?: string;
     lastName?: string;
     picture?: string;
-    locale?: string;
-    gender?: string;
-    birthday?: string;
     allows?: Allow[];
     createdAt?: Date;
     updatedAt?: Date;
     lastLoginAt?: Date;
 }
 
-export interface AuthState {
-    isAuthenticated: boolean;
-    user: User | null;
-    loading: boolean;
-    error: string | null;
-}
-
-export interface LoginResponse {
-    success: boolean;
-    user?: User;
-    token?: string;
-    error?: string;
-}
-
 export interface QRLoginData {
     sessionId: string;
     timestamp: number;
     type: 'login';
+}
+
+export interface UserQuery extends QueryOptions {
+    auth?: boolean;
+    googleId?: boolean;
+    email?: boolean;
+    name?: boolean;
+    firstName?: boolean;
+    lastName?: boolean;
+    picture?: boolean;
+    allows?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    lastLoginAt?: boolean;
 }
