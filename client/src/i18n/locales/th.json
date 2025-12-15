@@ -16,9 +16,6 @@
         "error": "เกิดข้อผิดพลาด",
         "filter": "Filter"
     },
-    "footer": {
-        "copyright": "© {{year}} TeaChoco Hospital. สงวนลิขสิทธิ์"
-    },
     "navbar": {
         "appName": "TeaChoco Hospital",
         "hospitals": "โรงพยาบาล",

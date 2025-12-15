@@ -46,7 +46,7 @@ export default function ListLayout<Data>({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <Header header={header} description={description} />
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 btn btn-primary">
+                    <button className="flex items-center gap-2 btn btn-secondary">
                         <FaPlus size={14} />
                         <span>{newData}</span>
                     </button>

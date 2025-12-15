@@ -17,10 +17,12 @@ export default function Home() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                    <button onClick={() => navigate('/signin')} className="btn btn-primary text-lg">
+                    <button
+                        onClick={() => navigate('/signin')}
+                        className="btn btn-secondary text-lg">
                         Get Started
                     </button>
-                    <button className="btn btn-secondary text-lg">Learn More</button>
+                    <button className="btn btn-primary text-lg">Learn More</button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left">

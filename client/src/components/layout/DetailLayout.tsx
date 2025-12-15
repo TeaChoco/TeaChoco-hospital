@@ -19,20 +19,20 @@ export default function DetailLayout<Data>({
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-text-muted-light dark:text-text-muted-dark">
                 <h2 className="text-2xl font-bold mb-2">Not Found</h2>
-                <button onClick={() => navigate(-1)} className="text-primary hover:underline">
+                <button onClick={() => navigate(-1)} className="btn btn-secondary">
                     Go Back
                 </button>
             </div>
         );
 
     return (
-        <>
+        <div className="relative">
             <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors duration-200">
+                className="btn-icon-dark absolute top-2 left-2 z-1">
                 <FaArrowLeft />
             </button>
             {children?.(data)}
-        </>
+        </div>
     );
 }

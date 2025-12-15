@@ -16,9 +16,6 @@
         "error": "An error occurred",
         "filter": "Filter"
     },
-    "footer": {
-        "copyright": "© {{year}} TeaChoco Hospital. All rights reserved."
-    },
     "navbar": {
         "appName": "TeaChoco Hospital",
         "hospitals": "Hospitals",

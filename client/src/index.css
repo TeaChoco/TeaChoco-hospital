@@ -88,18 +88,38 @@
     /* ===== Buttons ===== */
     .btn {
         @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium
-            no-underline transition-all duration-200 cursor-pointer border-none text-base;
+            no-underline transition-all duration-200 cursor-pointer border-none text-base
+            text-text-light dark:text-text-dark
+            hover:bg-bg-card-light dark:hover:bg-bg-card-dark hover:border-primary;
     }
 
-    .btn-primary {
+    .btn-icon {
+        @apply inline-flex rounded-full w-fit h-fit items-center p-4 gap-2 text-white hover:bg-bg-card-light/20 transition-colors duration-200;
+    }
+
+    .btn-icon-dark {
+        @apply inline-flex rounded-full w-fit h-fit items-center p-4 gap-2 text-text-light dark:text-text-dark hover:bg-bg-card-dark/20 dark:hover:bg-bg-card-light/20 transition-colors duration-200;
+    }
+
+    .btn-secondary {
         @apply bg-linear-to-r from-primary to-accent text-white
             shadow-lg shadow-primary/40 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/50;
     }
 
-    .btn-secondary {
-        @apply bg-transparent border border-border-light dark:border-border-dark
-            text-text-light dark:text-text-dark
-            hover:bg-bg-card-light dark:hover:bg-bg-card-dark hover:border-primary;
+    .btn-primary {
+        @apply bg-primary/80 hover:text-white hover:bg-primary;
+    }
+
+    .btn-accent {
+        @apply bg-accent/80 hover:text-white hover:bg-accent;
+    }
+
+    .btn-primary-active {
+        @apply text-white bg-primary/80 hover:text-white hover:bg-primary;
+    }
+
+    .btn-accent-active {
+        @apply text-white bg-accent/80 hover:text-white hover:bg-accent;
     }
 
     /* ===== Cards ===== */

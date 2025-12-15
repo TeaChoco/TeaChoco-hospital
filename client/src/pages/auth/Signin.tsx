@@ -76,7 +76,7 @@ export default function Signin() {
                             title="Go to Home"
                             aria-label="Go to Home"
                             onClick={() => navigate('/')}
-                            className="btn btn-secondary hover:bg-white/20 text-white p-4">
+                            className="btn-icon">
                             <IoHome />
                         </button>
                     </div>

@@ -23,10 +23,9 @@ export default function GoogleSignin() {
 
     return (
         <button
-            onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className={`w-full btn btn-primary relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]`}>
-            <div className="absolute inset-0 bg-linear-to-r from-primary via-accent to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            onClick={handleGoogleSignIn}
+            className={`w-full btn btn-secondary relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]`}>
             {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-black/50">
                     <TbLoaderQuarter className="w-5 h-5 animate-spin text-primary" />
