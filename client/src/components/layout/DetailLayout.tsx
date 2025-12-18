@@ -1,12 +1,15 @@
 //-Path: "TeaChoco-Hospital/client/src/components/layout/DetailLayout.tsx"
 import { useMemo } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
-import { useNavigate, useParams } from 'react-router-dom';
+import type { Allow } from '../../types/auth';
+import { FaArrowLeft, FaPen } from 'react-icons/fa';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function DetailLayout<Data>({
     find,
+    allow,
     children,
 }: {
+    allow: Allow;
     find: (id?: string) => Data | undefined;
     children?: (data: Data) => React.ReactNode;
 }) {
@@ -27,11 +30,12 @@ export default function DetailLayout<Data>({
 
     return (
         <div className="relative">
-            <button
-                onClick={() => navigate(-1)}
-                className="btn-icon-dark absolute top-2 left-2 z-1">
+            <Link to={`/${allow}`} className="btn-icon-dark absolute top-2 left-2 z-1">
                 <FaArrowLeft />
-            </button>
+            </Link>
+            <Link to={`/${allow}/edit/${id}`} className="btn-icon-dark absolute top-2 right-2 z-1">
+                <FaPen />
+            </Link>
             {children?.(data)}
         </div>
     );

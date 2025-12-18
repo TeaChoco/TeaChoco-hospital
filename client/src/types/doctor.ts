@@ -2,6 +2,7 @@
 
 export interface Doctor {
     _id: string;
+    user_id: string;
     firstName: string;
     lastName: string;
     nickname?: string;

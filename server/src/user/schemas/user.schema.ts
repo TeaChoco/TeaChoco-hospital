@@ -14,6 +14,9 @@ export class User {
     email: string;
 
     @Prop({ required: true })
+    password: string;
+
+    @Prop({ required: true })
     name: string;
 
     @Prop()
@@ -24,9 +27,6 @@ export class User {
 
     @Prop()
     picture?: string;
-
-    @Prop({ required: true })
-    allows: Allow[];
 
     @Prop()
     createdAt?: Date;

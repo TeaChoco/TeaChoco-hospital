@@ -8,7 +8,7 @@ interface DoctorCardProps {
     onClick?: () => void;
 }
 
-export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onClick }) => {
+export function DoctorCard({ doctor, onClick }: DoctorCardProps) {
     return (
         <div
             onClick={onClick}
@@ -48,4 +48,4 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onClick }) => {
             )}
         </div>
     );
-};
+}

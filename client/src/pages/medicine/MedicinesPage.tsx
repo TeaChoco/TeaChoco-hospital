@@ -1,19 +1,17 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/medicine/MedicinesPage.tsx"
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockMedicines } from '../../mocks/data';
-import type { Medicine } from '../../types/medicine';
+import { useMedicines } from '../../context/medicinesAtom';
 import ListLayout from '../../components/layout/ListLayout';
 import { MedicineCard } from '../../components/medicine/MedicineCard';
 
-export const MedicinesPage: React.FC = () => {
+export default function MedicinesPage() {
+    const medicines = useMedicines();
     const navigator = useNavigate();
-    const [medicines] = useState<Medicine[]>(mockMedicines);
 
     return (
         <ListLayout
             datas={medicines}
-            header="My Medicines"
+            header="Medicines"
             newData="New Medicine"
             description="Manage and track your prescriptions"
             placeholder="Search medicines..."
@@ -32,4 +30,4 @@ export const MedicinesPage: React.FC = () => {
             }
         </ListLayout>
     );
-};
+}

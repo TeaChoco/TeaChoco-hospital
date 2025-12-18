@@ -202,7 +202,6 @@ export interface Appointment {
 
     // ข้อมูลผู้ป่วย
     patientId: string; // รหัสผู้ป่วย
-    patientName: string; // ชื่อผู้ป่วย
     patientType: PatientType; // ประเภทผู้ป่วย
 
     // ข้อมูลโรงพยาบาลและแพทย์

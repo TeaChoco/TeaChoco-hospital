@@ -12,11 +12,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Signin() {
     const navigate = useNavigate();
-    const { loading, error } = useAuth();
     const [searchParams] = useSearchParams();
+    const { isAuthenticated, loading, error } = useAuth();
     const [queryError, setQueryError] = useState<string | null>(null);
     const [querySource, setQuerySource] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'google' | 'scan' | 'generate'>('google');
+
+    if (isAuthenticated) navigate('/');
 
     // ดึงค่า error จาก query parameters
     useEffect(() => {
@@ -64,7 +66,7 @@ export default function Signin() {
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <Background />
-            <div className="absolute top-4 right-4 z-50 flex gap-4">
+            <div className="absolute top-4 right-4 z-50 flex gap-4 items-center">
                 <ThemeToggle />
                 <SelectLang />
             </div>

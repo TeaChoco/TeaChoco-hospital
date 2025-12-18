@@ -12,6 +12,7 @@ import { JwtStrategy } from './strategies/jwt.strategies';
 import { User, UserSchema } from '../schemas/user.schema';
 import { GoogleStrategy } from './strategies/google.strategy';
 import googleOauthConfig from '../../config/google-oauth.config';
+import { LocalStrategy } from './strategies/local.strategies';
 
 @Module({
     imports: [
@@ -23,6 +24,6 @@ import googleOauthConfig from '../../config/google-oauth.config';
         ...new ImportsMongoose({ name: User.name, schema: UserSchema }).imports,
     ],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, GoogleStrategy],
+    providers: [AuthService, JwtStrategy, GoogleStrategy, LocalStrategy],
 })
 export class AuthModule {}

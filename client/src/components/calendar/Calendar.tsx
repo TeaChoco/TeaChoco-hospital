@@ -11,14 +11,14 @@ import {
     Calendar as BigCalendar,
 } from 'react-big-calendar';
 import moment from 'moment';
-import { useState } from 'react';
+import Toolbar from './Toolbar';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import withDragAndDrop, {
     type EventInteractionArgs,
 } from 'react-big-calendar/lib/addons/dragAndDrop';
 import type { Medicine } from '../../types/medicine';
 import type { Appointment } from '../../types/appointment';
-import Toolbar from './Toolbar';
 
 const localizer = momentLocalizer(moment);
 
@@ -40,13 +40,13 @@ export default function Calendar({
     defaultDate,
     defaultView,
     endAccessor,
+    defaultStep,
     onEventDrop,
     onSelectSlot,
     startAccessor,
     onSelectEvent,
     eventPropGetter,
-    defaultStep = 15,
-    defaultTimeslots = 4,
+    defaultTimeslots,
 }: {
     defaultDate?: Date;
     defaultView?: View;
@@ -61,13 +61,31 @@ export default function Calendar({
     onSelectEvent?: (event: CalendarEvent, element: React.SyntheticEvent<HTMLElement>) => void;
 }) {
     const { t } = useTranslation();
-    const [step, setStep] = useState(defaultStep);
-    const [timeslots, setTimeslots] = useState(defaultTimeslots);
     const [date, setDate] = useState<Date>(new Date());
-    const [view, setView] = useState<View>(defaultView || Views.MONTH);
+    const [step, setStep] = useState<number>(
+        defaultStep || Number(localStorage.getItem('calendarStep')) || 15,
+    );
+    const [timeslots, setTimeslots] = useState<number>(
+        defaultTimeslots || Number(localStorage.getItem('calendarTimeslots')) || 4,
+    );
+    const [view, setView] = useState<View>(
+        defaultView || (localStorage.getItem('calendarView') as View) || Views.MONTH,
+    );
 
     const defaultStartAccessor = (event: CalendarEvent) => event.start;
     const defaultEndAccessor = (event: CalendarEvent) => event.end;
+
+    useEffect(() => {
+        localStorage.setItem('calendarView', view);
+    }, [view]);
+
+    useEffect(() => {
+        localStorage.setItem('calendarStep', step.toString());
+    }, [step]);
+
+    useEffect(() => {
+        localStorage.setItem('calendarTimeslots', timeslots.toString());
+    }, [timeslots]);
 
     return (
         <DragAndDropCalendar

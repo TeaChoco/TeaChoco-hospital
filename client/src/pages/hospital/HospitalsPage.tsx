@@ -1,14 +1,12 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalsPage.tsx"
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockHospitals } from '../../mocks/data';
-import type { Hospital } from '../../types/hospital';
+import { useHospitals } from '../../context/hospitalsAtom';
 import ListLayout from '../../components/layout/ListLayout';
 import { HospitalCard } from '../../components/hospital/HospitalCard';
 
-export const HospitalsPage: React.FC = () => {
+export default function HospitalsPage() {
     const navigate = useNavigate();
-    const [hospitals] = useState<Hospital[]>(mockHospitals);
+    const hospitals = useHospitals();
 
     return (
         <ListLayout
@@ -32,4 +30,4 @@ export const HospitalsPage: React.FC = () => {
             }
         </ListLayout>
     );
-};
+}

@@ -2,14 +2,14 @@
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { nameDB } from '../../hooks/mongodb';
 import { UserService } from '../user.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { Auth, ReqUserDto } from '../dto/user.dto';
+import { Allow, Auth, ReqUserDto } from '../dto/user.dto';
+import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { User, UserDocument } from '../schemas/user.schema';
-import { ResponseUserDto } from '../dto/response-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +20,31 @@ export class AuthService {
         @InjectModel(User.name, nameDB)
         private readonly userModel: Model<UserDocument>,
     ) {}
+
+    // async login(password: string): Promise<string> {
+    //     const createHash = this.createHash();
+    //     return createHash(password);
+    // }
+
+    async login(user: ReqUserDto) {
+        if (user.email) return { accessToken: this.jwtService.sign(user) };
+        throw new BadRequestException({ user });
+    }
+
+    async validateUser(email: string, password: string) {
+        const createHash = this.createHash();
+        const user = await this.userModel.findOne({ email }).exec();
+
+        if (email === '') throw new BadRequestException("Username can't be empty");
+        else if (password === '') throw new BadRequestException("Password can't be empty");
+        else {
+            if (user && createHash(password) === user.password) {
+                const result = user.toObject();
+                return result;
+            }
+            throw new BadRequestException('Invalid username or password');
+        }
+    }
 
     async signin(
         user: ReqUserDto,
@@ -36,7 +61,13 @@ export class AuthService {
             firstName: userDB.firstName,
             lastName: userDB.lastName,
             picture: userDB.picture,
-            allows: userDB.allows,
+            allows: [
+                {
+                    user_id: userDB._id.toString(),
+                    read: [Allow.AUTH],
+                    edit: [Allow.AUTH],
+                },
+            ],
             createdAt: userDB.createdAt,
             updatedAt: userDB.updatedAt,
             lastLoginAt: userDB.lastLoginAt,
@@ -50,7 +81,13 @@ export class AuthService {
 
     async signup(user: ReqUserDto) {
         const newUser = new this.userModel({
-            ...user,
+            googleId: user.googleId,
+            email: user.email,
+            name: user.name,
+            password: '',
+            firstName: user.firstName,
+            lastName: user.lastName,
+            picture: user.picture,
             lastLoginAt: Date.now(),
         });
         await newUser.save();

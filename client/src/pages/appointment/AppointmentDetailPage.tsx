@@ -1,9 +1,12 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/appointment/AppointmentDetailPage.tsx"
-import { mockAppointments } from '../../mocks/data';
+import { Allow } from '../../types/auth';
 import DetailLayout from '../../components/layout/DetailLayout';
+import { useAppointments } from '../../context/appointmentsAtom';
 import { FaUserMd, FaHospital, FaNotesMedical, FaStethoscope } from 'react-icons/fa';
 
-export const AppointmentDetailPage: React.FC = () => {
+export default function AppointmentDetailPage() {
+    const appointments = useAppointments();
+
     const formatDate = (date: Date | string) => {
         return new Date(date).toLocaleDateString(undefined, {
             weekday: 'long',
@@ -21,7 +24,9 @@ export const AppointmentDetailPage: React.FC = () => {
     };
 
     return (
-        <DetailLayout find={(id) => mockAppointments.find((a) => a._id === id)}>
+        <DetailLayout
+            allow={Allow.APPOINTMENTS}
+            find={(id) => appointments?.find((appointment) => appointment._id === id)}>
             {(appointment) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     <div className="p-6 md:p-8 bg-linear-to-br from-primary/5 to-accent/5 border-b border-border-light dark:border-border-dark">
@@ -129,4 +134,4 @@ export const AppointmentDetailPage: React.FC = () => {
             )}
         </DetailLayout>
     );
-};
+}

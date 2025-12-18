@@ -1,8 +1,6 @@
 //-Path: "TeaChoco-Hospital/client/src/components/calendar/Toolbar.tsx"
 import {
-    FaPlus,
     FaClock,
-    FaMinus,
     FaListAlt,
     FaLayerGroup,
     FaChevronLeft,
@@ -13,8 +11,11 @@ import {
     FaCalendarCheck,
 } from 'react-icons/fa';
 import { useCallback } from 'react';
+import { StepControl } from './StepControl';
 import { useTranslation } from 'react-i18next';
 import type { CalendarEvent } from './Calendar';
+import { Link, useLocation } from 'react-router-dom';
+import { RiFullscreenLine, RiFullscreenExitLine } from 'react-icons/ri';
 import { Navigate, Views, type ToolbarProps, type View } from 'react-big-calendar';
 
 export interface ToolbarProp extends ToolbarProps<CalendarEvent, object> {
@@ -24,8 +25,11 @@ export interface ToolbarProp extends ToolbarProps<CalendarEvent, object> {
     onTimeslotsChange: (timeslots: number) => void;
 }
 
+const screenClass = 'btn-icon p-3 top-0 left-0 absolute lg:relative';
+
 export default function Toolbar(props: ToolbarProp) {
     const { t } = useTranslation();
+    const location = useLocation();
     const { label, onNavigate, onView, view, step, onStepChange, timeslots, onTimeslotsChange } =
         props;
 
@@ -62,93 +66,61 @@ export default function Toolbar(props: ToolbarProp) {
     } as const;
 
     return (
-        <div className="flex flex-col justify-between items-center mb-4 p-4 bg-bg-card-light dark:bg-bg-card-dark rounded-lg border border-border-light dark:border-border-dark shadow-sm gap-4 transition-all duration-200">
-            <div className="flex flex-col md:flex-row w-full">
-                <div className="w-full md:w-auto flex flex-col md:flex-row items-center gap-4">
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={goToBack}
-                            className="p-2 rounded-lg hover:bg-primary/20 hover:text-primary transition-colors text-text-light dark:text-text-dark"
-                            title={t('calendar.previous')}>
-                            <FaChevronLeft />
-                        </button>
-                        <button
-                            onClick={goToToday}
-                            className="btn btn-primary px-4 py-2 gap-2 text-sm">
-                            <FaCalendarCheck />
-                            <span>{t('calendar.today')}</span>
-                        </button>
-                        <button
-                            onClick={goToNext}
-                            className="p-2 rounded-lg hover:bg-primary/20 hover:text-primary transition-colors text-text-light dark:text-text-dark"
-                            title={t('calendar.next')}>
-                            <FaChevronRight />
-                        </button>
-                    </div>
-                    <h2 className="text-xl font-semibold text-text-light dark:text-text-dark">
-                        {label}
-                    </h2>
+        <div className="flex flex-col lg:flex-row justify-between items-center mb-4 p-4 bg-bg-card-light dark:bg-bg-card-dark rounded-lg border border-border-light dark:border-border-dark shadow-sm gap-2 transition-all duration-200">
+            <div className="relative flex flex-col md:flex-row justify-center lg:justify-start items-center gap-2 w-full">
+                {location.pathname.includes('calendar/full') ? (
+                    <Link to="/calendar" className={`${screenClass} btn-accent`}>
+                        <RiFullscreenExitLine />
+                    </Link>
+                ) : (
+                    <Link to="/calendar/full" className={`${screenClass} btn-primary`}>
+                        <RiFullscreenLine />
+                    </Link>
+                )}
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={goToBack}
+                        className="p-2 rounded-lg hover:bg-primary/20 hover:text-primary transition-colors text-text-light dark:text-text-dark"
+                        title={t('calendar.previous')}>
+                        <FaChevronLeft />
+                    </button>
+                    <button onClick={goToToday} className="btn btn-primary px-4 py-2 gap-2 text-sm">
+                        <FaCalendarCheck />
+                        <span>{t('calendar.today')}</span>
+                    </button>
+                    <button
+                        onClick={goToNext}
+                        className="p-2 rounded-lg hover:bg-primary/20 hover:text-primary transition-colors text-text-light dark:text-text-dark"
+                        title={t('calendar.next')}>
+                        <FaChevronRight />
+                    </button>
                 </div>
+                <h2 className="text-xl font-semibold text-text-light dark:text-text-dark">
+                    {label}
+                </h2>
             </div>
-            <div className="flex flex-col md:flex-row w-full">
-                <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-4">
-                    {/* Step controls */}
-                    <div
-                        className="flex items-center bg-bg-light dark:bg-bg-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden"
-                        title={t('calendar.step')}>
-                        <button
-                            onClick={handleStepOut}
-                            disabled={step <= 5}
-                            className={`p-2 transition-colors ${
-                                step <= 5
-                                    ? 'text-text-muted-light dark:text-text-muted-dark cursor-not-allowed'
-                                    : 'text-text-light dark:text-text-dark hover:bg-primary/20 hover:text-primary'
-                            }`}>
-                            <FaMinus size={12} />
-                        </button>
-                        <div className="px-3 py-2 border-x border-border-light dark:border-border-dark min-w-[80px] text-center bg-bg-card-light dark:bg-bg-card-dark flex items-center justify-center gap-2">
-                            <FaClock className="text-primary text-xs" />
-                            <span className="text-sm font-medium text-text-light dark:text-text-dark">
-                                {step}m
-                            </span>
-                        </div>
-                        <button
-                            onClick={handleStepIn}
-                            className="p-2 transition-colors text-text-light dark:text-text-dark hover:bg-primary/20 hover:text-primary">
-                            <FaPlus size={12} />
-                        </button>
+            <div className="flex flex-col md:flex-row w-full items-center gap-4 justify-center lg:justify-end">
+                {(view === Views.WEEK || view === Views.DAY) && (
+                    <div className="w-full md:w-auto flex flex-col sm:flex-row md:flex-col items-center gap-1 justify-center">
+                        <StepControl
+                            min={5}
+                            unit="m"
+                            step={step}
+                            setStep={onStepChange}
+                            handleIn={handleStepIn}
+                            handleOut={handleStepOut}
+                            icon={<FaClock className="text-primary text-xs" />}
+                        />
+                        <StepControl
+                            step={timeslots}
+                            setStep={onTimeslotsChange}
+                            handleIn={handleTimeslotsIn}
+                            handleOut={handleTimeslotsOut}
+                            icon={<FaLayerGroup className="text-primary text-xs" />}
+                        />
                     </div>
-
-                    {/* Timeslots controls */}
-                    <div
-                        className="flex items-center bg-bg-light dark:bg-bg-dark rounded-lg border border-border-light dark:border-border-dark overflow-hidden"
-                        title={t('calendar.timeslots')}>
-                        <button
-                            onClick={handleTimeslotsOut}
-                            disabled={timeslots <= 1}
-                            className={`p-2 transition-colors ${
-                                timeslots <= 1
-                                    ? 'text-text-muted-light dark:text-text-muted-dark cursor-not-allowed'
-                                    : 'text-text-light dark:text-text-dark hover:bg-primary/20 hover:text-primary'
-                            }`}>
-                            <FaMinus size={12} />
-                        </button>
-                        <div className="px-3 py-2 border-x border-border-light dark:border-border-dark min-w-[60px] text-center bg-bg-card-light dark:bg-bg-card-dark flex items-center justify-center gap-2">
-                            <FaLayerGroup className="text-primary text-xs" />
-                            <span className="text-sm font-medium text-text-light dark:text-text-dark">
-                                {timeslots}
-                            </span>
-                        </div>
-                        <button
-                            onClick={handleTimeslotsIn}
-                            className="p-2 transition-colors text-text-light dark:text-text-dark hover:bg-primary/20 hover:text-primary">
-                            <FaPlus size={12} />
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-col md:flex-row w-full">
-                <div className="flex items-center gap-1 bg-bg-light dark:bg-bg-dark rounded-lg p-1 border border-border-light dark:border-border-dark">
+                )}
+                <div className="w-fit flex items-center justify-center gap-1 bg-bg-light dark:bg-bg-dark rounded-lg p-1 border border-border-light dark:border-border-dark transition-colors duration-200">
                     {([Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA] as const).map(
                         (viewType) => {
                             const Icon = viewIcons[viewType];
@@ -157,11 +129,7 @@ export default function Toolbar(props: ToolbarProp) {
                                 <button
                                     key={viewType}
                                     onClick={() => handleViewChange(viewType)}
-                                    className={`flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${
-                                        isActive
-                                            ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                                            : 'text-text-light dark:text-text-dark hover:bg-primary/20 hover:text-primary'
-                                    }`}>
+                                    className={`btn ${isActive ? 'btn-primary' : ''}`}>
                                     <Icon />
                                     <span className="hidden sm:inline">{viewLabels[viewType]}</span>
                                 </button>

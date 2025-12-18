@@ -1,13 +1,14 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.controller.ts"
-import { Auth } from '../dto/user.dto';
+import { Auth, ReqUserDto, UserLoginDto } from '../dto/user.dto';
 import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { SecureService } from '../../secure/secure.service';
-import { Get, Res, Req, Logger, UseGuards, Controller, Redirect } from '@nestjs/common';
+import { Get, Res, Req, Logger, UseGuards, Controller, Redirect, Post } from '@nestjs/common';
+import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @ApiTags('User Auth')
 @Controller('user/auth')
@@ -19,12 +20,45 @@ export class AuthController {
         private readonly secureService: SecureService,
     ) {}
 
+    // @Put()
+    // @ApiBody({})
+    // @ApiOperation({ summary: 'Get password hash' })
+    // async getPassword(@Body() body: { password: string }) {
+    //     return this.authService.login(body.password);
+    // }
+
+    @Post('login')
+    @UseGuards(LocalAuthGuard)
+    @ApiResponse({
+        status: 200,
+        description: 'Login successful',
+    })
+    @ApiOperation({ summary: 'Login' })
+    @ApiBody({
+        required: true,
+        type: UserLoginDto,
+    })
+    async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+        const { accessToken } = await this.authService.login(req.user as ReqUserDto);
+        if (accessToken) {
+            res.cookie('access_token', accessToken, {
+                secure: true,
+                httpOnly: true,
+                sameSite: 'none',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+            return {
+                message: 'Login successful',
+                user: await this.authService.signin(req.user as ReqUserDto),
+            };
+        }
+    }
+
     @Get()
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Get authenticated user info' })
     async getAuth(@Req() req: Request): Promise<ResponseUserDto | null> {
         const user = req.user as Auth;
-        this.logger.log(user);
         if (!user) return null;
         const responseUser = await this.authService.signin(user);
         return responseUser.user;

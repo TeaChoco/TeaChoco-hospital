@@ -44,6 +44,16 @@
         @apply scroll-smooth;
     }
 
+    /* Force native UI mechanisms to use dark mode when .dark class is present */
+    :is(html.dark) {
+        color-scheme: dark;
+    }
+
+    /* Consistent styling for select options */
+    select option {
+        @apply bg-bg-card-light text-text-light dark:bg-bg-card-dark dark:text-text-dark;
+    }
+
     body {
         @apply min-h-screen font-sans antialiased;
         @apply bg-bg-light text-text-light;
@@ -87,10 +97,14 @@
 
     /* ===== Buttons ===== */
     .btn {
-        @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium
+        @apply inline-flex items-center justify-center px-6 py-3 gap-1 rounded-lg font-medium
             no-underline transition-all duration-200 cursor-pointer border-none text-base
             text-text-light dark:text-text-dark
             hover:bg-bg-card-light dark:hover:bg-bg-card-dark hover:border-primary;
+    }
+
+    .btn-dis {
+        @apply text-text-muted-light dark:text-text-muted-dark cursor-not-allowed;
     }
 
     .btn-icon {
@@ -129,7 +143,24 @@
     }
 
     .card:hover {
-        @apply bg-bg-card-hover-light dark:bg-bg-card-hover-dark 
+        @apply bg-bg-card-hover-light dark:bg-bg-card-hover-dark
             border-primary shadow-lg shadow-primary/30;
+    }
+}
+
+@layer utilities {
+    .no-arrow::-webkit-inner-spin-button,
+    .no-arrow::-webkit-outer-spin-button {
+        margin: 0;
+        -webkit-appearance: none;
+    }
+    .no-arrow {
+        -moz-appearance: textfield;
+    }
+
+    /* Date and Time Input Styles */
+    input[type='date']::-webkit-calendar-picker-indicator,
+    input[type='time']::-webkit-calendar-picker-indicator {
+        @apply cursor-pointer opacity-60 hover:opacity-100 transition-opacity p-1 rounded-md;
     }
 }

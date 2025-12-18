@@ -1,10 +1,19 @@
 //-Path: "TeaChoco-Hospital/client/src/types/auth.ts"
-
 import type { QueryOptions } from './types';
 
-export interface Allow {
-    read: string[];
-    edit: string[];
+export enum Allow {
+    AUTH = 'auth',
+    HOSPITALS = 'hospitals',
+    APPOINTMENTS = 'appointments',
+    DOCTORS = 'doctors',
+    MEDICINES = 'medicines',
+    CALENDARS = 'calendars',
+}
+
+export interface Allows {
+    user_id: string;
+    read: Allow[];
+    edit: Allow[];
 }
 
 export interface User {
@@ -15,7 +24,7 @@ export interface User {
     firstName?: string;
     lastName?: string;
     picture?: string;
-    allows?: Allow[];
+    allows?: Allows[];
     createdAt?: Date;
     updatedAt?: Date;
     lastLoginAt?: Date;

@@ -157,40 +157,12 @@ export interface Medicine {
     updatedAt: Date;
     createdBy: string; // User ID ผู้สร้าง
     updatedBy?: string; // User ID ผู้แก้ไขล่าสุด
-    __v: number;
 
     // Status
     isActive: boolean; // ยังใช้ยาอยู่หรือไม่
     isCompleted: boolean; // รับประทานครบแล้วหรือยัง
 }
 
-// สำหรับ form data และ validation
-export interface MedicineFormData {
-    name: string;
-    genericName: string;
-    brand?: string;
-
-    type: MedicineType;
-    category?: string;
-
-    takeInstructions: TakeInstruction[];
-    dosage: MedicineDosage;
-
-    startDate: string; // ISO string
-    endDate: string; // ISO string
-    expiryDate: string; // ISO string
-
-    storageConditions: StorageCondition[];
-    storageNotes?: string;
-
-    package: PackageInfo;
-    hospital: Omit<HospitalInfo, 'id'> | string; // อาจเป็น ID หรือข้อมูลเต็ม
-
-    sideEffects: SideEffect[];
-    warnings: Warning[];
-}
-
-// สำหรับ API responses
 export interface MedicineResponse {
     success: boolean;
     data?: Medicine | Medicine[];

@@ -1,11 +1,16 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorDetailPage.tsx"
-import { mockDoctors } from '../../mocks/data';
+import { Allow } from '../../types/auth';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaUserMd, FaPhone, FaHospital, FaCalendarCheck } from 'react-icons/fa';
+import { useDoctors } from '../../context/doctorsAtom';
 
-export const DoctorDetailPage: React.FC = () => {
+export default function DoctorDetailPage() {
+    const doctors = useDoctors();
+
     return (
-        <DetailLayout find={(id) => mockDoctors.find((d) => d._id === id)}>
+        <DetailLayout
+            allow={Allow.DOCTORS}
+            find={(id) => doctors?.find((doctor) => doctor._id === id)}>
             {(doctor) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark p-6 md:p-10">
                     <div className="flex flex-col items-center text-center">
@@ -78,4 +83,4 @@ export const DoctorDetailPage: React.FC = () => {
             )}
         </DetailLayout>
     );
-};
+}

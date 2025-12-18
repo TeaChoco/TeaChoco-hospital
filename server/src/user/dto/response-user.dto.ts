@@ -1,19 +1,106 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/response-user.dto.ts"
-import { Allow } from './user.dto';
+import { Allow, AllowsDto } from './user.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
 
 export class ResponseUserDto {
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: '1234567890',
+        description: 'User ID',
+    })
     user_id: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: '1234567890',
+        description: 'Google ID',
+    })
     googleId?: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: 'example@gmail.com',
+        description: 'Email',
+    })
     email?: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: 'John Doe',
+        description: 'Name',
+    })
     name?: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: 'John',
+        description: 'First name',
+    })
     firstName?: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: 'Doe',
+        description: 'Last name',
+    })
     lastName?: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: '1234567890',
+        description: 'Picture',
+    })
     picture?: string;
-    allows?: Allow[];
+
+    @IsArray()
+    @ApiProperty({
+        type: [AllowsDto],
+        required: false,
+        example: [Allow.AUTH],
+        description: 'Allows',
+    })
+    allows?: AllowsDto[];
+
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: false,
+        example: '2022-01-01',
+        description: 'Created at',
+    })
     createdAt?: Date;
+
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: false,
+        example: '2022-01-01',
+        description: 'Updated at',
+    })
     updatedAt?: Date;
+
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: false,
+        example: '2022-01-01',
+        description: 'Last login at',
+    })
     lastLoginAt?: Date;
 }
 
@@ -75,15 +162,58 @@ export class QueryOptions {
 }
 
 export class ResponseOptions {
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     auth?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     googleId?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     email?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     name?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     firstName?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     lastName?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     picture?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     allows?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     createdAt?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     updatedAt?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     lastLoginAt?: boolean;
 }

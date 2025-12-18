@@ -1,15 +1,13 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorsPage.tsx"
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockAppointments } from '../../mocks/data';
-import type { Appointment } from '../../types/appointment';
 import ListLayout from '../../components/layout/ListLayout';
-import { AppointmentCard } from '../../components/appointment/AppointmentCard';
+import { useAppointments } from '../../context/appointmentsAtom';
 import type { FilterOption } from '../../components/custom/Search';
+import { AppointmentCard } from '../../components/appointment/AppointmentCard';
 
-export const AppointmentPage: React.FC = () => {
+export default function AppointmentPage() {
     const navigate = useNavigate();
-    const [appointments] = useState<Appointment[]>(mockAppointments);
+    const appointments = useAppointments();
 
     const filterOptions: FilterOption[] = [
         {
@@ -44,7 +42,6 @@ export const AppointmentPage: React.FC = () => {
             filter={(app, searchTerm, filters) => {
                 const matchesSearch =
                     app.appointmentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    app.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     app.department.toLowerCase().includes(searchTerm.toLowerCase());
 
                 const matchesDepartment =
@@ -70,4 +67,4 @@ export const AppointmentPage: React.FC = () => {
             }
         </ListLayout>
     );
-};
+}

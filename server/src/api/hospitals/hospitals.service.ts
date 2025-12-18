@@ -1,0 +1,35 @@
+//- Path: "TeaChoco-Hospital/server/src/api/hospitals/hospitals.service.ts"
+import { Model } from 'mongoose';
+import { nameDB } from 'src/hooks/mongodb';
+import { Auth } from 'src/user/dto/user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Hospital } from './schemas/hospital.schema';
+import { CreateHospitalDto } from './dto/create-hospital.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+
+@Injectable()
+export class HospitalsService {
+    constructor(
+        @InjectModel(Hospital.name, nameDB)
+        private readonly hospitalModel: Model<Hospital>,
+    ) {}
+
+    async findAll(auth: Auth) {
+        const hospitals = await this.hospitalModel.find();
+        return hospitals.filter((hospital) => hospital.user_id === auth?.user_id);
+    }
+
+    async findOne(auth: Auth, id: string) {
+        return await this.hospitalModel.findById(id);
+    }
+
+    async create(auth: Auth, data: CreateHospitalDto) {
+        if (auth === null) throw new UnauthorizedException('Unauthorized');
+        const hospital = new this.hospitalModel(data);
+        return await hospital.save();
+    }
+
+    async update(auth: Auth, id: string, data: Hospital) {
+        return await this.hospitalModel.findByIdAndUpdate(id, data, { new: true });
+    }
+}

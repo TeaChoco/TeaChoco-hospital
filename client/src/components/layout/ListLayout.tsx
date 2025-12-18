@@ -1,7 +1,10 @@
 //-Path: "TeaChoco-Hospital/client/src/components/layout/ListLayout.tsx"
 import Header from '../custom/Header';
-import { useMemo, useState } from 'react';
+import { Allow } from '../../types/auth';
+import { useAuth } from '../../hooks/useAuth';
 import { FaPlus, FaSearch } from 'react-icons/fa';
+import { Activity, useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Search, { type FilterOption } from '../custom/Search';
 
 export default function ListLayout<Data>({
@@ -16,13 +19,15 @@ export default function ListLayout<Data>({
 }: {
     datas?: Data[];
     header: string;
-    newData: string;
+    newData?: string;
     description: string;
     placeholder?: string;
     filterOptions?: FilterOption[];
     children?: ((filteredDatas: Data[]) => React.ReactNode) | React.ReactNode;
     filter?: (data: Data, search: string, filters: Record<string, string[]>) => boolean | undefined;
 }) {
+    const { user } = useAuth();
+    const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
 
@@ -38,19 +43,25 @@ export default function ListLayout<Data>({
 
     const filteredDatas = useMemo(
         () => datas?.filter((data) => filter?.(data, searchTerm, activeFilters)) || [],
-        [searchTerm, activeFilters],
+        [datas, searchTerm, activeFilters],
+    );
+
+    const canAdd = user?.allows?.some((allow) =>
+        allow.edit.find((edit) => location.pathname.includes(edit) || edit === Allow.AUTH),
     );
 
     return (
         <>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <Header header={header} description={description} />
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 btn btn-secondary">
+                <Activity mode={canAdd && newData ? 'visible' : 'hidden'}>
+                    <Link
+                        to={`${location.pathname}/edit/new`}
+                        className="flex items-center gap-2 btn btn-secondary">
                         <FaPlus size={14} />
                         <span>{newData}</span>
-                    </button>
-                </div>
+                    </Link>
+                </Activity>
             </div>
 
             {placeholder && (

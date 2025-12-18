@@ -1,11 +1,15 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalDetailPage.tsx"
-import { mockHospitals } from '../../mocks/data';
+import { Activity } from 'react';
+import { Allow } from '../../types/auth';
+import { useHospitals } from '../../context/hospitalsAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaHospital, FaPhone, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
 
-export const HospitalDetailPage: React.FC = () => {
+export default function HospitalDetailPage() {
+    const hospitals = useHospitals();
+
     return (
-        <DetailLayout find={(id) => mockHospitals.find((h) => h._id === id)}>
+        <DetailLayout allow={Allow.HOSPITALS} find={(id) => hospitals?.find((h) => h._id === id)}>
             {(hospital) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     <div className="h-40 bg-linear-to-r from-primary/10 to-accent/10 flex items-center justify-center text-primary/20">
@@ -35,8 +39,9 @@ export const HospitalDetailPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <div className="w-full flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
                                     <FaPhone className="text-accent-secondary shrink-0" size={20} />
                                     <div>
                                         <h3 className="font-bold text-text-light dark:text-text-dark mb-1">
@@ -48,7 +53,7 @@ export const HospitalDetailPage: React.FC = () => {
                                     </div>
                                 </div>
 
-                                {hospital.website && (
+                                <Activity mode={hospital.website ? 'visible' : 'hidden'}>
                                     <a
                                         href={hospital.website}
                                         target="_blank"
@@ -67,7 +72,7 @@ export const HospitalDetailPage: React.FC = () => {
                                             </p>
                                         </div>
                                     </a>
-                                )}
+                                </Activity>
                             </div>
                         </div>
                     </div>
@@ -75,4 +80,4 @@ export const HospitalDetailPage: React.FC = () => {
             )}
         </DetailLayout>
     );
-};
+}
