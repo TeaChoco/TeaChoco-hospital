@@ -7,6 +7,12 @@ import { HospitalsModule } from './hospitals/hospitals.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
-    imports: [HospitalsModule, DoctorsModule, AppointmentsModule, MedicinesModule, SocketModule],
+    imports: [
+        HospitalsModule,
+        DoctorsModule,
+        AppointmentsModule,
+        MedicinesModule,
+        // SocketModule
+    ],
 })
 export class ApiModule {}
