@@ -8,14 +8,15 @@ import { useHospitals } from '../../context/hospitalsAtom';
 import EditLayout from '../../components/layout/EditLayout';
 
 export default function DoctorEditPage() {
-    const doctors = useDoctors();
-    const hospitals = useHospitals();
+    const { doctors } = useDoctors();
+    const { hospitals } = useHospitals();
 
     return (
         <EditLayout<Doctor>
             title={Title.DOCTORS}
             newData={{
                 _id: 'new',
+                user_id: '',
                 firstName: '',
                 lastName: '',
                 hospitalId: '',
@@ -57,12 +58,16 @@ export default function DoctorEditPage() {
                         onChange={(e) =>
                             setData((prev) => prev && { ...prev, hospitalId: e.target.value })
                         }>
-                        <option value="">Select Hospital</option>
-                        {hospitals?.map((hospital) => (
-                            <option key={hospital._id} value={hospital._id}>
-                                {hospital.name}
-                            </option>
-                        ))}
+                        {(Option) => (
+                            <>
+                                <Option value="">Select Hospital</Option>
+                                {hospitals?.map((hospital) => (
+                                    <Option key={hospital._id} value={hospital._id}>
+                                        {hospital.name}
+                                    </Option>
+                                ))}
+                            </>
+                        )}
                     </Select>
                     <Input
                         required

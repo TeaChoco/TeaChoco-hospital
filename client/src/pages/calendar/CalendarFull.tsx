@@ -1,11 +1,16 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/calendar/CalendarFull.tsx"
 import { useNavigate } from 'react-router-dom';
+import Loading from '../../components/custom/Loading';
 import Calendar from '../../components/calendar/Calendar';
 import { useCalendarEvents } from '../../hooks/useCalendarEvents';
 
 export default function CalendarFull() {
     const navigate = useNavigate();
-    const events = useCalendarEvents();
+    const { appointmentEvents, medicineEvents } = useCalendarEvents();
+
+    if (!appointmentEvents || !medicineEvents) return <Loading />;
+
+    const events = [...appointmentEvents, ...medicineEvents];
 
     return (
         <div className="h-screen max-h-screen">

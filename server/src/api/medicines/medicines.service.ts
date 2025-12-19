@@ -2,7 +2,7 @@
 import { Model } from 'mongoose';
 import { nameDB } from 'src/hooks/mongodb';
 import { Injectable } from '@nestjs/common';
-import { Auth } from 'src/user/dto/user.dto';
+import { Allow, Auth } from 'src/user/dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Medicine } from './schemas/medicine.schema';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
@@ -21,12 +21,22 @@ export class MedicinesService {
     }
 
     async findOne(auth: Auth, id: string) {
-        return await this.medicineModel.findById(id);
+        const medicine = await this.medicineModel.findById(id);
+        if (
+            medicine?.user_id === auth?.user_id ||
+            auth?.allows.some((allows) => allows.edit.some((allow) => allow === Allow.MEDICINES))
+        )
+            return medicine;
     }
 
     async create(auth: Auth, data: CreateMedicineDto) {
         const medicine = new this.medicineModel(data);
         return await medicine.save();
+    }
+
+    async createMany(auth: Auth, data: CreateMedicineDto[]) {
+        const medicines = data.map((medicine) => new this.medicineModel(medicine));
+        return await this.medicineModel.insertMany(medicines);
     }
 
     async update(auth: Auth, id: string, data: UpdateMedicineDto) {

@@ -5,10 +5,10 @@ import DetailLayout from '../../components/layout/DetailLayout';
 import { FaBox, FaPills, FaClock, FaSyringe, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function MedicineDetailPage() {
-    const medicines = useMedicines();
+    const { medicines } = useMedicines();
 
     return (
-        <DetailLayout allow={Allow.MEDICINES} find={(id) => medicines?.find((m) => m._id === id)}>
+        <DetailLayout datas={medicines} allow={Allow.MEDICINES}>
             {(medicine) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     <div className="md:flex">

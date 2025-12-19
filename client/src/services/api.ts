@@ -2,11 +2,11 @@
 import serverRest from './axios';
 
 export const medicineAPI = {
-    findAll: () => serverRest.get(`/api/medicine`),
-    findOne: (id: string) => serverRest.get(`/api/medicine/${id}`),
-    create: (medicine: any) => serverRest.post(`/api/medicine`, medicine),
-    update: (id: string, medicine: any) => serverRest.put(`/api/medicine/${id}`, medicine),
-    remove: (id: string) => serverRest.delete(`/api/medicine/${id}`),
+    findAll: () => serverRest.get(`/api/medicines`),
+    findOne: (id: string) => serverRest.get(`/api/medicines/${id}`),
+    create: (medicine: any) => serverRest.post(`/api/medicines`, medicine),
+    update: (id: string, medicine: any) => serverRest.put(`/api/medicines/${id}`, medicine),
+    remove: (id: string) => serverRest.delete(`/api/medicines/${id}`),
 };
 
 export const hospitalAPI = {

@@ -69,7 +69,7 @@ export interface TimeInterval {
 
 export interface TakeInstruction {
     mealTime: MealTime;
-    relation: FoodRelation;
+    relation?: FoodRelation;
     interval?: TimeInterval; // เวลาที่ต้องรอก่อน/หลังอาหาร
     notes?: string; // หมายเหตุเพิ่มเติม
 }
@@ -116,6 +116,7 @@ export interface Warning {
 export interface Medicine {
     // Basic Information
     _id: string;
+    user_id: string;
     name: string; // ชื่อยา (ทางการค้า)
     genericName: string; // ชื่อสามัญทางยา
     brand?: string; // ยี่ห้อ

@@ -7,7 +7,7 @@ import { AppointmentCard } from '../../components/appointment/AppointmentCard';
 
 export default function AppointmentPage() {
     const navigate = useNavigate();
-    const appointments = useAppointments();
+    const { appointments } = useAppointments();
 
     const filterOptions: FilterOption[] = [
         {
@@ -41,8 +41,8 @@ export default function AppointmentPage() {
             filterOptions={filterOptions}
             filter={(app, searchTerm, filters) => {
                 const matchesSearch =
-                    app.appointmentNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    app.department.toLowerCase().includes(searchTerm.toLowerCase());
+                    app.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    app.appointmentNumber?.toLowerCase().includes(searchTerm.toLowerCase());
 
                 const matchesDepartment =
                     !filters.department ||

@@ -1,4 +1,5 @@
 //- Path: "TeaChoco-Hospital/client/src/layout/EditLayout.tsx"
+import Loading from '../custom/Loading';
 import { Allow } from '../../types/auth';
 import { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
@@ -54,7 +55,11 @@ export default function EditLayout<Data>({
         navigate(-1);
     };
 
-    if (loading) return <div>Loading...</div>;
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+
+    if (loading) return <Loading />;
     if (!data) return <div>not found</div>;
 
     return (

@@ -6,7 +6,7 @@ import { useHospitals } from '../../context/hospitalsAtom';
 import EditLayout from '../../components/layout/EditLayout';
 
 export default function HospitalEditPage() {
-    const hospitals = useHospitals();
+    const { hospitals } = useHospitals();
 
     return (
         <EditLayout<Hospital>

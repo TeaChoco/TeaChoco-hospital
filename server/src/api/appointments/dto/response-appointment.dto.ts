@@ -1,7 +1,19 @@
 //- Path: "TeaChoco-Hospital/server/src/api/appointments/dto/response-appointment.dto.ts"
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateAppointmentDto } from './create-appointment.dto';
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsDate,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsString,
+    ValidateNested,
+} from 'class-validator';
+import { ResponseHospitalDto } from 'src/api/hospitals/dto/response-hospital.dto';
+import { Type } from 'class-transformer';
+import { ResponseDoctorDto } from 'src/api/doctors/dto/response-doctor.dto';
+import { ResponseMedicineDto } from 'src/api/medicines/dto/response-medicine.dto';
 
 export class ResponseAppointmentDto extends CreateAppointmentDto {
     @IsString()
@@ -12,6 +24,75 @@ export class ResponseAppointmentDto extends CreateAppointmentDto {
         description: 'ID',
     })
     _id: string;
+
+    @IsObject()
+    @IsOptional()
+    @Type(() => ResponseHospitalDto)
+    @ApiProperty({
+        type: ResponseHospitalDto,
+        required: false,
+        example: {
+            _id: '1234567890',
+            name: 'Hospital',
+            address: '123 Main St',
+            phone: '123-456-7890',
+            email: 'hospital@example.com',
+            website: 'https://hospital.com',
+            logo: 'https://hospital.com/logo.png',
+            status: 'active',
+            createdAt: '2022-01-01',
+            updatedAt: '2022-01-01',
+            __v: 1,
+        },
+        description: 'Hospital',
+    })
+    hospital?: ResponseHospitalDto;
+
+    @IsObject()
+    @IsOptional()
+    @Type(() => ResponseDoctorDto)
+    @ApiProperty({
+        type: ResponseDoctorDto,
+        required: false,
+        example: {
+            _id: '1234567890',
+            name: 'Doctor',
+            address: '123 Main St',
+            phone: '123-456-7890',
+            email: 'hospital@example.com',
+            website: 'https://hospital.com',
+            logo: 'https://hospital.com/logo.png',
+            status: 'active',
+            createdAt: '2022-01-01',
+            updatedAt: '2022-01-01',
+            __v: 1,
+        },
+        description: 'Doctor',
+    })
+    doctor?: ResponseDoctorDto;
+
+    @IsArray()
+    @IsOptional()
+    @ValidateNested({ each: true })
+    @Type(() => ResponseMedicineDto)
+    @ApiProperty({
+        type: [ResponseMedicineDto],
+        required: false,
+        example: [
+            {
+                _id: '1234567890',
+                name: 'Medicine',
+                description: 'Description',
+                price: 100,
+                stock: 10,
+                createdAt: '2022-01-01',
+                updatedAt: '2022-01-01',
+                __v: 1,
+            },
+        ],
+        description: 'Medicines',
+    })
+    medicines?: ResponseMedicineDto[];
 
     @IsDate()
     @ApiProperty({

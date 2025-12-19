@@ -5,12 +5,10 @@ import { FaUserMd, FaPhone, FaHospital, FaCalendarCheck } from 'react-icons/fa';
 import { useDoctors } from '../../context/doctorsAtom';
 
 export default function DoctorDetailPage() {
-    const doctors = useDoctors();
+    const { doctors } = useDoctors();
 
     return (
-        <DetailLayout
-            allow={Allow.DOCTORS}
-            find={(id) => doctors?.find((doctor) => doctor._id === id)}>
+        <DetailLayout datas={doctors} allow={Allow.DOCTORS}>
             {(doctor) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark p-6 md:p-10">
                     <div className="flex flex-col items-center text-center">

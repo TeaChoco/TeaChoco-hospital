@@ -9,6 +9,7 @@ import {
     momentLocalizer,
     type EventPropGetter,
     Calendar as BigCalendar,
+    type stringOrDate,
 } from 'react-big-calendar';
 import moment from 'moment';
 import Toolbar from './Toolbar';
@@ -37,6 +38,7 @@ export interface CalendarEvent {
 
 export default function Calendar({
     events,
+    getNow,
     defaultDate,
     defaultView,
     endAccessor,
@@ -51,8 +53,9 @@ export default function Calendar({
     defaultDate?: Date;
     defaultView?: View;
     defaultStep?: number;
-    defaultTimeslots?: number;
     events: CalendarEvent[];
+    defaultTimeslots?: number;
+    getNow?: () => stringOrDate | undefined;
     onSelectSlot?: (slotInfo: SlotInfo) => void;
     eventPropGetter?: EventPropGetter<CalendarEvent>;
     onEventDrop?: (args: EventInteractionArgs<CalendarEvent>) => void;
@@ -74,6 +77,9 @@ export default function Calendar({
 
     const defaultStartAccessor = (event: CalendarEvent) => event.start;
     const defaultEndAccessor = (event: CalendarEvent) => event.end;
+    const onShowMore = (events: CalendarEvent[]) => {
+        console.log('onShowMore', events);
+    };
 
     useEffect(() => {
         localStorage.setItem('calendarView', view);
@@ -94,9 +100,11 @@ export default function Calendar({
             date={date}
             step={step}
             events={events}
+            getNow={getNow}
             onView={setView}
             timeslots={timeslots}
             localizer={localizer}
+            onShowMore={onShowMore}
             defaultDate={defaultDate}
             defaultView={defaultView}
             onEventDrop={onEventDrop}

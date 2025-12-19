@@ -7,11 +7,34 @@ import {
     MedicineDosageDto,
     TakeInstructionDto,
 } from './medicine.dto';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { MedicineType, StorageCondition } from '../../../types/medicine';
-import { IsArray, IsBoolean, IsDate, IsEnum, IsObject, IsString } from 'class-validator';
+import {
+    EffectProbability,
+    EffectServeriry,
+    MedicineType,
+    StorageCondition,
+} from '../../../types/medicine';
+import {
+    IsArray,
+    IsBoolean,
+    IsDate,
+    IsEnum,
+    IsObject,
+    IsOptional,
+    IsString,
+} from 'class-validator';
 
 export class CreateMedicineDto {
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: '1234567890',
+        description: 'User ID',
+    })
+    user_id: string;
+
     @IsString()
     @ApiProperty({
         type: String,
@@ -22,15 +45,17 @@ export class CreateMedicineDto {
     name: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
-        required: true,
+        required: false,
         example: 'Paracetamol',
         description: 'Generic name',
     })
-    genericName: string;
+    genericName?: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
@@ -43,12 +68,14 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'Paracetamol',
+        enum: MedicineType,
+        example: MedicineType.TABLET,
         description: 'Medicine type',
     })
     type: MedicineType;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
@@ -61,7 +88,13 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: [TakeInstructionDto],
         required: true,
-        example: [{}],
+        example: [
+            {
+                time: '08:00',
+                quantity: 1,
+                unit: 'tablet',
+            },
+        ],
         description: 'Take instructions',
     })
     takeInstructions: TakeInstructionDto[];
@@ -70,12 +103,13 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: MedicineDosageDto,
         required: true,
-        example: {},
+        example: MedicineDosageDto,
         description: 'Dosage',
     })
     dosage: MedicineDosageDto;
 
     @IsDate()
+    @Type(() => Date)
     @ApiProperty({
         type: Date,
         required: true,
@@ -85,6 +119,7 @@ export class CreateMedicineDto {
     startDate: Date;
 
     @IsDate()
+    @Type(() => Date)
     @ApiProperty({
         type: Date,
         required: true,
@@ -94,6 +129,7 @@ export class CreateMedicineDto {
     endDate: Date;
 
     @IsDate()
+    @Type(() => Date)
     @ApiProperty({
         type: Date,
         required: true,
@@ -112,6 +148,7 @@ export class CreateMedicineDto {
     storageConditions: StorageCondition[];
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
@@ -124,7 +161,7 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: PackageInfoDto,
         required: true,
-        example: {},
+        example: PackageInfoDto,
         description: 'Package',
     })
     package: PackageInfoDto;
@@ -133,7 +170,7 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: HospitalInfoDto,
         required: true,
-        example: {},
+        example: HospitalInfoDto,
         description: 'Hospital',
     })
     hospital: HospitalInfoDto;
@@ -142,7 +179,14 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: [SideEffectDto],
         required: true,
-        example: [{}],
+        example: [
+            {
+                description: 'Drowsiness',
+                severity: EffectServeriry.MILD,
+                probability: EffectProbability.COMMON,
+                action: 'Do not drive',
+            },
+        ],
         description: 'Side effects',
     })
     sideEffects: SideEffectDto[];
@@ -151,21 +195,30 @@ export class CreateMedicineDto {
     @ApiProperty({
         type: [WarningDto],
         required: true,
-        example: [{}],
+        example: [
+            {
+                description: 'Drowsiness',
+                severity: EffectServeriry.MILD,
+                probability: EffectProbability.COMMON,
+                action: 'Do not drive',
+            },
+        ],
         description: 'Warnings',
     })
     warnings: WarningDto[];
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
-        example: 'Paracetamol',
+        example: 'https://example.com/image.jpg',
         description: 'Image URL',
     })
     imageUrl?: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
@@ -175,6 +228,7 @@ export class CreateMedicineDto {
     qrCode?: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
@@ -193,6 +247,7 @@ export class CreateMedicineDto {
     createdBy: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         required: false,
@@ -218,4 +273,70 @@ export class CreateMedicineDto {
         description: 'Is completed',
     })
     isCompleted: boolean;
+}
+
+export class CreateMedicineManyDto {
+    @IsArray()
+    @Type(() => CreateMedicineDto)
+    @ApiProperty({
+        type: [CreateMedicineDto],
+        required: true,
+        example: [
+            {
+                name: 'Paracetamol',
+                genericName: 'Paracetamol',
+                brand: 'Paracetamol',
+                type: MedicineType.TABLET,
+                category: 'Paracetamol',
+                takeInstructions: [
+                    {
+                        time: '08:00',
+                        quantity: 1,
+                        unit: 'tablet',
+                    },
+                ],
+                dosage: {
+                    quantity: 1,
+                    unit: 'tablet',
+                },
+                startDate: new Date(),
+                endDate: new Date(),
+                expiryDate: new Date(),
+                storageConditions: [StorageCondition.ROOM_TEMP],
+                storageNotes: 'Paracetamol',
+                package: {
+                    name: 'Paracetamol',
+                    quantity: 1,
+                    unit: 'tablet',
+                },
+                hospital: {
+                    name: 'Paracetamol',
+                    quantity: 1,
+                    unit: 'tablet',
+                },
+                sideEffects: [
+                    {
+                        description: 'Drowsiness',
+                        severity: EffectServeriry.MILD,
+                        probability: EffectProbability.COMMON,
+                        action: 'Do not drive',
+                    },
+                ],
+                warnings: [
+                    {
+                        description: 'Drowsiness',
+                        severity: EffectServeriry.MILD,
+                        probability: EffectProbability.COMMON,
+                        action: 'Do not drive',
+                    },
+                ],
+                createdBy: 'Paracetamol',
+                updatedBy: 'Paracetamol',
+                isActive: true,
+                isCompleted: true,
+            },
+        ],
+        description: 'List of medicines',
+    })
+    values: CreateMedicineDto[];
 }

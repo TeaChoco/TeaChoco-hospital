@@ -1,20 +1,46 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/calendar/CalendarPage.tsx"
+import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import Calendar from '../../components/calendar/Calendar';
+import Loading from '../../components/custom/Loading';
 import ListLayout from '../../components/layout/ListLayout';
 import { useCalendarEvents } from '../../hooks/useCalendarEvents';
+import Calendar, { type CalendarEvent } from '../../components/calendar/Calendar';
+import { Allow } from '../../types/auth';
 
 export default function CalendarPage() {
+    const { user } = useAuth();
     const navigate = useNavigate();
-    const events = useCalendarEvents();
+    const { appointmentEvents, medicineEvents } = useCalendarEvents();
+
+    if (!appointmentEvents || !medicineEvents) return <Loading />;
+
+    const events: CalendarEvent[] = [...appointmentEvents, ...medicineEvents];
+
+    const canEdit = user?.allows?.some((allow) =>
+        allow.edit.find((edit) => location.pathname.includes(edit) || edit === Allow.AUTH),
+    );
 
     return (
         <ListLayout
+            datas={events}
             header="Health Calendar"
+            buttons={(NewButton) => (
+                <>
+                    <NewButton to={`/appointments/edit/new`} visible={canEdit}>
+                        New Appointment
+                    </NewButton>
+                    <NewButton to={`/medicines/edit/new`} visible={canEdit}>
+                        New Medicine
+                    </NewButton>
+                </>
+            )}
             description="Track your appointments and medication schedule">
             <div className="h-200 bg-bg-card-light dark:bg-bg-card-dark p-4 rounded-xl shadow-sm border border-border-light dark:border-border-dark text-text-light dark:text-text-dark transition-all duration-200">
                 <Calendar
                     events={events}
+                    onSelectSlot={(slotInfo) => {
+                        console.log('onSelectSlot', slotInfo);
+                    }}
                     onSelectEvent={(event) => {
                         if (event.type === 'appointment') navigate(`/appointments/${event.id}`);
                         else if (event.type === 'medicine')

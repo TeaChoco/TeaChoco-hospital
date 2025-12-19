@@ -19,6 +19,31 @@
     --color-bg-card-dark: #14141f;
     --color-bg-card-hover-dark: #1a1a2e;
 
+    /* Paper colors */
+    --color-bg-paper-light-50: #f8fafc;
+    --color-bg-paper-light-100: #f1f5f9;
+    --color-bg-paper-light-200: #e1e5eb;
+    --color-bg-paper-light-300: #d1d5da;
+    --color-bg-paper-light-400: #c1c5ca;
+    --color-bg-paper-light-500: #b1b5ba;
+    --color-bg-paper-light-600: #a1a5aa;
+    --color-bg-paper-light-700: #91959a;
+    --color-bg-paper-light-800: #81858a;
+    --color-bg-paper-light-900: #71757a;
+    --color-bg-paper-light-950: #61656a;
+
+    --color-bg-paper-dark-50: #141424;
+    --color-bg-paper-dark-100: #1a1a2a;
+    --color-bg-paper-dark-200: #2a2a3a;
+    --color-bg-paper-dark-300: #3a3a4a;
+    --color-bg-paper-dark-400: #4a4a5a;
+    --color-bg-paper-dark-500: #5a5a6a;
+    --color-bg-paper-dark-600: #6a6a7a;
+    --color-bg-paper-dark-700: #7a7a8a;
+    --color-bg-paper-dark-800: #8a8a9a;
+    --color-bg-paper-dark-900: #9a9aaa;
+    --color-bg-paper-dark-950: #aaaaba;
+
     /* Text colors */
     --color-text-light: #1e293b;
     --color-text-secondary-light: #475569;
@@ -126,6 +151,10 @@
 
     .btn-accent {
         @apply bg-accent/80 hover:text-white hover:bg-accent;
+    }
+
+    .btn-error {
+        @apply bg-red-600 dark:bg-red-700 text-white hover:bg-red-700;
     }
 
     .btn-primary-active {

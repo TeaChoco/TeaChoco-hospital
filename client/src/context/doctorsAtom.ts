@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Hospital/client/src/context/doctorsAtom.ts"
-import { useEffect } from 'react';
 import { atom, useAtom } from 'jotai';
-import type { Doctor } from '../types/doctor';
 import { doctorAPI } from '../services/api';
+import type { Doctor } from '../types/doctor';
+import { useCallback, useEffect } from 'react';
 
 export const doctorsAtom = atom<Doctor[] | undefined>(undefined);
 
@@ -21,5 +21,7 @@ export function useDoctors() {
         if (doctors === undefined) fetchDoctors();
     }, [doctors]);
 
-    return doctors;
+    const resetDoctors = useCallback(() => setDoctors(undefined), []);
+
+    return { doctors, resetDoctors };
 }

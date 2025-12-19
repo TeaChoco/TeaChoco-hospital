@@ -102,12 +102,11 @@ export enum PreparationType {
     OTHER = 'other', // อื่นๆ
 }
 
-export interface AppointmentTimeSlot {
-    startTime: Date;
-    endTime: Date;
-    duration: number; // นาที
-    isAvailable: boolean;
-    slotNumber: number;
+export enum CategoryType {
+    DOCTOR = 'doctor',
+    NURSE = 'nurse',
+    RECEPTION = 'reception',
+    PHARMACIST = 'pharmacist',
 }
 
 export interface AppointmentPreparation {
@@ -191,23 +190,31 @@ export interface AppointmentNote {
     author: string; // ผู้เขียน
     createdAt: Date; // วันที่เขียน
     isInternal: boolean; // เป็นบันทึกภายในหรือไม่
-    category?: 'doctor' | 'nurse' | 'reception' | 'pharmacist';
+    category?: CategoryType;
+}
+
+export interface StatusHistory {
+    // ประวัติสถานะ
+    status: AppointmentStatus;
+    changedAt: Date;
+    changedBy: string;
+    notes?: string;
 }
 
 // Interface หลักสำหรับการนัดหมาย
 export interface Appointment {
     // ข้อมูลพื้นฐาน
     _id: string;
-    appointmentNumber: string; // เลขที่นัดหมาย (เช่น APT-2024-001)
+    user_id: string;
+    appointmentNumber?: string; // เลขที่นัดหมาย (เช่น APT-2024-001)
 
     // ข้อมูลผู้ป่วย
-    patientId: string; // รหัสผู้ป่วย
     patientType: PatientType; // ประเภทผู้ป่วย
 
     // ข้อมูลโรงพยาบาลและแพทย์
     hospitalId: string; // รหัสโรงพยาบาล
     hospital?: Hospital; // ข้อมูลโรงพยาบาล (populated)
-    doctorId: string; // รหัสแพทย์
+    doctor_id: string; // รหัสแพทย์
     doctor?: Doctor; // ข้อมูลแพทย์ (populated)
     department: string; // แผนก
 
@@ -233,13 +240,7 @@ export interface Appointment {
 
     // สถานะ
     status: AppointmentStatus; // สถานะการนัดหมาย
-    statusHistory: Array<{
-        // ประวัติสถานะ
-        status: AppointmentStatus;
-        changedAt: Date;
-        changedBy: string;
-        notes?: string;
-    }>;
+    statusHistory: StatusHistory[];
 
     // ความเร่งด่วน
     urgency: UrgencyLevel; // ระดับความเร่งด่วน
@@ -292,32 +293,9 @@ export interface Appointment {
 
     // ฟิลด์พิเศษ
     escorts?: string[]; // ชื่อผู้ติดตาม
-
     __v: number;
 }
 
-// สำหรับการจองคิว (Queue)
-export interface AppointmentQueue {
-    _id: string;
-    appointmentId: string;
-    queueNumber: string; // เลขคิว
-    department: string; // แผนก
-    calledAt?: Date; // เวลาที่เรียก
-    servingAt?: Date; // เวลาเริ่มให้บริการ
-    completedAt?: Date; // เวลาสิ้นสุด
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-// สำหรับปฏิทินนัดหมาย
-export interface AppointmentCalendar {
-    date: Date;
-    appointments: Appointment[];
-    availableSlots: AppointmentTimeSlot[];
-    specialNotes?: string;
-}
-
-// สำหรับการค้นหาและกรอง
 export interface AppointmentFilter {
     doctorId?: string;
     hospitalId?: string;
@@ -334,57 +312,11 @@ export interface AppointmentFilter {
     sortOrder?: 'asc' | 'desc';
 }
 
-// สำหรับฟอร์มสร้าง/แก้ไขนัดหมาย
-export interface AppointmentFormData {
-    doctorId: string;
-    hospitalId: string;
-    department: string;
-    type: AppointmentType;
-    subType?: string;
-    purpose: string;
-    description?: string;
-    scheduledDate: string; // ISO string
-    scheduledTime: string; // ISO string
-    expectedDuration: number;
-    location: AppointmentLocation;
-    roomNumber?: string;
-    urgency: UrgencyLevel;
-    priority?: number;
-    preparation: Omit<AppointmentPreparation, 'types'> & {
-        types: string[]; // รับเป็น array ของ string
-    };
-    symptoms: Omit<Symptom, 'onset'> &
-        {
-            onset?: string; // ISO string
-        }[];
-    preliminaryDiagnosis?: string;
-    insurance?: Omit<InsuranceInfo, 'verificationDate'> & {
-        verificationDate?: string; // ISO string
-    };
-    isTelemedicine: boolean;
-    telemedicineLink?: string;
-    requiresEscort: boolean;
-    escortName?: string;
-    specialRequirements?: string[];
-    languagePreference?: string;
-    allergies?: string[];
-}
-
-// สำหรับ API responses
 export interface AppointmentResponse {
     success: boolean;
-    data?: Appointment | Appointment[] | AppointmentCalendar;
+    data: Appointment[];
     message?: string;
     total?: number;
     page?: number;
     limit?: number;
-}
-// Utility Types และ Functions
-export interface TimeSlotAvailability {
-    date: Date;
-    slots: AppointmentTimeSlot[];
-    doctorId: string;
-    department: string;
-    availableCount: number;
-    fullyBooked: boolean;
 }

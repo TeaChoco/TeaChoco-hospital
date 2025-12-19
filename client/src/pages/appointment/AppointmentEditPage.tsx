@@ -1,5 +1,17 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/appointment/AppointmentEditPage.tsx"
 import {
+    FaUserDoctor,
+    FaHospital,
+    FaCircleInfo,
+    FaStethoscope,
+    FaTruckMedical,
+    FaNotesMedical,
+    FaClockRotateLeft,
+    FaCheckDouble,
+    FaHourglassHalf,
+    FaFlask,
+} from 'react-icons/fa6';
+import {
     PatientType,
     UrgencyLevel,
     PaymentStatus,
@@ -17,9 +29,9 @@ import EditLayout from '../../components/layout/EditLayout';
 import { useAppointments } from '../../context/appointmentsAtom';
 
 export default function AppointmentEditPage() {
-    const doctors = useDoctors();
-    const hospitals = useHospitals();
-    const appointments = useAppointments();
+    const { doctors } = useDoctors();
+    const { hospitals } = useHospitals();
+    const { appointments } = useAppointments();
 
     const formatDate = (date: Date | undefined) => {
         if (!date) return '';
@@ -31,16 +43,48 @@ export default function AppointmentEditPage() {
         return new Date(date).toTimeString().substring(0, 5);
     };
 
+    const getAppointmentIcon = (type: AppointmentType) => {
+        switch (type) {
+            case AppointmentType.CONSULTATION:
+                return <FaStethoscope />;
+            case AppointmentType.FOLLOW_UP:
+                return <FaClockRotateLeft />;
+            case AppointmentType.EMERGENCY:
+                return <FaTruckMedical />;
+            case AppointmentType.LAB_TEST:
+                return <FaFlask className="w-4 h-4" />;
+            case AppointmentType.SURGERY:
+                return <FaNotesMedical />;
+            default:
+                return <FaStethoscope />;
+        }
+    };
+
+    const getStatusIcon = (status: AppointmentStatus) => {
+        switch (status) {
+            case AppointmentStatus.PENDING:
+                return <FaHourglassHalf />;
+            case AppointmentStatus.CONFIRMED:
+                return <FaCheckDouble />;
+            case AppointmentStatus.COMPLETED:
+                return <FaCheckDouble className="text-secondary" />;
+            case AppointmentStatus.CANCELLED:
+                return <FaCircleInfo className="text-red-500" />;
+            default:
+                return <FaCircleInfo />;
+        }
+    };
+
     return (
         <EditLayout<Appointment>
             title={Title.APPOINTMENTS}
             newData={{
                 _id: 'new',
+                user_id: '',
                 appointmentNumber: '',
-                patientId: '',
                 patientType: PatientType.NEW,
                 hospitalId: '',
-                doctorId: '',
+                doctor_id: '',
                 department: '',
                 type: AppointmentType.CONSULTATION,
                 purpose: '',
@@ -79,6 +123,7 @@ export default function AppointmentEditPage() {
                     <Input
                         required
                         label="Purpose"
+                        description="Reason for your appointment"
                         value={data?.purpose}
                         onChange={(event) =>
                             setData((prev) => prev && { ...prev, purpose: event.target.value })
@@ -121,62 +166,80 @@ export default function AppointmentEditPage() {
                         />
                     </div>
 
-                    <Select
-                        label="Type"
-                        value={data?.type}
-                        onChange={(event) =>
-                            setData(
-                                (prev) =>
-                                    prev && {
-                                        ...prev,
-                                        type: event.target.value as AppointmentType,
-                                    },
-                            )
-                        }>
-                        {Object.values(AppointmentType).map((type) => (
-                            <option key={type} value={type}>
-                                {type}
-                            </option>
-                        ))}
-                    </Select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Select
+                            label="Type"
+                            value={data?.type}
+                            onChange={(event) =>
+                                setData(
+                                    (prev) =>
+                                        prev && {
+                                            ...prev,
+                                            type: event.target.value as AppointmentType,
+                                        },
+                                )
+                            }>
+                            {(Option) =>
+                                Object.values(AppointmentType).map((type) => (
+                                    <Option key={type} value={type} icon={getAppointmentIcon(type)}>
+                                        {type}
+                                    </Option>
+                                ))
+                            }
+                        </Select>
 
-                    <Select
-                        label="Status"
-                        value={data?.status}
-                        onChange={(event) =>
-                            setData(
-                                (prev) =>
-                                    prev && {
-                                        ...prev,
-                                        status: event.target.value as AppointmentStatus,
-                                    },
-                            )
-                        }>
-                        {Object.values(AppointmentStatus).map((status) => (
-                            <option key={status} value={status}>
-                                {status}
-                            </option>
-                        ))}
-                    </Select>
+                        <Select
+                            label="Status"
+                            value={data?.status}
+                            onChange={(event) =>
+                                setData(
+                                    (prev) =>
+                                        prev && {
+                                            ...prev,
+                                            status: event.target.value as AppointmentStatus,
+                                        },
+                                )
+                            }>
+                            {(Option) =>
+                                Object.values(AppointmentStatus).map((status) => (
+                                    <Option
+                                        key={status}
+                                        value={status}
+                                        icon={getStatusIcon(status)}>
+                                        {status}
+                                    </Option>
+                                ))
+                            }
+                        </Select>
+                    </div>
 
                     <Select
                         label="Doctor"
-                        value={data?.doctorId}
+                        value={data?.doctor_id}
                         onChange={(event) =>
                             setData(
                                 (prev) =>
                                     prev && {
                                         ...prev,
-                                        doctorId: event.target.value,
+                                        doctor_id: event.target.value,
                                     },
                             )
                         }>
-                        <option value="">Select Doctor</option>
-                        {doctors?.map((doctor) => (
-                            <option key={doctor._id} value={doctor._id}>
-                                {doctor.firstName} {doctor.lastName}
-                            </option>
-                        ))}
+                        {(Option) => (
+                            <>
+                                <Option value="" icon={<FaUserDoctor />}>
+                                    Select Doctor
+                                </Option>
+                                {doctors?.map((doctor) => (
+                                    <Option
+                                        key={doctor._id}
+                                        value={doctor._id}
+                                        icon={<FaUserDoctor className="text-primary" />}>
+                                        {doctor.firstName} {doctor.lastName}
+                                    </Option>
+                                ))}
+                            </>
+                        )}
                     </Select>
 
                     <Select
@@ -191,12 +254,21 @@ export default function AppointmentEditPage() {
                                     },
                             )
                         }>
-                        <option value="">Select Hospital</option>
-                        {hospitals?.map((hospital) => (
-                            <option key={hospital._id} value={hospital._id}>
-                                {hospital.name}
-                            </option>
-                        ))}
+                        {(Option) => (
+                            <>
+                                <Option value="" icon={<FaHospital />}>
+                                    Select Hospital
+                                </Option>
+                                {hospitals?.map((hospital) => (
+                                    <Option
+                                        key={hospital._id}
+                                        value={hospital._id}
+                                        icon={<FaHospital className="text-primary" />}>
+                                        {hospital.name}
+                                    </Option>
+                                ))}
+                            </>
+                        )}
                     </Select>
 
                     <Select
@@ -211,11 +283,13 @@ export default function AppointmentEditPage() {
                                     },
                             )
                         }>
-                        {Object.values(AppointmentLocation).map((loc) => (
-                            <option key={loc} value={loc}>
-                                {loc}
-                            </option>
-                        ))}
+                        {(Option) =>
+                            Object.values(AppointmentLocation).map((loc) => (
+                                <Option key={loc} value={loc} icon={<FaHospital />}>
+                                    {loc}
+                                </Option>
+                            ))
+                        }
                     </Select>
                 </>
             )}

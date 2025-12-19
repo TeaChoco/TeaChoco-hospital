@@ -14,7 +14,9 @@
         "language": "ภาษา",
         "loading": "กำลังโหลด...",
         "error": "เกิดข้อผิดพลาด",
-        "filter": "Filter"
+        "filter": "Filter",
+        "notFound": "ไม่พบ",
+        "goBack": "กลับไป"
     },
     "navbar": {
         "appName": "TeaChoco Hospital",

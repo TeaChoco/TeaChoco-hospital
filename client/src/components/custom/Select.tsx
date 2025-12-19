@@ -2,16 +2,36 @@
 import { useId } from 'react';
 import { FaChevronDown } from 'react-icons/fa6';
 
-export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectOptionProps extends React.OptionHTMLAttributes<HTMLOptionElement> {
+    icon?: React.ReactNode;
+}
+
+function SelectOption({ icon, className, ...props }: SelectOptionProps) {
+    return (
+        <option
+            className={`${
+                className || ''
+            } text-text-light dark:text-text-dark bg-bg-card-light dark:bg-bg-card-dark rounded-xl flex gap-2`}
+            {...props}>
+            {icon}
+            <span className="text-base">{props.children}</span>
+        </option>
+    );
+}
+
+export interface SelectProps
+    extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
     label?: string;
     labelClassName?: string;
     containerClassName?: string;
     options?: { value: string | number; label: string }[];
+    children?: (option: typeof SelectOption) => React.ReactNode;
 }
 
 export default function Select({
     id,
     label,
+    options,
     children,
     className,
     labelClassName,
@@ -33,7 +53,8 @@ export default function Select({
             )}
             <div className="relative">
                 <select id={selectId} className={`${inputClass} ${className || ''}`} {...props}>
-                    {children}
+                    {children?.(SelectOption) ||
+                        options?.map((option) => <SelectOption key={option.value} {...option} />)}
                 </select>
                 <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-text-muted-light dark:text-text-muted-dark">
                     <FaChevronDown className="w-4 h-4" />

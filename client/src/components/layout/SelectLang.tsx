@@ -7,7 +7,10 @@ export default function SelectLang() {
     const { i18n } = useTranslation();
     const [open, setOpen] = useState(false);
 
-    const changeLanguage = (lang: string) => i18n.changeLanguage(lang);
+    const changeLanguage = (lang: string) => {
+        i18n.changeLanguage(lang);
+        setOpen(false);
+    };
 
     return (
         <div className="relative group">

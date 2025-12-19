@@ -229,7 +229,7 @@ export class SideEffectDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'mild',
+        example: EffectServeriry.MILD,
         description: 'Severity',
     })
     severity: EffectServeriry;
@@ -238,7 +238,7 @@ export class SideEffectDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'rare',
+        example: EffectProbability.RARE,
         description: 'Probability',
     })
     probability: EffectProbability;
@@ -267,7 +267,7 @@ export class WarningDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'mild',
+        example: SeverityLevel.INFO,
         description: 'Severity',
     })
     severity: SeverityLevel;

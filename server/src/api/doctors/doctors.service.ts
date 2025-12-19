@@ -1,6 +1,6 @@
 //- Path: "TeaChoco-Hospital/server/src/api/doctors/doctors.service.ts"
 import { Model } from 'mongoose';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { nameDB } from '../../hooks/mongodb';
 import { Auth } from '../../user/dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,7 +15,6 @@ export class DoctorsService {
 
     async findAll(auth: Auth) {
         const doctors = await this.doctorModel.find();
-        Logger.log(auth?.user_id);
         return doctors.filter((doctor) => doctor.user_id === auth?.user_id);
     }
 

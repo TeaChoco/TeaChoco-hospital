@@ -6,7 +6,7 @@ import { HospitalCard } from '../../components/hospital/HospitalCard';
 
 export default function HospitalsPage() {
     const navigate = useNavigate();
-    const hospitals = useHospitals();
+    const { hospitals } = useHospitals();
 
     return (
         <ListLayout

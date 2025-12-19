@@ -3,27 +3,32 @@ import { useMemo } from 'react';
 import type { Allow } from '../../types/auth';
 import { FaArrowLeft, FaPen } from 'react-icons/fa';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import Loading from '../custom/Loading';
+import { useTranslation } from 'react-i18next';
 
-export default function DetailLayout<Data>({
-    find,
+export default function DetailLayout<Data extends { _id: string }>({
+    datas,
     allow,
     children,
 }: {
     allow: Allow;
-    find: (id?: string) => Data | undefined;
+    datas?: Data[];
     children?: (data: Data) => React.ReactNode;
 }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-    const data = useMemo(() => find(id), [id]);
+    const data = useMemo(() => datas?.find((d) => d._id === id), [id, datas]);
+
+    if (!datas) return <Loading />;
 
     if (!data)
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-text-muted-light dark:text-text-muted-dark">
-                <h2 className="text-2xl font-bold mb-2">Not Found</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('common.notFound')}</h2>
                 <button onClick={() => navigate(-1)} className="btn btn-secondary">
-                    Go Back
+                    {t('common.goBack')}
                 </button>
             </div>
         );

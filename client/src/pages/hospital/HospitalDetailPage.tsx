@@ -1,15 +1,15 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalDetailPage.tsx"
-import { Activity } from 'react';
 import { Allow } from '../../types/auth';
+import Activity from '../../components/custom/Activity';
 import { useHospitals } from '../../context/hospitalsAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaHospital, FaPhone, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
 
 export default function HospitalDetailPage() {
-    const hospitals = useHospitals();
+    const { hospitals } = useHospitals();
 
     return (
-        <DetailLayout allow={Allow.HOSPITALS} find={(id) => hospitals?.find((h) => h._id === id)}>
+        <DetailLayout datas={hospitals} allow={Allow.HOSPITALS}>
             {(hospital) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     <div className="h-40 bg-linear-to-r from-primary/10 to-accent/10 flex items-center justify-center text-primary/20">
@@ -53,7 +53,7 @@ export default function HospitalDetailPage() {
                                     </div>
                                 </div>
 
-                                <Activity mode={hospital.website ? 'visible' : 'hidden'}>
+                                <Activity visible={hospital.website}>
                                     <a
                                         href={hospital.website}
                                         target="_blank"

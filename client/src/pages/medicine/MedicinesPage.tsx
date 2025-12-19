@@ -5,8 +5,8 @@ import ListLayout from '../../components/layout/ListLayout';
 import { MedicineCard } from '../../components/medicine/MedicineCard';
 
 export default function MedicinesPage() {
-    const medicines = useMedicines();
     const navigator = useNavigate();
+    const { medicines } = useMedicines();
 
     return (
         <ListLayout

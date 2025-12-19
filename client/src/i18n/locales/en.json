@@ -14,7 +14,9 @@
         "language": "Language",
         "loading": "Loading...",
         "error": "An error occurred",
-        "filter": "Filter"
+        "filter": "Filter",
+        "notFound": "Not Found",
+        "goBack": "Go back"
     },
     "navbar": {
         "appName": "TeaChoco Hospital",

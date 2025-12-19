@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import cookieParserSDK from 'cookie-parser';
 import { SecureService } from './secure/secure.service';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { SocketIoAdapter } from './api/socket/socket.adapter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
@@ -13,6 +14,7 @@ async function bootstrap() {
     const secureService = app.get(SecureService);
     const { SERVER_HOSE, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
+    app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe());
     app.use(cookieParserSDK());
     app.enableCors({
@@ -25,11 +27,11 @@ async function bootstrap() {
         const theme = new SwaggerTheme();
         const themeKeys = Object.keys(SwaggerThemeNameEnum);
         const config = new DocumentBuilder()
-            .setTitle('Motiva Server Rest API')
+            .setTitle('TeaChoco Hospital Server Rest API')
             .setDescription(
-                'Rest API for Motiva Projects. have many theme support. have /api-classic, /api-dark-monokai, /api-dark, /api-dracula, /api-feeling-blue, /api-flattop, /api-gruvbox, /api-material, /api-monokai, /api-muted, /api-newspaper, /api-nord-dark, /api-one-dark, /api-outline',
+                'Rest API for TeaChoco Hospital Projects. have many theme support. have /api-classic, /api-dark-monokai, /api-dark, /api-dracula, /api-feeling-blue, /api-flattop, /api-gruvbox, /api-material, /api-monokai, /api-muted, /api-newspaper, /api-nord-dark, /api-one-dark, /api-outline',
             )
-            .setVersion('0.0.2')
+            .setVersion('0.0.4')
             .build();
 
         const document = SwaggerModule.createDocument(app, config);

@@ -1,13 +1,14 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/auth/Signin.tsx"
-import { useState, useEffect } from 'react';
+import SigninGoogle from './SigninGoogle';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import Background from '../../layout/Background';
 import QRScanner from '../../components/auth/QRScanner';
+import Activity from '../../components/custom/Activity';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
 import SelectLang from '../../components/layout/SelectLang';
 import QRGenerator from '../../components/auth/QRGenerator';
 import ThemeToggle from '../../components/layout/ThemeToggle';
-import GoogleSignin from '../../components/auth/GoogleSignin';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Signin() {
@@ -76,9 +77,9 @@ export default function Signin() {
                     <div className="flex absolute top-4 left-4">
                         <button
                             title="Go to Home"
+                            className="btn-icon"
                             aria-label="Go to Home"
-                            onClick={() => navigate('/')}
-                            className="btn-icon">
+                            onClick={() => navigate('/')}>
                             <IoHome />
                         </button>
                     </div>
@@ -91,9 +92,7 @@ export default function Signin() {
                 <div className="border-b border-border-light dark:border-border-dark transition-colors duration-200">
                     <nav className="flex">
                         <button
-                            onClick={() => {
-                                setActiveTab('google');
-                            }}
+                            onClick={() => setActiveTab('google')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'google'
                                     ? 'text-primary border-b-2 border-primary'
@@ -102,9 +101,7 @@ export default function Signin() {
                             Google Login
                         </button>
                         <button
-                            onClick={() => {
-                                setActiveTab('scan');
-                            }}
+                            onClick={() => setActiveTab('scan')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'scan'
                                     ? 'text-primary border-b-2 border-primary'
@@ -113,9 +110,7 @@ export default function Signin() {
                             Scan QR
                         </button>
                         <button
-                            onClick={() => {
-                                setActiveTab('generate');
-                            }}
+                            onClick={() => setActiveTab('generate')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'generate'
                                     ? 'text-primary border-b-2 border-primary'
@@ -129,7 +124,7 @@ export default function Signin() {
                 {/* Content */}
                 <div className="p-8 bg-bg-card-light dark:bg-bg-card-dark transition-colors duration-200">
                     {/* Loading State */}
-                    {loading && (
+                    <Activity visible={loading}>
                         <div className="mb-6 bg-primary/10 border border-primary/20 rounded-lg p-4">
                             <div className="flex items-center justify-center">
                                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
@@ -138,7 +133,7 @@ export default function Signin() {
                                 </span>
                             </div>
                         </div>
-                    )}
+                    </Activity>
 
                     {/* Error State จาก useAuth hook */}
                     {(error || queryError) && (
@@ -158,58 +153,17 @@ export default function Signin() {
                     )}
 
                     <div className="space-y-6">
-                        {activeTab === 'google' && (
-                            <div>
-                                <h3 className="text-lg font-semibold text-center mb-4 text-text-light dark:text-text-dark transition-colors duration-200">
-                                    Sign in with Google
-                                </h3>
-                                <GoogleSignin />
+                        <Activity visible={activeTab === 'google'}>
+                            <SigninGoogle queryError={queryError} querySource={querySource} />
+                        </Activity>
 
-                                {/* Debug Information (สำหรับ development) */}
-                                {import.meta.env.NODE_ENV === 'development' && queryError && (
-                                    <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs">
-                                        <p className="font-mono text-gray-600 dark:text-gray-400">
-                                            Debug: {queryError}
-                                        </p>
-                                        <p className="font-mono text-gray-500 dark:text-gray-500 mt-1">
-                                            Source: {querySource}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                        <Activity visible={activeTab === 'scan'}>
+                            <QRScanner />
+                        </Activity>
 
-                        {activeTab === 'scan' && (
-                            <div>
-                                <h3 className="text-lg font-semibold text-center mb-4 text-text-light dark:text-text-dark">
-                                    Scan QR Code
-                                </h3>
-                                <QRScanner
-                                    onScanSuccess={(data) => {
-                                        console.log('QR scan successful:', data);
-                                        // Handle successful QR scan
-                                    }}
-                                    onScanError={(error) => {
-                                        console.error('QR scan error:', error);
-                                        // คุณสามารถแสดง error จากการสแกน QR ได้ที่นี่
-                                    }}
-                                />
-                            </div>
-                        )}
-
-                        {activeTab === 'generate' && (
-                            <div>
-                                <h3 className="text-lg font-semibold text-center mb-4 text-text-light dark:text-text-dark">
-                                    Generate QR Code
-                                </h3>
-                                <QRGenerator
-                                    onGenerate={(qrData) => console.log('QR generated:', qrData)}
-                                    onError={(error) =>
-                                        console.error('QR generation error:', error)
-                                    }
-                                />
-                            </div>
-                        )}
+                        <Activity visible={activeTab === 'generate'}>
+                            <QRGenerator />
+                        </Activity>
                     </div>
 
                     {/* Footer */}

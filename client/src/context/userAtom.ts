@@ -3,3 +3,7 @@ import { atom } from 'jotai';
 import type { User } from '../types/auth';
 
 export const userAtom = atom<User | null | undefined>(undefined);
+
+export const loadingUserAtom = atom<boolean>(false);
+
+export const errorUserAtom = atom<string | null>(null);

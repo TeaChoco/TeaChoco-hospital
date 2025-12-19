@@ -2,12 +2,12 @@
 import type { Request } from 'express';
 import { Auth } from 'src/user/dto/user.dto';
 import { MedicinesService } from './medicines.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateMedicineDto, CreateMedicineManyDto } from './dto/create-medicine.dto';
+import { UpdateMedicineDto } from './dto/update-medicine.dto';
 import { MedicineResponseDto } from './dto/response-medicine.dto';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
 import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
-import { CreateMedicineDto } from './dto/create-medicine.dto';
-import { UpdateMedicineDto } from './dto/update-medicine.dto';
 
 @ApiTags('Api Medicines')
 @Controller('api/medicines')
@@ -63,6 +63,28 @@ export class MedicinesController {
     async create(@Req() req: Request, @Body() data: CreateMedicineDto) {
         const user = req.user as Auth;
         return this.medicinesService.create(user, data);
+    }
+
+    @Post('many')
+    @UseGuards(UserAuthGuard)
+    @ApiBody({
+        type: CreateMedicineManyDto,
+        required: true,
+        description: 'List of medicines',
+    })
+    @ApiResponse({
+        status: 201,
+        type: MedicineResponseDto,
+        description: 'Success',
+    })
+    @ApiResponse({
+        status: 404,
+        type: MedicineResponseDto,
+        description: 'Not Found',
+    })
+    async createMany(@Req() req: Request, @Body() data: CreateMedicineDto[]) {
+        const user = req.user as Auth;
+        return this.medicinesService.createMany(user, data);
     }
 
     @Put(':id')

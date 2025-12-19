@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/client/src/context/appointmentsAtom.ts"
-import { useEffect } from 'react';
 import { atom, useAtom } from 'jotai';
+import { useCallback, useEffect } from 'react';
 import { appointmentAPI } from '../services/api';
 import type { Appointment } from '../types/appointment';
 
@@ -21,5 +21,7 @@ export function useAppointments() {
         if (appointments === undefined) fetchAppointments();
     }, [appointments]);
 
-    return appointments;
+    const resetAppointments = useCallback(() => setAppointments(undefined), []);
+
+    return { appointments, resetAppointments };
 }

@@ -5,7 +5,7 @@ import { useAppointments } from '../../context/appointmentsAtom';
 import { FaUserMd, FaHospital, FaNotesMedical, FaStethoscope } from 'react-icons/fa';
 
 export default function AppointmentDetailPage() {
-    const appointments = useAppointments();
+    const { appointments } = useAppointments();
 
     const formatDate = (date: Date | string) => {
         return new Date(date).toLocaleDateString(undefined, {
@@ -24,9 +24,7 @@ export default function AppointmentDetailPage() {
     };
 
     return (
-        <DetailLayout
-            allow={Allow.APPOINTMENTS}
-            find={(id) => appointments?.find((appointment) => appointment._id === id)}>
+        <DetailLayout datas={appointments} allow={Allow.APPOINTMENTS}>
             {(appointment) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     <div className="p-6 md:p-8 bg-linear-to-br from-primary/5 to-accent/5 border-b border-border-light dark:border-border-dark">
