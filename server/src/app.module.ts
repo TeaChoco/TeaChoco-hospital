@@ -13,8 +13,8 @@ import { SecureModule } from './secure/secure.module';
     imports: [
         SecureModule,
         // AuthModule,
-        // ApiModule,
-        // UserModule,
+        ApiModule,
+        UserModule,
     ],
 })
 export class AppModule {}
