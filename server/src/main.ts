@@ -1,5 +1,4 @@
 //-Path: "TeaChoco-Hospital/server/src/main.ts"
-import * as net from 'net';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import cookieParserSDK from 'cookie-parser';
@@ -10,28 +9,6 @@ import { SocketIoAdapter } from './api/socket/socket.adapter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
-
-function getAvailablePort(startPort: number): Promise<number> {
-    return new Promise((resolve, reject) => {
-        const server = net.createServer();
-
-        server.on('error', (err: any) => {
-            if (err.code === 'EADDRINUSE') {
-                server.close();
-                resolve(getAvailablePort(startPort + 1));
-            } else {
-                reject(err);
-            }
-        });
-
-        server.listen(startPort, () => {
-            const port = (server.address() as net.AddressInfo).port;
-            server.close(() => {
-                resolve(port);
-            });
-        });
-    });
-}
 
 async function bootstrap() {
     const time = Date.now();
@@ -84,8 +61,8 @@ async function bootstrap() {
             });
         });
     }
-    const availablePort = await getAvailablePort(Number(SERVER_PORT) ?? 10000);
-    await app.listen(availablePort, SERVER_HOSE ?? '0.0.0.0');
+    const port = Number(SERVER_PORT) ?? 10000;
+    await app.listen(port, SERVER_HOSE ?? '0.0.0.0');
 
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);
     Logger.debug(`📄 API Docs: ${await app.getUrl()}/api`);
