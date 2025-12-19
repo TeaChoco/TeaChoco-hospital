@@ -8,6 +8,6 @@ import { Hospital, HospitalSchema } from './schemas/hospital.schema';
 @Module({
     imports: [...new ImportsMongoose({ name: Hospital.name, schema: HospitalSchema }).imports],
     providers: [HospitalsService],
-    controllers: [HospitalsController],
+    // controllers: [HospitalsController],
 })
 export class HospitalsModule {}
