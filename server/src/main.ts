@@ -22,7 +22,7 @@ async function bootstrap() {
     // app.use(authMiddleware.use.bind(authMiddleware));
     app.use(cookieParserSDK());
     app.enableCors({
-        origin: secureService.getAllowedUrls(),
+        origin: CLIENT_URL, //secureService.getAllowedUrls(),
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         credentials: true,
     });
@@ -61,7 +61,7 @@ async function bootstrap() {
             });
         });
     }
-    const port = Number(SERVER_PORT) ?? 10000;
+    const port = SERVER_PORT ?? 10000;
     await app.listen(port, SERVER_HOSE ?? '0.0.0.0');
 
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);
