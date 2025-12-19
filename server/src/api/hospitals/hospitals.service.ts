@@ -5,7 +5,7 @@ import { Auth } from 'src/user/dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Hospital } from './schemas/hospital.schema';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class HospitalsService {
@@ -20,7 +20,9 @@ export class HospitalsService {
     }
 
     async findOne(auth: Auth, id: string) {
-        return await this.hospitalModel.findById(id);
+        const hospital = await this.hospitalModel.findById(id);
+        if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
+        return hospital;
     }
 
     async create(auth: Auth, data: CreateHospitalDto) {
@@ -30,6 +32,8 @@ export class HospitalsService {
     }
 
     async update(auth: Auth, id: string, data: Hospital) {
+        const hospital = await this.findOne(auth, id);
+        if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
         return await this.hospitalModel.findByIdAndUpdate(id, data, { new: true });
     }
 }
