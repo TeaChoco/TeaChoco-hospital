@@ -8,10 +8,10 @@ import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
     imports: [
-        HospitalsModule,
-        DoctorsModule,
-        AppointmentsModule,
-        MedicinesModule,
+        // HospitalsModule,
+        // DoctorsModule,
+        // AppointmentsModule,
+        // MedicinesModule,
         // SocketModule
     ],
 })
