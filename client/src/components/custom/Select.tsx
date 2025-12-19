@@ -14,7 +14,7 @@ function SelectOption({ icon, className, ...props }: SelectOptionProps) {
             } text-text-light dark:text-text-dark bg-bg-card-light dark:bg-bg-card-dark rounded-xl flex gap-2`}
             {...props}>
             {icon}
-            <span className="text-base">{props.children}</span>
+            {props.children}
         </option>
     );
 }
@@ -25,7 +25,10 @@ export interface SelectProps
     labelClassName?: string;
     containerClassName?: string;
     options?: { value: string | number; label: string }[];
-    children?: (option: typeof SelectOption) => React.ReactNode;
+    children?: (
+        option: typeof SelectOption,
+        options?: { value: string | number; label: string }[],
+    ) => React.ReactNode;
 }
 
 export default function Select({
@@ -53,7 +56,7 @@ export default function Select({
             )}
             <div className="relative">
                 <select id={selectId} className={`${inputClass} ${className || ''}`} {...props}>
-                    {children?.(SelectOption) ||
+                    {children?.(SelectOption, options) ||
                         options?.map((option) => <SelectOption key={option.value} {...option} />)}
                 </select>
                 <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-text-muted-light dark:text-text-muted-dark">

@@ -4,21 +4,24 @@ import Layout from './layout/Laout';
 import Home from './pages/home/Home';
 import Signin from './pages/auth/Signin';
 import { Routes, Route } from 'react-router-dom';
+import AllowPage from './pages/profile/AllowPage';
 import ContentLayout from './layout/ContentLayout';
 import DoctorsPage from './pages/doctor/DoctorsPage';
+import ProfilePage from './pages/profile/ProfilePage';
 import CalendarFull from './pages/calendar/CalendarFull';
 import CalendarPage from './pages/calendar/CalendarPage';
+import ProfileLayout from './pages/profile/ProfileLayout';
 import MedicinesPage from './pages/medicine/MedicinesPage';
 import HospitalsPage from './pages/hospital/HospitalsPage';
-import DoctorDetailPage from './pages/doctor/DoctorDetailPage';
-import AppointmentPage from './pages/appointment/AppointmentPage';
-import MedicineDetailPage from './pages/medicine/MedicineDetailPage';
-import HospitalDetailPage from './pages/hospital/HospitalDetailPage';
-import AppointmentDetailPage from './pages/appointment/AppointmentDetailPage';
-import HospitalEditPage from './pages/hospital/HospitalEditPage';
-import AppointmentEditPage from './pages/appointment/AppointmentEditPage';
 import DoctorEditPage from './pages/doctor/DoctorEditPage';
+import DoctorDetailPage from './pages/doctor/DoctorDetailPage';
 import MedicineEditPage from './pages/medicine/MedicineEditPage';
+import HospitalEditPage from './pages/hospital/HospitalEditPage';
+import AppointmentPage from './pages/appointment/AppointmentPage';
+import HospitalDetailPage from './pages/hospital/HospitalDetailPage';
+import MedicineDetailPage from './pages/medicine/MedicineDetailPage';
+import AppointmentEditPage from './pages/appointment/AppointmentEditPage';
+import AppointmentDetailPage from './pages/appointment/AppointmentDetailPage';
 
 export default function App() {
     return (
@@ -40,6 +43,10 @@ export default function App() {
                         <Route path="medicines/:id" element={<MedicineDetailPage />} />
                         <Route path="medicines/edit/:id" element={<MedicineEditPage />} />
                         <Route path="calendar" element={<CalendarPage />} />
+                        <Route path="profile" element={<ProfileLayout />}>
+                            <Route index element={<ProfilePage />} />
+                            <Route path="allow" element={<AllowPage />} />
+                        </Route>
                     </Route>
                 </Route>
                 <Route path="calendar/full" element={<CalendarFull />} />

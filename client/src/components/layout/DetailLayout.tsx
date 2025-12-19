@@ -1,10 +1,10 @@
 //-Path: "TeaChoco-Hospital/client/src/components/layout/DetailLayout.tsx"
 import { useMemo } from 'react';
+import Loading from '../custom/Loading';
 import type { Allow } from '../../types/auth';
+import { useTranslation } from 'react-i18next';
 import { FaArrowLeft, FaPen } from 'react-icons/fa';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Loading from '../custom/Loading';
-import { useTranslation } from 'react-i18next';
 
 export default function DetailLayout<Data extends { _id: string }>({
     datas,
@@ -19,7 +19,7 @@ export default function DetailLayout<Data extends { _id: string }>({
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-    const data = useMemo(() => datas?.find((d) => d._id === id), [id, datas]);
+    const data = useMemo(() => datas?.find((data) => data._id === id), [id, datas]);
 
     if (!datas) return <Loading />;
 

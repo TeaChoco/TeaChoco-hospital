@@ -21,9 +21,7 @@ serverRest.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
-export const queryToString = <Query extends QueryOptions>(
-    query?: Query,
-): string => {
+export const queryToString = <Query extends QueryOptions>(query?: Query): string => {
     if (!query) return '';
 
     const params = new URLSearchParams();

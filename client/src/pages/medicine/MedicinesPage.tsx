@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useMedicines } from '../../context/medicinesAtom';
 import ListLayout from '../../components/layout/ListLayout';
-import { MedicineCard } from '../../components/medicine/MedicineCard';
+import { MedicineCard } from '../../components/content/MedicineCard';
 
 export default function MedicinesPage() {
     const navigator = useNavigate();

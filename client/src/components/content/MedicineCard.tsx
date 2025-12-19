@@ -1,5 +1,4 @@
 //-Path: "TeaChoco-Hospital/client/src/components/MedicineCard.tsx"
-import React from 'react';
 import type { Medicine } from '../../types/medicine';
 import { FaPills, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 
@@ -8,7 +7,7 @@ interface MedicineCardProps {
     onClick?: () => void;
 }
 
-export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onClick }) => {
+export function MedicineCard({ medicine, onClick }: MedicineCardProps) {
     const isExpiringSoon = () => {
         const today = new Date();
         const expiry = new Date(medicine.expiryDate);
@@ -96,4 +95,4 @@ export const MedicineCard: React.FC<MedicineCardProps> = ({ medicine, onClick })
             </div>
         </div>
     );
-};
+}

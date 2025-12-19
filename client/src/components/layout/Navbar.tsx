@@ -1,6 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/components/layout/Navbar.tsx"
 import {
     FaBars,
+    FaUser,
     FaTimes,
     FaPills,
     FaUserMd,
@@ -17,8 +18,8 @@ import { Link, NavLink } from 'react-router-dom';
 
 export default function Navbar() {
     const { t } = useTranslation();
-    const { isAuthenticated, signout } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { user, isAuthenticated, signout } = useAuth();
 
     const NavbarLink = ({
         to,
@@ -98,8 +99,26 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center gap-2">
-                <div className="hidden md:block">
-                    <SignBtn />
+                <div className="hidden md:flex">
+                    {isAuthenticated ? (
+                        <Link
+                            to="/profile"
+                            className="w-12 h-12 rounded-full overflow-hidden border border-border-light dark:border-border-dark group hover:border-primary transition-colors">
+                            {user?.picture ? (
+                                <img
+                                    src={user.picture}
+                                    alt={user.name}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                                    <FaUser className="text-slate-400 group-hover:text-primary transition-colors" />
+                                </div>
+                            )}
+                        </Link>
+                    ) : (
+                        <SignBtn />
+                    )}
                 </div>
                 <ThemeToggle />
                 <SelectLang />
@@ -127,6 +146,11 @@ export default function Navbar() {
                     <MenuLink to="/calendar" icon={FaCalendar}>
                         {t('navbar.calendar')}
                     </MenuLink>
+                    {isAuthenticated && (
+                        <MenuLink to="/profile" icon={FaUser}>
+                            Profile
+                        </MenuLink>
+                    )}
                     <div className="pt-2 border-t border-border-light dark:border-border-dark">
                         <SignBtn className="w-full mt-2" />
                     </div>

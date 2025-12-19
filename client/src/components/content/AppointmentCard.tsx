@@ -1,6 +1,7 @@
+//-Path: "TeaChoco-Hospital/client/src/components/appointment/AppointmentCard.tsx"
 import { FaPhone } from 'react-icons/fa6';
+import { FaHospital } from 'react-icons/fa';
 import type { Appointment } from '../../types/appointment';
-import { FaHospital, FaMapMarkerAlt } from 'react-icons/fa';
 
 export function AppointmentCard({
     onClick,
@@ -23,16 +24,6 @@ export function AppointmentCard({
                     </h3>
 
                     <div className="mt-2 space-y-2">
-                        {appointment.patientName && (
-                            <div className="flex items-start gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                                <FaMapMarkerAlt
-                                    size={14}
-                                    className="mt-1 shrink-0 text-text-muted-light dark:text-text-muted-dark"
-                                />
-                                <span>{appointment.patientName}</span>
-                            </div>
-                        )}
-
                         {appointment.department && (
                             <div className="flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
                                 <FaPhone

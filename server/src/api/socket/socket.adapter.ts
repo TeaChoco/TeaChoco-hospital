@@ -4,8 +4,8 @@ import { instrument } from '@socket.io/admin-ui';
 import { ServerOptions, Socket } from 'socket.io';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { SocketMiddleware } from './socket.middleware';
-import { INestApplicationContext, Logger } from '@nestjs/common';
 import { SecureService } from '../../secure/secure.service';
+import { INestApplicationContext, Logger } from '@nestjs/common';
 
 interface BasicAuthentication {
     type: 'basic';
@@ -24,8 +24,8 @@ export class SocketIoAdapter extends IoAdapter {
 
     createIOServer(port: number, options?: ServerOptions): any {
         const isDev = this.secureService.isDev();
-        const clientUrl = this.secureService.getEnvConfig().CLIENT_URL || 'http://localhost:3000';
-        const origin: string[] = ['https://admin.socket.io', clientUrl];
+        const allowedUrls = this.secureService.getAllowedUrls();
+        const origin: string[] = ['https://admin.socket.io', ...allowedUrls];
         this.logger.log('createIOServer origins:', origin, 'isDev:', isDev);
 
         const server = super.createIOServer(port, {

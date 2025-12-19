@@ -153,8 +153,12 @@
         @apply bg-accent/80 hover:text-white hover:bg-accent;
     }
 
+    .btn-warning {
+        @apply bg-yellow-600 dark:bg-yellow-700 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600;
+    }
+
     .btn-error {
-        @apply bg-red-600 dark:bg-red-700 text-white hover:bg-red-700;
+        @apply bg-red-600 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600;
     }
 
     .btn-primary-active {

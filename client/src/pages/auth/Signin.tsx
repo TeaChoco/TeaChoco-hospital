@@ -3,12 +3,12 @@ import SigninGoogle from './SigninGoogle';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import Background from '../../layout/Background';
-import QRScanner from '../../components/auth/QRScanner';
 import Activity from '../../components/custom/Activity';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
 import SelectLang from '../../components/layout/SelectLang';
-import QRGenerator from '../../components/auth/QRGenerator';
+import QRScannerPage from '../../components/auth/QRScanner';
 import ThemeToggle from '../../components/layout/ThemeToggle';
+import QRGeneratorPage from '../../components/auth/QRGenerator';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Signin() {
@@ -158,11 +158,11 @@ export default function Signin() {
                         </Activity>
 
                         <Activity visible={activeTab === 'scan'}>
-                            <QRScanner />
+                            <QRScannerPage />
                         </Activity>
 
                         <Activity visible={activeTab === 'generate'}>
-                            <QRGenerator />
+                            <QRGeneratorPage />
                         </Activity>
                     </div>
 

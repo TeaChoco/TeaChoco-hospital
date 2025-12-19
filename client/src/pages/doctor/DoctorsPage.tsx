@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDoctors } from '../../context/doctorsAtom';
 import ListLayout from '../../components/layout/ListLayout';
-import { DoctorCard } from '../../components/doctor/DoctorCard';
+import { DoctorCard } from '../../components/content/DoctorCard';
 
 export default function DoctorsPage() {
     const navigate = useNavigate();

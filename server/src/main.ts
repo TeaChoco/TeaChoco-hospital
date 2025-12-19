@@ -1,24 +1,51 @@
 //-Path: "TeaChoco-Hospital/server/src/main.ts"
+import * as net from 'net';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import cookieParserSDK from 'cookie-parser';
 import { SecureService } from './secure/secure.service';
+// import { AuthMiddleware } from './auth/auth.middleware';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SocketIoAdapter } from './api/socket/socket.adapter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+
+function getAvailablePort(startPort: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+        const server = net.createServer();
+
+        server.on('error', (err: any) => {
+            if (err.code === 'EADDRINUSE') {
+                server.close();
+                resolve(getAvailablePort(startPort + 1));
+            } else {
+                reject(err);
+            }
+        });
+
+        server.listen(startPort, () => {
+            const port = (server.address() as net.AddressInfo).port;
+            server.close(() => {
+                resolve(port);
+            });
+        });
+    });
+}
 
 async function bootstrap() {
     const time = Date.now();
-    const app = await NestFactory.create(AppModule);
+    const app = (await NestFactory.create(AppModule)) as NestExpressApplication;
     const secureService = app.get(SecureService);
+    // const authMiddleware = new AuthMiddleware(secureService);
     const { SERVER_HOSE, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe());
+    // app.use(authMiddleware.use.bind(authMiddleware));
     app.use(cookieParserSDK());
     app.enableCors({
-        origin: CLIENT_URL,
+        origin: secureService.getAllowedUrls(),
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         credentials: true,
     });
@@ -57,8 +84,8 @@ async function bootstrap() {
             });
         });
     }
-
-    await app.listen(SERVER_PORT ?? 10000, SERVER_HOSE ?? '0.0.0.0');
+    const availablePort = await getAvailablePort(Number(SERVER_PORT) ?? 10000);
+    await app.listen(availablePort, SERVER_HOSE ?? '0.0.0.0');
 
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);
     Logger.debug(`📄 API Docs: ${await app.getUrl()}/api`);

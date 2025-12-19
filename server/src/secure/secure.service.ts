@@ -17,4 +17,9 @@ export class SecureService {
             }),
             {},
         );
+
+    getAllowedUrls(): string[] {
+        const env = this.getEnvConfig();
+        return [env.CLIENT_URL ?? 'http://localhost:3000'];
+    }
 }

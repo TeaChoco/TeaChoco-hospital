@@ -1,5 +1,4 @@
 //-Path: "TeaChoco-Hospital/client/src/components/DoctorCard.tsx"
-import React from 'react';
 import type { Doctor } from '../../types/doctor';
 import { FaUserMd, FaPhone } from 'react-icons/fa';
 

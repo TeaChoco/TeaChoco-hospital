@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ListLayout from '../../components/layout/ListLayout';
 import { useAppointments } from '../../context/appointmentsAtom';
 import type { FilterOption } from '../../components/custom/Search';
-import { AppointmentCard } from '../../components/appointment/AppointmentCard';
+import { AppointmentCard } from '../../components/content/AppointmentCard';
 
 export default function AppointmentPage() {
     const navigate = useNavigate();

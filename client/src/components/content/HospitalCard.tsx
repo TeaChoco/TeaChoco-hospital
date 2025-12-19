@@ -1,5 +1,4 @@
 //-Path: "TeaChoco-Hospital/client/src/components/HospitalCard.tsx"
-import React from 'react';
 import type { Hospital } from '../../types/hospital';
 import { FaHospital, FaMapMarkerAlt, FaPhone, FaExternalLinkAlt } from 'react-icons/fa';
 
@@ -8,7 +7,7 @@ interface HospitalCardProps {
     onClick?: () => void;
 }
 
-export const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick }) => {
+export function HospitalCard({ hospital, onClick }: HospitalCardProps) {
     return (
         <div
             onClick={onClick}
@@ -61,4 +60,4 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick })
             </div>
         </div>
     );
-};
+}
