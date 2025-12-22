@@ -6,20 +6,16 @@ export type HospitalDocument = Hospital & Document;
 
 @Schema({ collection: 'hospitals', timestamps: true })
 export class Hospital {
-    @Prop({ required: true })
-    user_id: string;
-
-    @Prop({ required: true })
-    name: string;
-
-    @Prop()
-    address?: string;
-
-    @Prop()
-    contactNumber?: string;
-
-    @Prop()
-    website?: string;
+    // @Prop({ required: true })
+    // user_id: string;
+    // @Prop({ required: true })
+    // name: string;
+    // @Prop()
+    // address?: string;
+    // @Prop()
+    // contactNumber?: string;
+    // @Prop()
+    // website?: string;
 }
 
 export const HospitalSchema = SchemaFactory.createForClass(Hospital);

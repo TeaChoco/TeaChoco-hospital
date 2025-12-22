@@ -13,72 +13,72 @@ import { Controller, Get, UseGuards, Req, Post, Body, Param, Put } from '@nestjs
 export class HospitalsController {
     constructor(private readonly hospitalsService: HospitalsService) {}
 
-    @Get()
-    @UseGuards(UserAuthGuard)
-    @ApiResponse({
-        status: 200,
-        type: [ResponseHospitalDto],
-        description: 'Success',
-    })
-    @ApiResponse({
-        status: 404,
-        type: [ResponseHospitalDto],
-        description: 'Not Found',
-    })
-    async findAll(@Req() req: Request) {
-        const user = req.user as Auth;
-        return this.hospitalsService.findAll(user);
-    }
+    // @Get()
+    // @UseGuards(UserAuthGuard)
+    // @ApiResponse({
+    //     status: 200,
+    //     type: [ResponseHospitalDto],
+    //     description: 'Success',
+    // })
+    // @ApiResponse({
+    //     status: 404,
+    //     type: [ResponseHospitalDto],
+    //     description: 'Not Found',
+    // })
+    // async findAll(@Req() req: Request) {
+    //     const user = req.user as Auth;
+    //     return this.hospitalsService.findAll(user);
+    // }
 
-    @Get(':id')
-    @UseGuards(UserAuthGuard)
-    @ApiResponse({
-        status: 200,
-        type: ResponseHospitalDto,
-        description: 'Success',
-    })
-    @ApiResponse({
-        status: 404,
-        type: ResponseHospitalDto,
-        description: 'Not Found',
-    })
-    async findOne(@Req() req: Request, @Param('id') id: string) {
-        const user = req.user as Auth;
-        return this.hospitalsService.findOne(user, id);
-    }
+    // @Get(':id')
+    // @UseGuards(UserAuthGuard)
+    // @ApiResponse({
+    //     status: 200,
+    //     type: ResponseHospitalDto,
+    //     description: 'Success',
+    // })
+    // @ApiResponse({
+    //     status: 404,
+    //     type: ResponseHospitalDto,
+    //     description: 'Not Found',
+    // })
+    // async findOne(@Req() req: Request, @Param('id') id: string) {
+    //     const user = req.user as Auth;
+    //     return this.hospitalsService.findOne(user, id);
+    // }
 
-    @Post()
-    @UseGuards(UserAuthGuard)
-    @ApiResponse({
-        status: 201,
-        type: ResponseHospitalDto,
-        description: 'Success',
-    })
-    @ApiResponse({
-        status: 404,
-        type: ResponseHospitalDto,
-        description: 'Not Found',
-    })
-    async create(@Req() req: Request, @Body() data: CreateHospitalDto) {
-        const user = req.user as Auth;
-        const result = await this.hospitalsService.create(user, data);
-        return { user, data, result };
-    }
+    // @Post()
+    // @UseGuards(UserAuthGuard)
+    // @ApiResponse({
+    //     status: 201,
+    //     type: ResponseHospitalDto,
+    //     description: 'Success',
+    // })
+    // @ApiResponse({
+    //     status: 404,
+    //     type: ResponseHospitalDto,
+    //     description: 'Not Found',
+    // })
+    // async create(@Req() req: Request, @Body() data: CreateHospitalDto) {
+    //     const user = req.user as Auth;
+    //     const result = await this.hospitalsService.create(user, data);
+    //     return { user, data, result };
+    // }
 
-    @Put(':id')
-    @UseGuards(UserAuthGuard)
-    @ApiResponse({
-        status: 201,
-        type: ResponseHospitalDto,
-        description: 'Success',
-    })
-    @ApiResponse({
-        status: 404,
-        type: ResponseHospitalDto,
-        description: 'Not Found',
-    })
-    async update(@Req() req: Request, @Param('id') id: string, @Body() data: CreateHospitalDto) {
-        const user = req.user as Auth;
-        return this.hospitalsService.update(user, id, data);
-    }
+    // @Put(':id')
+    // @UseGuards(UserAuthGuard)
+    // @ApiResponse({
+    //     status: 201,
+    //     type: ResponseHospitalDto,
+    //     description: 'Success',
+    // })
+    // @ApiResponse({
+    //     status: 404,
+    //     type: ResponseHospitalDto,
+    //     description: 'Not Found',
+    // })
+    // async update(@Req() req: Request, @Param('id') id: string, @Body() data: CreateHospitalDto) {
+    //     const user = req.user as Auth;
+    //     return this.hospitalsService.update(user, id, data);
+    // }
 }

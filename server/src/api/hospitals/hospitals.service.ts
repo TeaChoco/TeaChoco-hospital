@@ -14,26 +14,26 @@ export class HospitalsService {
         private readonly hospitalModel: Model<Hospital>,
     ) {}
 
-    async findAll(auth: Auth) {
-        const hospitals = await this.hospitalModel.find();
-        return hospitals.filter((hospital) => hospital.user_id === auth?.user_id);
-    }
+    // async findAll(auth: Auth) {
+    //     const hospitals = await this.hospitalModel.find();
+    //     return hospitals.filter((hospital) => hospital.user_id === auth?.user_id);
+    // }
 
-    async findOne(auth: Auth, id: string) {
-        const hospital = await this.hospitalModel.findById(id);
-        if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
-        return hospital;
-    }
+    // async findOne(auth: Auth, id: string) {
+    //     const hospital = await this.hospitalModel.findById(id);
+    //     if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
+    //     return hospital;
+    // }
 
-    async create(auth: Auth, data: CreateHospitalDto) {
-        if (auth === null) throw new UnauthorizedException('Unauthorized');
-        const hospital = new this.hospitalModel(data);
-        return await hospital.save();
-    }
+    // async create(auth: Auth, data: CreateHospitalDto) {
+    //     if (auth === null) throw new UnauthorizedException('Unauthorized');
+    //     const hospital = new this.hospitalModel(data);
+    //     return await hospital.save();
+    // }
 
-    async update(auth: Auth, id: string, data: Hospital) {
-        const hospital = await this.findOne(auth, id);
-        if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
-        return await this.hospitalModel.findByIdAndUpdate(id, data, { new: true });
-    }
+    // async update(auth: Auth, id: string, data: Hospital) {
+    //     const hospital = await this.findOne(auth, id);
+    //     if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
+    //     return await this.hospitalModel.findByIdAndUpdate(id, data, { new: true });
+    // }
 }
