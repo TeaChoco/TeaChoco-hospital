@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/user/user.service.ts"
-import { nameDB } from '$/hooks/mongodb';
 import { Model, Types } from 'mongoose';
+import { nameDB } from '../hooks/mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';

@@ -1,11 +1,11 @@
 //-Path: "TeaChoco-Hospital/server/src/api/hospitals/hospitals.controller.ts"
 import type { Request } from 'express';
-import { Auth } from '$/user/dto/user.dto';
 import { HospitalsService } from './hospitals.service';
+import { Auth } from '../../user/dto/user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
-import { UserAuthGuard } from '$/user/auth/guard/user-auth.guard';
 import { ResponseHospitalDto } from './dto/response-hospital.dto';
+import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
 import { Controller, Get, UseGuards, Req, Post, Body, Param, Put } from '@nestjs/common';
 
 @ApiTags('Api Hospitals')

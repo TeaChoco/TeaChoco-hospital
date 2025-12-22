@@ -8,13 +8,14 @@ import {
     IsBoolean,
     IsOptional,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 import {
     MedicineType,
     EffectServeriry,
     StorageCondition,
     EffectProbability,
-} from '$/types/medicine';
-import { Type } from 'class-transformer';
+} from '../../../types/medicine';
 import {
     WarningDto,
     SideEffectDto,
@@ -22,8 +23,7 @@ import {
     HospitalInfoDto,
     MedicineDosageDto,
     TakeInstructionDto,
-} from '$/api/medicines/dto/medicine.dto';
-import { ApiProperty } from '@nestjs/swagger';
+} from './medicine.dto';
 
 export class CreateMedicineDto {
     @IsString()

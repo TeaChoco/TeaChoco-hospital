@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Hospital/server/src/api/appointments/appointments.service.ts"
 import { Model } from 'mongoose';
-import { nameDB } from '$/hooks/mongodb';
-import { Auth } from '$/user/dto/user.dto';
 import { Injectable } from '@nestjs/common';
+import { nameDB } from '../../hooks/mongodb';
+import { Auth } from '../../user/dto/user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Appointment } from './schemas/appointment.schema';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';

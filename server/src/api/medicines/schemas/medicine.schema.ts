@@ -1,5 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/schemas/medicine.schema.ts"
 import { Document } from 'mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { MedicineType, StorageCondition } from '../../../types/medicine';
 import {
     WarningDto,
     SideEffectDto,
@@ -7,9 +9,7 @@ import {
     HospitalInfoDto,
     MedicineDosageDto,
     TakeInstructionDto,
-} from '$/api/medicines/dto/medicine.dto';
-import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { MedicineType, StorageCondition } from '$/types/medicine';
+} from '../dto/medicine.dto';
 
 export type MedicineDocument = Medicine & Document;
 

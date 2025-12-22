@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/hooks/jwt.ts"
 import { JwtModule } from '@nestjs/jwt';
-import { SecureService } from '$/secure/secure.service';
+import { SecureService } from '../secure/secure.service';
 
 export function importJwt() {
     return JwtModule.registerAsync({

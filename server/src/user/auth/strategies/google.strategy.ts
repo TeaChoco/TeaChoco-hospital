@@ -1,9 +1,9 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/strategies/google.strategy.ts"
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { UserType } from '$/user/dto/create-user.dto';
-import { SecureService } from '$/secure/secure.service';
+import { UserType } from '../../dto/create-user.dto';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { SecureService } from '../../../secure/secure.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {

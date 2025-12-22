@@ -4,7 +4,7 @@ import { instrument } from '@socket.io/admin-ui';
 import { ServerOptions, Socket } from 'socket.io';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { SocketMiddleware } from './socket.middleware';
-import { SecureService } from '$/secure/secure.service';
+import { SecureService } from '../../secure/secure.service';
 import { INestApplicationContext, Logger } from '@nestjs/common';
 
 interface BasicAuthentication {

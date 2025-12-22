@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/api/hospitals/hospitals.module.ts"
 import { Module } from '@nestjs/common';
-import { ImportsMongoose } from '$/hooks/mongodb';
 import { HospitalsService } from './hospitals.service';
+import { ImportsMongoose } from '../../hooks/mongodb';
 import { HospitalsController } from './hospitals.controller';
 import { Hospital, HospitalSchema } from './schemas/hospital.schema';
 

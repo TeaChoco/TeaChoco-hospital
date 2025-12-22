@@ -1,5 +1,5 @@
 //-Path: "TeaChoco-Hospital/server/src/hooks/mongodb.ts"
-import { SecureService } from '$/secure/secure.service';
+import { SecureService } from '../secure/secure.service';
 import { ModelDefinition, MongooseModule } from '@nestjs/mongoose';
 
 export const nameDB = 'TeaChocoDB';

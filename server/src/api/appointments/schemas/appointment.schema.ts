@@ -1,5 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/api/appointments/schemas/appointment.schema.ts"
 import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
     SymptomDto,
     PatientType,
@@ -15,8 +16,7 @@ import {
     AppointmentLocation,
     AppointmentPaymentDto,
     AppointmentPreparationDto,
-} from '$/api/appointments/dto/appointment';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+} from '../dto/appointment';
 
 export type AppointmentDocument = Appointment & Document;
 

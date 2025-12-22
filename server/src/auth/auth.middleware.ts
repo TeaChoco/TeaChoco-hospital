@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/auth/auth.middleware.ts"
 import { IncomingHttpHeaders } from 'http';
-import { SecureService } from '$/secure/secure.service';
+import { SecureService } from '../secure/secure.service';
 import { Request, Response, NextFunction } from 'express';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 

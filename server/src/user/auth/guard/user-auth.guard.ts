@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/guard/user-auth.guard.ts"
 import { Observable } from 'rxjs';
-import { Auth } from '$/user/dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Auth } from '../../dto/user.dto';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
