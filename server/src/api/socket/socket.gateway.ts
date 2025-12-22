@@ -1,13 +1,13 @@
 //-Path: "TeaChoco-Hospital/server/src/api/socket/socket.gateway.ts"
 import {
+    MessageBody,
     OnGatewayInit,
+    ConnectedSocket,
     WebSocketServer,
     WebSocketGateway,
+    SubscribeMessage,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    SubscribeMessage,
-    MessageBody,
-    ConnectedSocket,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
@@ -29,20 +29,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     handleDisconnect(client: Socket) {
         this.logger.log(`Client disconnected: ${client.id}`);
-    }
-
-    // รับข้อความจาก client
-    @SubscribeMessage('message')
-    handleMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket): string {
-        console.log(`Message from ${client.id}: ${data}`);
-
-        // ส่งข้อความกลับไปยัง client ที่ส่งมา
-        client.emit('message', `Server received: ${data}`);
-
-        // ส่งข้อความไปยังทุก client
-        this.server.emit('broadcast', `${client.id} said: ${data}`);
-
-        return 'Message received';
     }
 
     @SubscribeMessage('signin-qr')

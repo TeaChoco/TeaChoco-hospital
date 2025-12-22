@@ -14,6 +14,7 @@ export interface Allows {
     user_id: string;
     read: Allow[];
     edit: Allow[];
+    expiresAt?: Date;
 }
 
 export interface User {

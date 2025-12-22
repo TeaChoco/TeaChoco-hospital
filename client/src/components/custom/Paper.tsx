@@ -1,5 +1,5 @@
 //-Path: "TeaChoco-Hospital/src/components/custom/Paper.tsx"
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 export default function Paper({
     variant,

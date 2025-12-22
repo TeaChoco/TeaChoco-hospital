@@ -37,12 +37,38 @@ services:
       - ./server/.env
     environment:
       SERVER_HOST: 0.0.0.0
-      WATCHPACK_POLLING: "true"
-      CHOKIDAR_USEPOLLING: "true"
-      CHOKIDAR_INTERVAL: 1000
+      WATCHPACK_POLLING: true
+      CHOKIDAR_USEPOLLING: true
+    depends_on:
+      mongodb:
+        condition: service_healthy
     networks:
       - teachoco-hospital-network
     command: pnpm start:dev
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: teachoco-hospital-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: teachoco-hospital
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb-data:/data/db
+      - ./db/init-db.js:/docker-entrypoint-initdb.d/init-db.js
+    networks:
+      - teachoco-hospital-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongodb-data:
 
 networks:
   teachoco-hospital-network:

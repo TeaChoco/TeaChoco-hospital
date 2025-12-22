@@ -44,7 +44,6 @@ export default function QRScanner({
 
     useEffect(() => {
         getDevices();
-
         return () => stopScanner();
     }, []);
 

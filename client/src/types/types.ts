@@ -16,5 +16,6 @@ export interface RequestSocketData {
 
 export interface ResponseSocketData {
     token: string;
-    response: { socketId: string; reads: Allow[]; edits: Allow[] };
+    expiresAt: Date;
+    response: { socketId: string; reads: Allow[]; edits: Allow[]; expiresAt?: Date };
 }

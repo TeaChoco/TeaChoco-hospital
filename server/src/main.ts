@@ -69,6 +69,5 @@ async function bootstrap() {
     Logger.debug(`📄 API Docs: ${await app.getUrl()}/api`);
     Logger.debug(`🌐 Client Origin: ${CLIENT_URL}`);
     Logger.debug(`📦 MongoDB URI configured: ${MONGODB_URI ? 'Yes' : 'No'}`);
-    Logger.debug(`🥭 MongoDB URI: ${MONGODB_URI}`);
 }
 bootstrap();

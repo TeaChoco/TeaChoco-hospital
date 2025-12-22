@@ -1,9 +1,11 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/profile/AllowPage.tsx"
+//-Path: "TeaChoco-Hospital/src/pages/profile/AllowPage.tsx"
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
 import { useEffect, useState } from 'react';
+import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
+import Switch from '../../components/custom/Switch';
 import Select from '../../components/custom/Select';
 import { FaArrowLeft, FaTrash } from 'react-icons/fa';
 import QRScanner from '../../components/code/QRScanner';
@@ -23,9 +25,8 @@ function AllowsSelects({
         <Paper variant="200" className="flex flex-col gap-4">
             <h3 className="text-lg font-bold text-text-light dark:text-text-dark">{title}</h3>
             {allows.map((allow, index) => (
-                <div className="flex gap-2">
+                <div key={index} className="flex gap-2">
                     <Select
-                        key={index}
                         value={allow}
                         containerClassName="w-full"
                         onChange={(event) =>
@@ -56,15 +57,25 @@ function AllowsSelects({
 export default function AllowPage() {
     const { id, emit } = useSocket();
     const [isScanner, setIsScanner] = useState(true);
+    const [isExpiresAt, setIsExpiresAt] = useState(false);
     const [reads, setReads] = useState<Allow[]>([Allow.AUTH]);
     const [edits, setEdits] = useState<Allow[]>([Allow.AUTH]);
+    const [expiresAt, setExpiresAt] = useState<Date>(new Date());
+    const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
     const [value, setValue] = useState<string | undefined>(undefined);
 
     const getValue = () => {
         if (!id) return undefined;
+        setQrExpiresAt(new Date(Date.now() + 5 * 60 * 1000));
         const data: ResponseSocketData = {
             token: crypto.randomUUID(),
-            response: { socketId: id, reads, edits },
+            response: {
+                socketId: id,
+                reads,
+                edits,
+                expiresAt: isExpiresAt ? expiresAt : undefined,
+            },
+            expiresAt: qrExpiresAt,
         };
         const url = import.meta.env.VITE_CLIENT_URL;
         const fullUrl = `${url}/signin?allow=${JSON.stringify(data)}`;
@@ -73,7 +84,7 @@ export default function AllowPage() {
 
     useEffect(() => {
         getValue();
-    }, [id, reads, edits]);
+    }, [id, reads, edits, expiresAt, isExpiresAt]);
 
     return (
         <div className="flex flex-col md:flex-row gap-2">
@@ -86,6 +97,28 @@ export default function AllowPage() {
                         Allows
                     </h2>
                 </div>
+                <Paper variant="200" className="flex flex-col gap-2">
+                    <label className="text-lg font-bold text-text-light dark:text-text-dark">
+                        Expires At
+                    </label>
+                    <div className="flex items-center gap-2 w-full">
+                        <Switch
+                            checked={isExpiresAt}
+                            onCheckedChange={(checked) => setIsExpiresAt(checked)}
+                        />
+                        <Input
+                            type="datetime-local"
+                            disabled={!isExpiresAt}
+                            containerClassName="w-full"
+                            value={new Date(
+                                expiresAt.getTime() - expiresAt.getTimezoneOffset() * 60000,
+                            )
+                                .toISOString()
+                                .slice(0, 16)}
+                            onChange={(event) => setExpiresAt(new Date(event.target.value))}
+                        />
+                    </div>
+                </Paper>
                 <AllowsSelects title="Read" allows={reads} setAllows={setReads} />
                 <AllowsSelects title="Edit" allows={edits} setAllows={setEdits} />
             </Paper>
@@ -103,7 +136,12 @@ export default function AllowPage() {
                         }}
                     />
                 ) : (
-                    <QRGenerator header="Scan to Login" value={value} refresh={getValue} />
+                    <QRGenerator
+                        value={value}
+                        refresh={getValue}
+                        header="Scan to Login"
+                        expiresAt={qrExpiresAt}
+                    />
                 )}
             </Paper>
         </div>
