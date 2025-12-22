@@ -9,6 +9,7 @@ const serverRest = axios.create({
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN_KEY}`,
     },
 });
 
