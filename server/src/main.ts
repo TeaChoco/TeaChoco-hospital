@@ -14,7 +14,7 @@ async function bootstrap() {
     const time = Date.now();
     const app = (await NestFactory.create(AppModule)) as NestExpressApplication;
     const secureService = app.get(SecureService);
-    // const authMiddleware = new AuthMiddleware(secureService);
+    const authMiddleware = new AuthMiddleware(secureService);
     const { SERVER_HOST, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));

@@ -46,7 +46,10 @@ export function useSocket() {
         // Subscribe to connection status changes
         const handleConnect = () => setIsConnected(true);
         const handleDisconnect = () => setIsConnected(false);
-        const handleConnectError = () => setIsConnected(false);
+        const handleConnectError = (error: Error) => {
+            console.error('Socket connection error:', error);
+            setIsConnected(false);
+        };
 
         socketManager.addListener('connect', handleConnect);
         socketManager.addListener('disconnect', handleDisconnect);

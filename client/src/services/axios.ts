@@ -9,14 +9,13 @@ const serverRest = axios.create({
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN_KEY}`,
     },
 });
 
 serverRest.interceptors.request.use(
     (config) => {
         const token = import.meta.env.VITE_API_TOKEN_KEY;
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.apporization = `Bearer ${token}`;
         return config;
     },
     (error) => Promise.reject(error),

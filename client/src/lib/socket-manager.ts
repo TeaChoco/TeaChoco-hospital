@@ -71,30 +71,22 @@ class SocketManager {
 
         this.socket.on('connect', () => {
             const connectListeners = this.listeners.get('connect');
-            if (connectListeners) {
-                connectListeners.forEach((callback) => callback());
-            }
+            if (connectListeners) connectListeners.forEach((callback) => callback());
         });
 
         this.socket.on('disconnect', (reason) => {
             const disconnectListeners = this.listeners.get('disconnect');
-            if (disconnectListeners) {
-                disconnectListeners.forEach((callback) => callback(reason));
-            }
+            if (disconnectListeners) disconnectListeners.forEach((callback) => callback(reason));
         });
 
         this.socket.on('connect_error', (error) => {
             const errorListeners = this.listeners.get('connect_error');
-            if (errorListeners) {
-                errorListeners.forEach((callback) => callback(error));
-            }
+            if (errorListeners) errorListeners.forEach((callback) => callback(error));
         });
     }
 
     addListener(event: string, callback: Function) {
-        if (!this.listeners.has(event)) {
-            this.listeners.set(event, new Set());
-        }
+        if (!this.listeners.has(event)) this.listeners.set(event, new Set());
         this.listeners.get(event)!.add(callback);
     }
 
@@ -102,9 +94,7 @@ class SocketManager {
         const eventListeners = this.listeners.get(event);
         if (eventListeners) {
             eventListeners.delete(callback);
-            if (eventListeners.size === 0) {
-                this.listeners.delete(event);
-            }
+            if (eventListeners.size === 0) this.listeners.delete(event);
         }
     }
 
