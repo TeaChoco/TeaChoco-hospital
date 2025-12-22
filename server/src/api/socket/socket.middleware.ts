@@ -8,7 +8,7 @@ export class SocketMiddleware implements NestMiddleware {
     constructor(private secureService: SecureService) {}
 
     use(socket: Socket, next: (err?: Error) => void) {
-        // if (this.secureService.isDev()) return next();
+        if (this.secureService.isDev()) return next();
         const { handshake } = socket;
         const tokenKey = handshake.auth.tokenKey || handshake.query.tokenKey;
         if (!tokenKey) return next(new Error('Token key not provided'));

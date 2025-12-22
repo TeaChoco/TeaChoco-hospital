@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/src/pages/profile/AllowPage.tsx"
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
@@ -62,29 +62,36 @@ export default function AllowPage() {
     const [edits, setEdits] = useState<Allow[]>([Allow.AUTH]);
     const [expiresAt, setExpiresAt] = useState<Date>(new Date());
     const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
-    const [value, setValue] = useState<string | undefined>(undefined);
+
+    const [responseData, setResponseData] = useState<ResponseSocketData | undefined>(undefined);
 
     const getValue = () => {
         if (!id) return undefined;
         setQrExpiresAt(new Date(Date.now() + 5 * 60 * 1000));
         const data: ResponseSocketData = {
             token: crypto.randomUUID(),
+            expiresAt: qrExpiresAt,
             response: {
-                socketId: id,
                 reads,
                 edits,
+                socketId: id,
                 expiresAt: isExpiresAt ? expiresAt : undefined,
             },
-            expiresAt: qrExpiresAt,
         };
-        const url = import.meta.env.VITE_CLIENT_URL;
-        const fullUrl = `${url}/signin?allow=${JSON.stringify(data)}`;
-        setValue(fullUrl);
+        setResponseData(data);
     };
 
     useEffect(() => {
         getValue();
     }, [id, reads, edits, expiresAt, isExpiresAt]);
+
+    const value = useMemo(() => {
+        const url = import.meta.env.VITE_CLIENT_URL;
+        if (responseData) {
+            const { token, response } = responseData;
+            return `${url}/signin?socketId=${response.socketId}&token=${token}`;
+        }
+    }, [responseData]);
 
     return (
         <div className="flex flex-col md:flex-row gap-2">

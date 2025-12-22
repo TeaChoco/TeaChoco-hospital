@@ -115,7 +115,6 @@ class SocketManager {
     subscribeToAuthChanges() {
         return this.store.sub(userAtom, () => {
             const auth = this.getAuthState();
-
             if (auth && (!this.socket || this.socket.disconnected)) this.connect();
             else if (!auth && this.socket) this.disconnect();
         });

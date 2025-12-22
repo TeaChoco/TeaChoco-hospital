@@ -19,7 +19,7 @@ async function bootstrap() {
 
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe());
-    // app.use(authMiddleware.use.bind(authMiddleware));
+    app.use(authMiddleware.use.bind(authMiddleware));
     app.use(cookieParserSDK());
     app.enableCors({
         origin: secureService.getAllowedUrls(),
