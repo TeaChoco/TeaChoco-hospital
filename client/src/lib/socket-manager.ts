@@ -5,17 +5,15 @@ import { userAtom } from '../context/userAtom';
 
 class SocketManager {
     private URL: string = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-    private static instance: SocketManager;
+    private store = getDefaultStore();
     private socket: Socket | null = null;
     private listeners: Map<string, Set<Function>> = new Map();
-    private store = getDefaultStore();
+    private static instance: SocketManager;
 
     private constructor() {}
 
     static getInstance(): SocketManager {
-        if (!SocketManager.instance) {
-            SocketManager.instance = new SocketManager();
-        }
+        if (!SocketManager.instance) SocketManager.instance = new SocketManager();
         return SocketManager.instance;
     }
 
@@ -29,15 +27,15 @@ class SocketManager {
             const auth = this.getAuthState();
 
             // ปิด socket เก่าถ้ามี
-            if (this.socket) {
-                this.socket.disconnect();
-            }
-
+            if (this.socket) this.socket.disconnect();
             this.socket = io(this.URL, {
-                auth: { token: auth },
+                auth: {
+                    token: auth,
+                    tokenKey: `Bearer ${import.meta.env.VITE_API_TOKEN_KEY}`,
+                },
                 autoConnect: true,
-                transports: ['websocket'],
                 reconnection: true,
+                transports: ['websocket'],
             });
 
             this.setupEventForwarding();
@@ -58,7 +56,7 @@ class SocketManager {
         // Forward events ไปยัง listeners ทั้งหมด
         this.socket.onAny((eventName, ...args) => {
             const eventListeners = this.listeners.get(eventName);
-            if (eventListeners) {
+            if (eventListeners)
                 eventListeners.forEach((callback) => {
                     try {
                         callback(...args);
@@ -66,7 +64,6 @@ class SocketManager {
                         console.error(`Error in socket listener for ${eventName}:`, error);
                     }
                 });
-            }
         });
 
         this.socket.on('connect', () => {
@@ -119,11 +116,8 @@ class SocketManager {
         return this.store.sub(userAtom, () => {
             const auth = this.getAuthState();
 
-            if (auth && (!this.socket || this.socket.disconnected)) {
-                this.connect();
-            } else if (!auth && this.socket) {
-                this.disconnect();
-            }
+            if (auth && (!this.socket || this.socket.disconnected)) this.connect();
+            else if (!auth && this.socket) this.disconnect();
         });
     }
 }

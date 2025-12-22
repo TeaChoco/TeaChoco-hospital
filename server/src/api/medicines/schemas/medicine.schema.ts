@@ -1,7 +1,4 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/schemas/medicine.schema.ts"
-import { Document } from 'mongoose';
-import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { MedicineType, StorageCondition } from '../../../types/medicine';
 import {
     WarningDto,
     SideEffectDto,
@@ -10,6 +7,9 @@ import {
     MedicineDosageDto,
     TakeInstructionDto,
 } from '../dto/medicine.dto';
+import { Document } from 'mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { MedicineType, StorageCondition } from '../../../types/medicine';
 
 export type MedicineDocument = Medicine & Document;
 
@@ -18,61 +18,61 @@ export class Medicine {
     @Prop()
     user_id: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     name: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     genericName: string;
 
-    @Prop()
+    @Prop({ type: String })
     brand?: string;
 
-    @Prop()
+    @Prop({ type: String, enum: MedicineType, required: true })
     type: MedicineType;
 
-    @Prop()
+    @Prop({ type: String })
     category?: string;
 
-    @Prop()
+    @Prop({ type: [Object] })
     takeInstructions: TakeInstructionDto[];
 
-    @Prop()
+    @Prop({ type: Object })
     dosage: MedicineDosageDto;
 
-    @Prop()
+    @Prop({ type: Date, required: true })
     startDate: Date;
 
-    @Prop()
+    @Prop({ type: Date, required: true })
     endDate: Date;
 
-    @Prop()
+    @Prop({ type: Date, required: true })
     expiryDate: Date;
 
-    @Prop()
+    @Prop({ type: [String], enum: StorageCondition })
     storageConditions: StorageCondition[];
 
-    @Prop()
+    @Prop({ type: String })
     storageNotes?: string;
 
-    @Prop()
+    @Prop({ type: Object })
     package: PackageInfoDto;
 
-    @Prop()
+    @Prop({ type: Object })
     hospital: HospitalInfoDto;
 
-    @Prop()
+    @Prop({ type: [Object] })
     sideEffects: SideEffectDto[];
 
-    @Prop()
+    @Prop({ type: [Object] })
     warnings: WarningDto[];
 
-    @Prop()
+    @Prop({ type: String })
     imageUrl?: string;
 
-    @Prop()
+    @Prop({ type: String })
     qrCode?: string;
 
-    @Prop()
+    @Prop({ type: String })
     barcode?: string;
 }
 

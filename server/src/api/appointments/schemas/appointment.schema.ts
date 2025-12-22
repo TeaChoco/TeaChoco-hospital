@@ -28,145 +28,145 @@ export class Appointment {
     @Prop()
     appointmentNumber: string;
 
-    @Prop()
+    @Prop({ type: String, enum: PatientType, required: true })
     patientType: PatientType;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     hospitalId: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     doctor_id: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     department: string;
 
-    @Prop()
+    @Prop({ type: String, enum: AppointmentType, required: true })
     type: AppointmentType;
 
-    @Prop()
+    @Prop({ type: String })
     subType: string;
 
-    @Prop()
+    @Prop({ type: String })
     purpose: string;
 
-    @Prop()
+    @Prop({ type: String })
     description?: string;
 
-    @Prop()
+    @Prop({ type: Date, required: true })
     scheduledDate: Date;
 
-    @Prop()
+    @Prop({ type: Date, required: true })
     scheduledTime: Date;
 
-    @Prop()
+    @Prop({ type: Number, required: true })
     expectedDuration: number;
 
-    @Prop()
+    @Prop({ type: Date })
     actualStartTime?: Date;
 
-    @Prop()
+    @Prop({ type: Date })
     actualEndTime?: Date;
 
-    @Prop()
+    @Prop({ type: Date })
     checkInTime?: Date;
 
-    @Prop()
+    @Prop({ type: Date })
     checkOutTime?: Date;
 
-    @Prop()
+    @Prop({ type: String, enum: AppointmentLocation, required: true })
     location: AppointmentLocation;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     roomNumber: string;
 
-    @Prop()
+    @Prop({ type: String })
     floor?: string;
 
-    @Prop()
+    @Prop({ type: String, enum: AppointmentStatus, required: true })
     status: AppointmentStatus;
 
-    @Prop()
+    @Prop({ type: [Object] })
     statusHistory: StatusHistoryDto[];
 
-    @Prop()
+    @Prop({ type: String, enum: UrgencyLevel, required: true })
     urgency: UrgencyLevel;
 
-    @Prop()
+    @Prop({ type: Number })
     priority?: number;
 
-    @Prop()
+    @Prop({ type: Object })
     preparation: AppointmentPreparationDto;
 
-    @Prop()
+    @Prop({ type: Boolean, default: false })
     remindersSent: boolean;
 
-    @Prop()
+    @Prop({ type: [Object] })
     symptoms: SymptomDto[];
 
-    @Prop()
+    @Prop({ type: String })
     preliminaryDiagnosis?: string;
 
-    @Prop()
+    @Prop({ type: Object })
     payment: AppointmentPaymentDto;
 
-    @Prop()
+    @Prop({ type: Object })
     insurance: InsuranceInfoDto;
 
-    @Prop()
+    @Prop({ type: [String] })
     prescribedMedicines?: string[];
 
-    @Prop()
+    @Prop({ type: String })
     treatmentPlan?: string;
 
-    @Prop()
+    @Prop({ type: [Object] })
     vitalSigns?: VitalSignDto[];
 
-    @Prop()
+    @Prop({ type: [Object] })
     labResults?: MedicalRecordRefDto[];
 
-    @Prop()
+    @Prop({ type: [Object] })
     imagingResults?: MedicalRecordRefDto[];
 
-    @Prop()
+    @Prop({ type: Object })
     followUp: FollowUpInfoDto;
 
-    @Prop()
+    @Prop({ type: String })
     nextAppointmentId?: string;
 
-    @Prop()
+    @Prop({ type: [Object] })
     doctorNotes?: AppointmentNoteDto[];
 
-    @Prop()
+    @Prop({ type: [Object] })
     nurseNotes?: AppointmentNoteDto[];
 
-    @Prop()
+    @Prop({ type: [Object] })
     patientNotes?: AppointmentNoteDto[];
 
-    @Prop()
+    @Prop({ type: String })
     referralFrom?: string;
 
-    @Prop()
+    @Prop({ type: String })
     referralTo?: string;
 
-    @Prop()
+    @Prop({ type: String })
     previousAppointmentId?: string;
 
-    @Prop()
+    @Prop({ type: String })
     createdBy?: string;
 
-    @Prop()
+    @Prop({ type: String })
     updatedBy?: string;
 
-    @Prop()
+    @Prop({ type: String })
     cancelledBy?: string;
 
-    @Prop()
+    @Prop({ type: String })
     cancellationReason?: string;
 
-    @Prop()
+    @Prop({ type: String })
     noShowReason?: string;
 
-    @Prop()
+    @Prop({ type: [String] })
     escorts?: string[];
 }
 

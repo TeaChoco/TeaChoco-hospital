@@ -1,6 +1,4 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/dto/medicine.dto.ts"
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEnum, IsNumber, IsObject, IsString } from 'class-validator';
 import {
     MealTime,
     TimeUnit,
@@ -10,6 +8,8 @@ import {
     EffectServeriry,
     EffectProbability,
 } from '../../../types/medicine';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsDate, IsEnum, IsNumber, IsObject, IsString } from 'class-validator';
 
 export class TimeIntervalDto {
     @IsNumber()

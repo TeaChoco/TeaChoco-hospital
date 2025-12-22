@@ -28,7 +28,6 @@ export class AuthMiddleware implements NestMiddleware {
             if (callback === null) callback = this.checkUrl(res, originalUrl);
         }
         if (callback === null) return next();
-
         return callback;
     }
 

@@ -4,12 +4,11 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 
 export function useSocket() {
     const [isConnected, setIsConnected] = useState(socketManager.isConnected());
+    const socket = socketManager.getSocket();
 
     const stableCallbacks = useRef<{
         [event: string]: Set<(...args: any[]) => void>;
     }>({});
-
-    const id = socketManager.getSocket()?.id;
 
     const on = useCallback(<T>(event: string, callback: (data: T) => void) => {
         const stableCallback = (...args: any[]) => callback(args[0] as T);
@@ -76,8 +75,8 @@ export function useSocket() {
         on,
         off,
         emit,
-        id,
+        socket,
         isConnected,
-        socket: socketManager.getSocket(),
+        id: socket?.id,
     };
 }
