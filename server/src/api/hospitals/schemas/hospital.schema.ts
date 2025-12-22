@@ -12,14 +12,16 @@ export class Hospital {
     @Prop({ required: true })
     name: string;
 
-    @Prop({ required: false })
+    @Prop()
     address?: string;
 
-    @Prop({ required: false })
+    @Prop()
     contactNumber?: string;
 
-    @Prop({ required: false })
+    @Prop()
     website?: string;
 }
 
 export const HospitalSchema = SchemaFactory.createForClass(Hospital);
+
+HospitalSchema.index({ createdAt: 1 });
