@@ -3,9 +3,8 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import cookieParserSDK from 'cookie-parser';
 import { SecureService } from './secure/secure.service';
-// import { AuthMiddleware } from './auth/auth.middleware';
 import { Logger, ValidationPipe } from '@nestjs/common';
-// import { SocketIoAdapter } from './api/socket/socket.adapter';
+import { SocketIoAdapter } from './api/socket/socket.adapter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
@@ -17,7 +16,7 @@ async function bootstrap() {
     // const authMiddleware = new AuthMiddleware(secureService);
     const { SERVER_HOSE, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
-    // app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
+    app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe());
     // app.use(authMiddleware.use.bind(authMiddleware));
     app.use(cookieParserSDK());

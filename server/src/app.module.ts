@@ -10,11 +10,6 @@ import { SecureModule } from './secure/secure.module';
 @Module({
     providers: [AppService],
     controllers: [AppController],
-    imports: [
-        SecureModule,
-        // AuthModule,
-        ApiModule,
-        UserModule,
-    ],
+    imports: [ApiModule, UserModule, AuthModule, SecureModule],
 })
 export class AppModule {}
