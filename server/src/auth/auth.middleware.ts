@@ -34,9 +34,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     checkUrl(res: Response, originalUrl: string) {
         const allowedUrls = this.secureService.getAllowedUrls();
-        if (allowedUrls.includes(originalUrl)) {
-            return null;
-        }
+        if (allowedUrls.includes(originalUrl)) return null;
         return res.status(400).json({ message: 'Bad Request' });
     }
 
