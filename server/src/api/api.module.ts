@@ -8,7 +8,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
     imports: [
-        // HospitalsModule,
+        HospitalsModule,
         // DoctorsModule,
         // AppointmentsModule,
         // MedicinesModule,
