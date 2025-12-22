@@ -4,7 +4,7 @@ export const envConfigs = [
     'NODE_ENV',
     'VITE_API_TOKEN_KEY',
     'CLIENT_URL',
-    'SERVER_HOSE',
+    'SERVER_HOST',
     'SERVER_PORT',
     'MONGODB_URI',
     'JWT_SECRET',

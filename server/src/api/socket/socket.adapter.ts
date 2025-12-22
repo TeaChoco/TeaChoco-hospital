@@ -26,7 +26,6 @@ export class SocketIoAdapter extends IoAdapter {
         const isDev = this.secureService.isDev();
         const allowedUrls = this.secureService.getAllowedUrls();
         const origin: string[] = ['https://admin.socket.io', ...allowedUrls];
-        this.logger.log('createIOServer origins:', origin, 'isDev:', isDev);
 
         const server = super.createIOServer(port, {
             ...options,

@@ -1,0 +1,75 @@
+#-Path: "TeaChoco-Hospital/docker-compose.yml"
+version: '3.8'
+
+services:
+  # React Vite Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: teachoco-hospital-client
+    ports:
+      - "5173:5173"
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+      VITE_API_URL: http://127.0.0.1:3000
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - server
+    networks:
+      - teachoco-hospital-network
+
+  # Nestjs API Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: teachoco-hospital-server
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+    env_file:
+      - ./server/.env
+    environment:
+      SERVER_HOST: 0.0.0.0
+      WATCHPACK_POLLING: true
+      CHOKIDAR_USEPOLLING: true
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - teachoco-hospital-network
+    command: pnpm start:dev
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: teachoco-hospital-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: teachoco-hospital
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb-data:/data/db
+      - ./db/init-db.js:/docker-entrypoint-initdb.d/init-db.js
+    networks:
+      - teachoco-hospital-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongodb-data:
+
+networks:
+  teachoco-hospital-network:
+    driver: bridge

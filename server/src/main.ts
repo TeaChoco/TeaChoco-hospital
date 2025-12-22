@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import cookieParserSDK from 'cookie-parser';
 import { SecureService } from './secure/secure.service';
+import { AuthMiddleware } from './auth/auth.middleware';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SocketIoAdapter } from './api/socket/socket.adapter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -13,12 +14,12 @@ async function bootstrap() {
     const time = Date.now();
     const app = (await NestFactory.create(AppModule)) as NestExpressApplication;
     const secureService = app.get(SecureService);
-    // const authMiddleware = new AuthMiddleware(secureService);
-    const { SERVER_HOSE, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
+    const authMiddleware = new AuthMiddleware(secureService);
+    const { SERVER_HOST, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe());
-    // app.use(authMiddleware.use.bind(authMiddleware));
+    app.use(authMiddleware.use.bind(authMiddleware));
     app.use(cookieParserSDK());
     app.enableCors({
         origin: secureService.getAllowedUrls(),
@@ -60,8 +61,9 @@ async function bootstrap() {
             });
         });
     }
-    const port = Number(SERVER_PORT) ?? 10000;
-    await app.listen(port, SERVER_HOSE ?? '0.0.0.0');
+    const port = Number(SERVER_PORT) ?? 3000;
+    const host = SERVER_HOST ?? '0.0.0.0';
+    await app.listen(port, host);
 
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);
     Logger.debug(`📄 API Docs: ${await app.getUrl()}/api`);
