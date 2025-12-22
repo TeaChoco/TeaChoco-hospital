@@ -1,14 +1,14 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.controller.ts"
-import { Auth, ReqUserDto, UserLoginDto } from '../dto/user.dto';
 import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { ResponseUserDto } from '../dto/response-user.dto';
-import { GoogleAuthGuard } from './guard/google-auth.guard';
-import { SecureService } from '../../secure/secure.service';
-import { Get, Res, Req, Logger, UseGuards, Controller, Redirect, Post } from '@nestjs/common';
+import { SecureService } from '$/secure/secure.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
+import { GoogleAuthGuard } from './guard/google-auth.guard';
+import { ResponseUserDto } from '$/user/dto/response-user.dto';
+import { Auth, ReqUserDto, UserLoginDto } from '$/user/dto/user.dto';
+import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { Get, Res, Req, Logger, UseGuards, Controller, Redirect, Post } from '@nestjs/common';
 
 @ApiTags('User Auth')
 @Controller('user/auth')

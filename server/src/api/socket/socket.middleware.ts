@@ -1,6 +1,6 @@
-//-Path: "TeaChoco-Official/projects/server/src/socket/socket.middleware.ts"
+//-Path: "TeaChoco-Hospital/server/src/api/socket/socket.middleware.ts"
 import { Socket } from 'socket.io';
-import { SecureService } from 'src/secure/secure.service';
+import { SecureService } from '$/secure/secure.service';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 
 @Injectable()

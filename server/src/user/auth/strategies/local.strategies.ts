@@ -1,7 +1,7 @@
-//-Path: "motiva/server/src/user/auth/strategies/local.strategies.ts"
+//-Path: "TeaChoco-Hospital/server/src/user/auth/strategies/local.strategies.ts"
 import { Strategy } from 'passport-local';
-import { AuthService } from '../auth.service';
 import { PassportStrategy } from '@nestjs/passport';
+import { AuthService } from '$/user/auth/auth.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()

@@ -1,11 +1,11 @@
 //-Path: "TeaChoco-Hospital/server/src/user/user.service.ts"
+import { nameDB } from '$/hooks/mongodb';
 import { Model, Types } from 'mongoose';
-import { nameDB } from '../hooks/mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Allow, UserJWTPayload } from './dto/user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Allow, UserJWTPayload } from './dto/user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { QueryOptions, ResponseOptions, ResponseUserDto } from './dto/response-user.dto';
 
@@ -57,14 +57,13 @@ export class UserService {
     options(querys: QueryOptions): ResponseOptions | undefined {
         const {
             auth,
-            googleId,
-            email,
             name,
-            firstName,
-            lastName,
-            picture,
-
+            email,
             allows,
+            picture,
+            googleId,
+            lastName,
+            firstName,
             createdAt,
             updatedAt,
             lastLoginAt,

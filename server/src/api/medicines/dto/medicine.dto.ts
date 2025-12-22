@@ -1,12 +1,13 @@
+//-Path: "TeaChoco-Hospital/server/src/api/medicines/dto/medicine.dto.ts"
 import {
     MealTime,
     TimeUnit,
-    FoodRelation,
     MedicineUnit,
+    FoodRelation,
     SeverityLevel,
     EffectServeriry,
     EffectProbability,
-} from '../../../types/medicine';
+} from '$/types/medicine';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsNumber, IsObject, IsString } from 'class-validator';
 

@@ -1,6 +1,5 @@
 //-Path: "TeaChoco-Hospital/server/src/user/schemas/user.schema.ts"
 import { Document } from 'mongoose';
-import { Allow } from '../dto/user.dto';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 export type UserDocument = User & Document;

@@ -1,4 +1,20 @@
-//- Path: "TeaChoco-Hospital/server/src/api/medicine/dto/create-medicine.dto.ts"
+//-Path: "TeaChoco-Hospital/server/src/api/medicines/dto/create-medicine.dto.ts"
+import {
+    IsDate,
+    IsEnum,
+    IsArray,
+    IsObject,
+    IsString,
+    IsBoolean,
+    IsOptional,
+} from 'class-validator';
+import {
+    MedicineType,
+    EffectServeriry,
+    StorageCondition,
+    EffectProbability,
+} from '$/types/medicine';
+import { Type } from 'class-transformer';
 import {
     WarningDto,
     SideEffectDto,
@@ -6,24 +22,8 @@ import {
     HospitalInfoDto,
     MedicineDosageDto,
     TakeInstructionDto,
-} from './medicine.dto';
-import { Type } from 'class-transformer';
+} from '$/api/medicines/dto/medicine.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    EffectProbability,
-    EffectServeriry,
-    MedicineType,
-    StorageCondition,
-} from '../../../types/medicine';
-import {
-    IsArray,
-    IsBoolean,
-    IsDate,
-    IsEnum,
-    IsObject,
-    IsOptional,
-    IsString,
-} from 'class-validator';
 
 export class CreateMedicineDto {
     @IsString()

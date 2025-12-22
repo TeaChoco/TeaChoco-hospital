@@ -1,6 +1,6 @@
-//- Path: "TeaChoco-Hospital/server/src/api/appointments/appointments.module.ts"
+//-Path: "TeaChoco-Hospital/server/src/api/appointments/appointments.module.ts"
 import { Module } from '@nestjs/common';
-import { ImportsMongoose } from 'src/hooks/mongodb';
+import { ImportsMongoose } from '$/hooks/mongodb';
 import { AppointmentsService } from './appointments.service';
 import { AppointmentsController } from './appointments.controller';
 import { Appointment, AppointmentSchema } from './schemas/appointment.schema';

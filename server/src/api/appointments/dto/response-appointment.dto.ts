@@ -1,19 +1,19 @@
-//- Path: "TeaChoco-Hospital/server/src/api/appointments/dto/response-appointment.dto.ts"
-import { ApiProperty } from '@nestjs/swagger';
-import { CreateAppointmentDto } from './create-appointment.dto';
+//-Path: "TeaChoco-Hospital/server/src/api/appointments/dto/response-appointment.dto.ts"
 import {
-    IsArray,
     IsDate,
+    IsArray,
     IsNumber,
+    IsString,
     IsObject,
     IsOptional,
-    IsString,
     ValidateNested,
 } from 'class-validator';
-import { ResponseHospitalDto } from 'src/api/hospitals/dto/response-hospital.dto';
 import { Type } from 'class-transformer';
-import { ResponseDoctorDto } from 'src/api/doctors/dto/response-doctor.dto';
-import { ResponseMedicineDto } from 'src/api/medicines/dto/response-medicine.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { CreateAppointmentDto } from './create-appointment.dto';
+import { ResponseDoctorDto } from '$/api/doctors/dto/response-doctor.dto';
+import { ResponseHospitalDto } from '$/api/hospitals/dto/response-hospital.dto';
+import { ResponseMedicineDto } from '$/api/medicines/dto/response-medicine.dto';
 
 export class ResponseAppointmentDto extends CreateAppointmentDto {
     @IsString()
