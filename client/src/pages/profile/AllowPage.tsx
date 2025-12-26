@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Hospital/src/pages/profile/AllowPage.tsx"
+import env from '../../configs/env';
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
@@ -104,7 +105,7 @@ export default function AllowPage() {
     }, [id, reads, edits, expiresAt, isExpiresAt]);
 
     const value = useMemo(() => {
-        const url = import.meta.env.VITE_CLIENT_URL;
+        const url = env.clientUrl;
         if (responseData) {
             const { response } = responseData;
             if (response)

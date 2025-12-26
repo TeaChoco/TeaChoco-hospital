@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/auth/SigninGoogle.tsx"
+import env from '../../configs/env';
 import GoogleSignin from '../../components/auth/GoogleSignin';
 
 export default function SigninGoogle({
@@ -16,7 +17,7 @@ export default function SigninGoogle({
             <GoogleSignin />
 
             {/* Debug Information (สำหรับ development) */}
-            {import.meta.env.NODE_ENV === 'development' && queryError && (
+            {env.mode === 'development' && queryError && (
                 <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs">
                     <p className="font-mono text-gray-600 dark:text-gray-400">
                         Debug: {queryError}

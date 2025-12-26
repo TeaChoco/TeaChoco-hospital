@@ -1,5 +1,6 @@
 //-Path: "TeaChoco-Hospital/client/src/components/GoogleSignin.tsx"
 import { useState } from 'react';
+import env from '../../configs/env';
 import { FcGoogle } from 'react-icons/fc';
 import { useTranslation } from 'react-i18next';
 import { TbLoaderQuarter } from 'react-icons/tb';
@@ -12,7 +13,7 @@ export default function GoogleSignin() {
         if (isLoading) return;
         try {
             setIsLoading(true);
-            const googleAuthUrl = import.meta.env.VITE_API_URL + '/user/auth/google';
+            const googleAuthUrl = env.apiUrl + '/user/auth/google';
             window.location.href = googleAuthUrl;
         } catch (error) {
             console.error('Sign in error:', error);

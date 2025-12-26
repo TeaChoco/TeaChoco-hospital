@@ -1,8 +1,9 @@
 //-Path: "TeaChoco-Hospital/client/src/services/axios.ts"
 import axios from 'axios';
+import env from '../configs/env';
 import type { QueryOptions } from '../types/types';
 
-const baseURL: string = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const baseURL: string = env.apiUrl || 'http://localhost:3000';
 
 const serverRest = axios.create({
     baseURL,
@@ -14,7 +15,7 @@ const serverRest = axios.create({
 
 serverRest.interceptors.request.use(
     (config) => {
-        const token = import.meta.env.VITE_API_TOKEN_KEY;
+        const token = env.apiTokenKey;
         config.headers.apporization = `Bearer ${token}`;
         return config;
     },

@@ -1,10 +1,11 @@
 //-Path: "TeaChoco-Hospital/client/src/lib/socket-manager.ts"
+import env from '../configs/env';
 import { getDefaultStore } from 'jotai';
 import { userAtom } from '../context/userAtom';
 import { io, type Socket } from 'socket.io-client';
 
 class SocketManager {
-    private URL: string = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    private URL: string = env.apiUrl || 'http://localhost:3000';
     private store = getDefaultStore();
     private socket: Socket | null = null;
     private listeners: Map<string, Set<Function>> = new Map();
@@ -37,7 +38,7 @@ class SocketManager {
             this.socket = io(this.URL, {
                 auth: {
                     user,
-                    tokenKey: `Bearer ${import.meta.env.VITE_API_TOKEN_KEY}`,
+                    tokenKey: `Bearer ${env.apiTokenKey}`,
                 },
                 autoConnect: true,
                 reconnection: true,
