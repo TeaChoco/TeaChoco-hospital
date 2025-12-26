@@ -2,19 +2,22 @@
 import { IncomingHttpHeaders } from 'http';
 import { SecureService } from '../secure/secure.service';
 import { Request, Response, NextFunction } from 'express';
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
+    logger = new Logger(AuthMiddleware.name);
+
     constructor(private readonly secureService: SecureService) {}
 
     private readonly publicGets = ['/', '/socket-ui', '/public**'];
 
     use(req: Request, res: Response, next: NextFunction) {
         if (this.secureService.isDev()) return next();
-
         let callback: unknown = null;
-        const { method, headers, originalUrl } = req;
+        const { method, headers } = req;
+        const clientOrigin = req.headers.origin || req.headers.referer || '';
+
         const publicPaths = this.publicGets.find(
             (path) =>
                 req.path === path ||
@@ -22,18 +25,20 @@ export class AuthMiddleware implements NestMiddleware {
         );
         if (method === 'GET') {
             if (publicPaths) return next();
-            callback = this.checkUrl(res, originalUrl);
+            callback = this.checkUrl(res, clientOrigin);
         } else {
             callback = this.checkToken(res, headers);
-            if (callback === null) callback = this.checkUrl(res, originalUrl);
+            if (callback === null) callback = this.checkUrl(res, clientOrigin);
         }
         if (callback === null) return next();
         return callback;
     }
 
-    checkUrl(res: Response, originalUrl: string) {
+    checkUrl(res: Response, origin: string) {
         const allowedUrls = this.secureService.getAllowedUrls();
-        if (allowedUrls.includes(originalUrl)) return null;
+        this.logger.log(`Allowed URLs: ${allowedUrls.join(' , ')}`);
+        this.logger.log(`Original URL: ${origin}`);
+        if (allowedUrls.includes(origin)) return null;
         return res.status(400).json({ message: 'Bad Request' });
     }
 

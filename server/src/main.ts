@@ -19,13 +19,13 @@ async function bootstrap() {
 
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe());
-    app.use(authMiddleware.use.bind(authMiddleware));
     app.use(cookieParserSDK());
     app.enableCors({
         origin: secureService.getAllowedUrls(),
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         credentials: true,
     });
+    app.use(authMiddleware.use.bind(authMiddleware));
 
     if (secureService.isDev()) {
         const theme = new SwaggerTheme();
@@ -68,7 +68,7 @@ async function bootstrap() {
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);
     Logger.debug(`📄 API Docs: ${await app.getUrl()}/api`);
     Logger.debug(`🌐 Client Origin: ${CLIENT_URL}`);
-    Logger.debug(`🔴 Allowed Origins: ${secureService.getAllowedUrls().join(', ')}`);
+    Logger.debug(`🔴 Allowed Origins: ${secureService.getAllowedUrls().join(' , ')}`);
     Logger.debug(`📦 MongoDB URI configured: ${MONGODB_URI ? 'Yes' : 'No'}`);
 }
 bootstrap();
