@@ -68,6 +68,7 @@ async function bootstrap() {
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);
     Logger.debug(`📄 API Docs: ${await app.getUrl()}/api`);
     Logger.debug(`🌐 Client Origin: ${CLIENT_URL}`);
+    Logger.debug(`🔴 Allowed Origins: ${secureService.getAllowedUrls().join(', ')}`);
     Logger.debug(`📦 MongoDB URI configured: ${MONGODB_URI ? 'Yes' : 'No'}`);
 }
 bootstrap();
