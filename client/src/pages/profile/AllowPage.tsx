@@ -1,6 +1,7 @@
 //-Path: "TeaChoco-Hospital/src/pages/profile/AllowPage.tsx"
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
+import { useAuth } from '../../hooks/useAuth';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
@@ -10,8 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaArrowLeft, FaTrash } from 'react-icons/fa';
 import QRScanner from '../../components/code/QRScanner';
 import QRGenerator from '../../components/code/QRGenerator';
-import type { ResponseData, SiginQrData } from '../../types/signin-qr.dto';
-import { useAuth } from '../../hooks/useAuth';
+import type { SiginQrData } from '../../types/signin-qr.dto';
 
 function AllowsSelects({
     title,
