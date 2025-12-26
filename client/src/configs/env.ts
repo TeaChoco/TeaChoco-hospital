@@ -6,8 +6,8 @@ const env = {
     mode: import.meta.env.VITE_MODE,
     apiUrl: import.meta.env.VITE_API_URL,
     clientUrl: import.meta.env.VITE_CLIENT_URL,
-    serverHost: import.meta.env.VITE_SERVER_HOST,
-    serverPort: import.meta.env.VITE_SERVER_PORT,
+    clientHost: import.meta.env.VITE_CLIENT_HOST,
+    clientPort: import.meta.env.VITE_CLIENT_PORT,
     apiTokenKey: import.meta.env.VITE_API_TOKEN_KEY,
 };
 
