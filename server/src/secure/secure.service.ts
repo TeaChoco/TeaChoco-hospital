@@ -10,13 +10,14 @@ export class SecureService {
     isDev = () => this.getEnvConfig().NODE_ENV === 'development';
 
     getEnvConfig = (): EnvConfig =>
-        envConfigs.reduce(
-            (acc, key) => ({
+        envConfigs.reduce((acc, key) => {
+            const value = this.configService.get<string>(key);
+            if (value === undefined) throw new Error(`Missing ${key}`);
+            return {
                 ...acc,
-                [key]: this.configService.get<string>(key),
-            }),
-            {},
-        );
+                [key]: value,
+            };
+        }, {});
 
     getAllowedUrls(): string[] {
         const env = this.getEnvConfig();
