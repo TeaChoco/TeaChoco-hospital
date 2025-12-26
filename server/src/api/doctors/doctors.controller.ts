@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/api/doctors/doctors.controller.ts"
 import type { Request } from 'express';
+import { Auth } from '../../types/auth';
 import { DoctorsService } from './doctors.service';
-import { Auth } from '../../user/dto/user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { ResponseDoctorDto } from './dto/response-doctor.dto';

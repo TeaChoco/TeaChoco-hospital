@@ -1,6 +1,15 @@
 //-Path: "TeaChoco-Hospital/server/src/api/appointments/dto/create-appointment.dto.ts"
-import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import {
+    SymptomDto,
+    VitalSignDto,
+    FollowUpInfoDto,
+    InsuranceInfoDto,
+    StatusHistoryDto,
+    AppointmentNoteDto,
+    MedicalRecordRefDto,
+    AppointmentPaymentDto,
+    AppointmentPreparationDto,
+} from './appointment';
 import {
     IsDate,
     IsEnum,
@@ -12,21 +21,14 @@ import {
     ValidateNested,
 } from 'class-validator';
 import {
-    SymptomDto,
     PatientType,
     UrgencyLevel,
-    VitalSignDto,
-    FollowUpInfoDto,
-    InsuranceInfoDto,
-    StatusHistoryDto,
     AppointmentType,
-    AppointmentNoteDto,
     AppointmentStatus,
     AppointmentLocation,
-    MedicalRecordRefDto,
-    AppointmentPaymentDto,
-    AppointmentPreparationDto,
-} from './appointment';
+} from '../../../types/appointment';
+import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAppointmentDto {
     @IsString()

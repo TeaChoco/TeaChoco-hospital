@@ -1,22 +1,24 @@
 //-Path: "TeaChoco-Hospital/server/src/api/appointments/schemas/appointment.schema.ts"
-import { Document } from 'mongoose';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
     SymptomDto,
-    PatientType,
-    UrgencyLevel,
     VitalSignDto,
-    AppointmentType,
     FollowUpInfoDto,
     InsuranceInfoDto,
     StatusHistoryDto,
-    AppointmentStatus,
     AppointmentNoteDto,
     MedicalRecordRefDto,
-    AppointmentLocation,
     AppointmentPaymentDto,
     AppointmentPreparationDto,
 } from '../dto/appointment';
+import {
+    PatientType,
+    UrgencyLevel,
+    AppointmentType,
+    AppointmentStatus,
+    AppointmentLocation,
+} from '../../../types/appointment';
+import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type AppointmentDocument = Appointment & Document;
 

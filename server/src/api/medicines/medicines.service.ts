@@ -1,9 +1,9 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/medicines.service.ts"
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { nameDB } from '../../hooks/mongodb';
-import { Allow, Auth } from '../../user/dto/user.dto';
+import { Auth, Allow } from '../../types/auth';
+import { InjectModel } from '@nestjs/mongoose';
 import { Medicine } from './schemas/medicine.schema';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
 import { UpdateMedicineDto } from './dto/update-medicine.dto';

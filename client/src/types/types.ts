@@ -1,5 +1,4 @@
 //-Path: "motiva/client/src/types/types.ts"
-import type { Allow } from './auth';
 
 export enum Title {
     MEDICINES = 'Medicines',
@@ -9,13 +8,3 @@ export enum Title {
 }
 
 export type QueryOptions = Partial<Record<string, string | boolean | number | undefined | null>>;
-
-export interface RequestSocketData {
-    request: { socketId: string };
-}
-
-export interface ResponseSocketData {
-    token: string;
-    expiresAt: Date;
-    response: { socketId: string; reads: Allow[]; edits: Allow[]; expiresAt?: Date };
-}

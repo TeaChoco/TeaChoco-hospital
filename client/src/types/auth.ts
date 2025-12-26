@@ -10,6 +10,12 @@ export enum Allow {
     CALENDARS = 'calendars',
 }
 
+export enum Role {
+    ADMIN = 'admin',
+    USER = 'user',
+    VISITOR = 'visitor',
+}
+
 export interface Allows {
     user_id: string;
     read: Allow[];
@@ -26,6 +32,7 @@ export interface User {
     lastName?: string;
     picture?: string;
     allows?: Allows[];
+    role?: Role;
     createdAt?: Date;
     updatedAt?: Date;
     lastLoginAt?: Date;
@@ -46,6 +53,7 @@ export interface UserQuery extends QueryOptions {
     lastName?: boolean;
     picture?: boolean;
     allows?: boolean;
+    role?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     lastLoginAt?: boolean;

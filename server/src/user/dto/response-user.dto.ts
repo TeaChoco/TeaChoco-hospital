@@ -1,5 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/response-user.dto.ts"
-import { Allow, AllowsDto } from './user.dto';
+import {  AllowsDto } from './user.dto';
+import { Allow } from '../../types/auth';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
 

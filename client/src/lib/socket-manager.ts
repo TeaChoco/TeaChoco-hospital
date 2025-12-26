@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/lib/socket-manager.ts"
 import { getDefaultStore } from 'jotai';
-import { io, Socket } from 'socket.io-client';
 import { userAtom } from '../context/userAtom';
+import { io, type Socket } from 'socket.io-client';
 
 class SocketManager {
     private URL: string = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -10,27 +10,33 @@ class SocketManager {
     private listeners: Map<string, Set<Function>> = new Map();
     private static instance: SocketManager;
 
-    private constructor() {}
+    private constructor() {
+        this.subscribeToUserChanges();
+    }
 
     static getInstance(): SocketManager {
         if (!SocketManager.instance) SocketManager.instance = new SocketManager();
         return SocketManager.instance;
     }
 
-    private getAuthState() {
+    private getUserState() {
         return this.store.get(userAtom);
     }
 
     connect() {
+        const user = this.getUserState();
+
+        // รอจนกว่า userAtom จะไม่ใช่ undefined (เพราะ undefined คือช่วงกำลังโหลด)
+        if (user === undefined) return;
+
         // ถ้ายังไม่มี socket หรือ socket disconnected
         if (!this.socket || this.socket.disconnected) {
-            const auth = this.getAuthState();
-
             // ปิด socket เก่าถ้ามี
             if (this.socket) this.socket.disconnect();
+
             this.socket = io(this.URL, {
                 auth: {
-                    token: auth,
+                    user,
                     tokenKey: `Bearer ${import.meta.env.VITE_API_TOKEN_KEY}`,
                 },
                 autoConnect: true,
@@ -111,12 +117,15 @@ class SocketManager {
         return this.socket?.connected || false;
     }
 
-    // Reconnect เมื่อ auth เปลี่ยน
-    subscribeToAuthChanges() {
+    // Reconnect เมื่อ user เปลี่ยน
+    subscribeToUserChanges() {
         return this.store.sub(userAtom, () => {
-            const auth = this.getAuthState();
-            if (auth && (!this.socket || this.socket.disconnected)) this.connect();
-            else if (!auth && this.socket) this.disconnect();
+            const user = this.getUserState();
+            if (user !== undefined) {
+                // ถ้ามี socket อยู่แล้วแต่ user เปลี่ยน (เช่น Login/Logout) ให้เลิกเชื่อมต่อแล้วเริ่มใหม่
+                if (this.socket) this.disconnect();
+                this.connect();
+            }
         });
     }
 }

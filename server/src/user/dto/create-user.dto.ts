@@ -1,5 +1,5 @@
 //-Path: "motiva/server/src/user/dto/create-user.dto.ts"
-import { Allow } from './user.dto';
+import { Allow } from '../../types/auth';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, IsString } from 'class-validator';
 

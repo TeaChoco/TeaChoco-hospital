@@ -11,15 +11,19 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
+import { SocketService } from './socket.service';
+import { SiginQrDto } from '../../user/auth/dto/signin-qr.dto';
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
-
     logger = new Logger(SocketGateway.name);
 
+    constructor(private socketService: SocketService) {}
+
     afterInit(server: Server) {
+        this.socketService.setServer(server);
         this.logger.log('Socket.io server initialized');
     }
 
@@ -32,9 +36,11 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     @SubscribeMessage('signin-qr')
-    handleSigninQr(@MessageBody() data: string, @ConnectedSocket() client: Socket): string {
-        this.logger.debug(client.handshake.auth);
-        this.logger.log(`Client ${client.id} sent signin-qr: ${data}`);
-        return data;
+    async handleSigninQr(
+        @MessageBody() data: SiginQrDto,
+        @ConnectedSocket() client: Socket,
+    ): Promise<string> {
+        await this.socketService.signinQr(client, data);
+        return 'ok';
     }
 }

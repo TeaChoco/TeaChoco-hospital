@@ -1,9 +1,10 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/strategies/jwt.strategies.ts"
-import { Injectable, Logger } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Auth } from '../../../types/auth';
 import { UserService } from '../../user.service';
-import { Auth, UserJWTPayload } from '../../dto/user.dto';
+import { UserJWTPayload } from '../../dto/user.dto';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable, Logger } from '@nestjs/common';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { SecureService } from '../../../secure/secure.service';
 
 @Injectable()

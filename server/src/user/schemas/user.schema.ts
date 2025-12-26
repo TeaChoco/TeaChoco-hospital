@@ -1,5 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/user/schemas/user.schema.ts"
 import { Document } from 'mongoose';
+import { Role } from '../../types/auth';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 export type UserDocument = User & Document;
@@ -27,13 +28,16 @@ export class User {
     @Prop()
     picture?: string;
 
+    @Prop({ required: true })
+    role: Role;
+
     @Prop()
     createdAt?: Date;
 
     @Prop()
     updatedAt?: Date;
 
-    @Prop()
+    @Prop({ required: true })
     lastLoginAt: Date;
 }
 

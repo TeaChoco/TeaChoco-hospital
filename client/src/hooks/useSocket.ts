@@ -36,6 +36,17 @@ export function useSocket() {
         }
     }, []);
 
+    const useEvent = (
+        event: string,
+        callback: (...args: any[]) => void,
+        deps: React.DependencyList = [],
+    ) => {
+        useEffect(() => {
+            on(event, callback);
+            return () => off(event, callback);
+        }, deps);
+    };
+
     const emit = useCallback(<T>(event: string, data?: T) => socketManager.emit(event, data), []);
 
     // Connect socket เมื่อ hook mount
@@ -76,6 +87,7 @@ export function useSocket() {
         off,
         emit,
         socket,
+        useEvent,
         isConnected,
         id: socket?.id,
     };

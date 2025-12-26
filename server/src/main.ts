@@ -62,7 +62,7 @@ async function bootstrap() {
         });
     }
     const port = Number(SERVER_PORT) ?? 3000;
-    const host = SERVER_HOST ?? '0.0.0.0';
+    const host = '0.0.0.0';
     await app.listen(port, host);
 
     Logger.debug(`🚀 Server is running on: ${await app.getUrl()} in ${Date.now() - time}ms`);

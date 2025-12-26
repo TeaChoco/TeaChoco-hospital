@@ -1,8 +1,10 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/auth/Signin.tsx"
 import SigninGoogle from './SigninGoogle';
-import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { authAPI } from '../../services/auth';
 import Background from '../../layout/Background';
+import { useSocket } from '../../hooks/useSocket';
+import { useEffect, useMemo, useState } from 'react';
 import Activity from '../../components/custom/Activity';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
 import SelectLang from '../../components/layout/SelectLang';
@@ -10,18 +12,54 @@ import QRScannerPage from '../../components/auth/QRScanner';
 import ThemeToggle from '../../components/layout/ThemeToggle';
 import QRGeneratorPage from '../../components/auth/QRGenerator';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import type { SiginQrData } from '../../types/signin-qr.dto';
 
 export default function Signin() {
     const navigate = useNavigate();
+    const { emit, useEvent } = useSocket();
     const [searchParams] = useSearchParams();
     const { isAuthenticated, loading, error } = useAuth();
     const [queryError, setQueryError] = useState<string | null>(null);
     const [querySource, setQuerySource] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'google' | 'scan' | 'generate'>('google');
 
-    if (isAuthenticated) navigate('/');
+    const { socketId, token } = useMemo(() => {
+        const params = new URLSearchParams(window.location.search);
+        const socketId = params.get('socketId');
+        const token = params.get('token');
+        return { socketId, token };
+    }, [window.location.search]);
 
-    // ดึงค่า error จาก query parameters
+    const signinQr = (socketId: string, token: string) => {
+        const data: SiginQrData = { request: { socketId, token } };
+        console.log(data);
+        if (
+            typeof data === 'object' &&
+            data.request &&
+            typeof data.request.token === 'string' &&
+            typeof data.request.socketId === 'string'
+        )
+            emit('signin-qr', data);
+        else console.log(data, 'is not RequestSocketData');
+    };
+
+    useEffect(() => {
+        if (socketId && token) signinQr(socketId, token);
+    }, [socketId, token]);
+
+    useEvent('signin-qr', (data: SiginQrData) => {
+        if (
+            typeof data === 'object' &&
+            data.request &&
+            typeof data.request.token === 'string' &&
+            typeof data.request.socketId === 'string'
+        )
+            authAPI.signinQr(data);
+        console.log(data);
+    });
+
+    if (isAuthenticated && !(socketId && token)) navigate('/');
+
     useEffect(() => {
         const errorParam = searchParams.get('error');
         const sourceParam = searchParams.get('source');

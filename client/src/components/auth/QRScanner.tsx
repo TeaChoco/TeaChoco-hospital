@@ -2,7 +2,7 @@
 import Paper from '../custom/Paper';
 import QRScanner from '../code/QRScanner';
 import { useSocket } from '../../hooks/useSocket';
-import type { ResponseSocketData } from '../../types/types';
+import type { SiginQrData } from '../../types/signin-qr.dto';
 
 export default function QRScannerPage() {
     const { emit } = useSocket();
@@ -12,9 +12,10 @@ export default function QRScannerPage() {
             <QRScanner
                 header="Scan QR Code"
                 onScan={(result) => {
-                    const data: ResponseSocketData = JSON.parse(result);
+                    const data: SiginQrData = JSON.parse(result);
                     console.log(data);
-                    emit('signin-qr', data);
+                    if (typeof data === 'object' && data.response) emit('signin-qr', data);
+                    else console.log(data, 'is not SiginQrData');
                 }}
                 description="Point your camera at the QR code to login"
             />

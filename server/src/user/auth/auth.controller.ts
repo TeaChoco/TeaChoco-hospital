@@ -1,14 +1,16 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.controller.ts"
+import { Auth } from '../../types/auth';
 import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { SiginQrDto } from './dto/signin-qr.dto';
 import { LocalAuthGuard } from './guard/local-auth.guard';
-import { GoogleAuthGuard } from './guard/google-auth.guard';
-import { Auth, ReqUserDto, UserLoginDto } from '../dto/user.dto';
-import { SecureService } from '../../secure/secure.service';
 import { ResponseUserDto } from '../dto/response-user.dto';
+import { ReqUserDto, UserLoginDto } from '../dto/user.dto';
+import { SecureService } from '../../secure/secure.service';
+import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { Get, Res, Req, Logger, UseGuards, Controller, Redirect, Post } from '@nestjs/common';
+import { Get, Res, Req, Logger, UseGuards, Controller, Redirect, Post, Body } from '@nestjs/common';
 
 @ApiTags('User Auth')
 @Controller('user/auth')
@@ -27,6 +29,32 @@ export class AuthController {
     //     return this.authService.login(body.password);
     // }
 
+    @Post('signin-qr')
+    @ApiBody({
+        required: true,
+        type: SiginQrDto,
+    })
+    async signinQr(@Res({ passthrough: true }) res: Response, @Body() body: SiginQrDto) {
+        this.logger.log(body);
+        const result = await this.authService.signinQr(body);
+        if (result) {
+            const { access_token, maxAge } = result;
+            res.cookie('access_token', access_token, {
+                maxAge,
+                secure: true,
+                httpOnly: true,
+                sameSite: 'none',
+            });
+            return {
+                result,
+                message: 'Signin QR successful',
+            };
+        }
+        return {
+            message: 'Signin QR failed',
+        };
+    }
+
     @Post('login')
     @UseGuards(LocalAuthGuard)
     @ApiResponse({
@@ -41,6 +69,7 @@ export class AuthController {
     async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
         const { accessToken } = await this.authService.login(req.user as ReqUserDto);
         if (accessToken) {
+            const result = await this.authService.signin(req.user as ReqUserDto);
             res.cookie('access_token', accessToken, {
                 secure: true,
                 httpOnly: true,
@@ -48,8 +77,8 @@ export class AuthController {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             });
             return {
+                result,
                 message: 'Login successful',
-                user: await this.authService.signin(req.user as ReqUserDto),
             };
         }
     }

@@ -7,7 +7,6 @@ export const darkModeAtom = atomWithStorage<boolean>(
     {
         getItem: (key) => {
             const value = localStorage.getItem(key);
-            console.log(value);
             if (value === null) {
                 const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 localStorage.setItem(key, isDark ? 'true' : 'false');

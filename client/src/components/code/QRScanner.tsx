@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/components/QRScanner.tsx"
+//-Path: "TeaChoco-Hospital/client/src/components/code/QRScanner.tsx"
 import Select from '../custom/Select';
 import Activity from '../custom/Activity';
 import { useState, useRef, useEffect } from 'react';
@@ -23,11 +23,12 @@ export default function QRScanner({
 
     const getDevices = async () => {
         try {
+            setResult('');
             const devices = await navigator.mediaDevices.enumerateDevices();
             const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+
             setDevices(videoDevices);
 
-            // เลือกกล้องหลังโดยอัตโนมัติถ้ามี
             const backCamera = videoDevices.find(
                 (device) =>
                     device.label.toLowerCase().includes('back') ||
@@ -93,6 +94,18 @@ export default function QRScanner({
                     playsInline
                     className="w-full h-full object-cover"
                 />
+
+                {!isScanning && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                        <button
+                            onClick={startScanner}
+                            disabled={devices.length === 0}
+                            className="btn h-full w-full shadow-xl">
+                            Start Scanner
+                        </button>
+                    </div>
+                )}
+
                 <div className="absolute inset-0 border-2 border-white dark:border-gray-800 border-dashed rounded-lg pointer-events-none">
                     <div className="absolute top-1/2 left-1/2 w-64 h-64 border-2 border-green-400 dark:border-green-600 transform -translate-x-1/2 -translate-y-1/2" />
                 </div>
@@ -141,19 +154,6 @@ export default function QRScanner({
                 <button onClick={getDevices} className="btn btn-warning w-full">
                     Refresh
                 </button>
-
-                {!isScanning ? (
-                    <button
-                        onClick={startScanner}
-                        disabled={devices.length === 0}
-                        className="btn btn-primary w-full">
-                        Start Scanner
-                    </button>
-                ) : (
-                    <button onClick={stopScanner} className="btn btn-error w-full">
-                        Stop Scanner
-                    </button>
-                )}
 
                 <p className="text-sm text-gray-600 text-center">{description}</p>
             </div>

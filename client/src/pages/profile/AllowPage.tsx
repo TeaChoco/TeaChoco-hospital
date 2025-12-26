@@ -1,16 +1,17 @@
 //-Path: "TeaChoco-Hospital/src/pages/profile/AllowPage.tsx"
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
-import { useEffect, useMemo, useState } from 'react';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
 import Switch from '../../components/custom/Switch';
 import Select from '../../components/custom/Select';
+import { useEffect, useMemo, useState } from 'react';
 import { FaArrowLeft, FaTrash } from 'react-icons/fa';
 import QRScanner from '../../components/code/QRScanner';
 import QRGenerator from '../../components/code/QRGenerator';
-import type { RequestSocketData, ResponseSocketData } from '../../types/types';
+import type { ResponseData, SiginQrData } from '../../types/signin-qr.dto';
+import { useAuth } from '../../hooks/useAuth';
 
 function AllowsSelects({
     title,
@@ -55,6 +56,8 @@ function AllowsSelects({
 }
 
 export default function AllowPage() {
+    const { user } = useAuth();
+    const expiresMax = 5 * 60 * 1000;
     const { id, emit } = useSocket();
     const [isScanner, setIsScanner] = useState(true);
     const [isExpiresAt, setIsExpiresAt] = useState(false);
@@ -62,20 +65,35 @@ export default function AllowPage() {
     const [edits, setEdits] = useState<Allow[]>([Allow.AUTH]);
     const [expiresAt, setExpiresAt] = useState<Date>(new Date());
     const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
+    const [responseData, setResponseData] = useState<SiginQrData | undefined>(undefined);
 
-    const [responseData, setResponseData] = useState<ResponseSocketData | undefined>(undefined);
+    console.log(user);
 
     const getValue = () => {
-        if (!id) return undefined;
-        setQrExpiresAt(new Date(Date.now() + 5 * 60 * 1000));
-        const data: ResponseSocketData = {
-            token: crypto.randomUUID(),
-            expiresAt: qrExpiresAt,
+        if (
+            !id ||
+            !user?.allows?.some(
+                (allow) => allow.read.includes(Allow.AUTH) && allow.edit.includes(Allow.AUTH),
+            )
+        )
+            return;
+        setQrExpiresAt(new Date(Date.now() + expiresMax));
+        const data: SiginQrData = {
             response: {
-                reads,
-                edits,
                 socketId: id,
-                expiresAt: isExpiresAt ? expiresAt : undefined,
+                expiresAt: qrExpiresAt,
+                token: crypto.randomUUID(),
+                user: {
+                    ...user,
+                    allows: [
+                        {
+                            user_id: user.user_id,
+                            read: reads,
+                            edit: edits,
+                            expiresAt: isExpiresAt ? expiresAt : undefined,
+                        },
+                    ],
+                },
             },
         };
         setResponseData(data);
@@ -88,8 +106,9 @@ export default function AllowPage() {
     const value = useMemo(() => {
         const url = import.meta.env.VITE_CLIENT_URL;
         if (responseData) {
-            const { token, response } = responseData;
-            return `${url}/signin?socketId=${response.socketId}&token=${token}`;
+            const { response } = responseData;
+            if (response)
+                return `${url}/signin?socketId=${response.socketId}&token=${response.token}`;
         }
     }, [responseData]);
 
@@ -137,9 +156,10 @@ export default function AllowPage() {
                     <QRScanner
                         header="Scan to Login"
                         onScan={(result) => {
-                            const data: RequestSocketData = JSON.parse(result);
+                            const data: SiginQrData = JSON.parse(result);
                             console.log(data);
-                            emit('signin-qr', data);
+                            if (data.request) emit('signin-qr', data.request);
+                            else console.log(data, 'is not RequestSocketData');
                         }}
                     />
                 ) : (
@@ -148,6 +168,7 @@ export default function AllowPage() {
                         refresh={getValue}
                         header="Scan to Login"
                         expiresAt={qrExpiresAt}
+                        expiresMax={expiresMax}
                     />
                 )}
             </Paper>

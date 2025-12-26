@@ -1,15 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/user.dto.ts"
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsNumber, IsString } from 'class-validator';
-
-export enum Allow {
-    AUTH = 'auth',
-    HOSPITALS = 'hospitals',
-    APPOINTMENTS = 'appointments',
-    DOCTORS = 'doctors',
-    MEDICINES = 'medicines',
-    CALENDARS = 'calendars',
-}
+import { Allow, Role } from '../../types/auth';
+import { IsArray, IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 
 export class UserLoginDto {
     @IsString()
@@ -56,6 +48,15 @@ export class AllowsDto {
         description: 'Edit',
     })
     edit: Allow[];
+
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: true,
+        example: '2022-01-01',
+        description: 'Expires at',
+    })
+    expiresAt: Date;
 }
 
 export class ReqUserDto {
@@ -131,6 +132,15 @@ export class ReqUserDto {
     })
     readonly allows: AllowsDto[];
 
+    @IsEnum(Role)
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: 'admin',
+        description: 'Role',
+    })
+    readonly role: Role;
+
     @IsDate()
     @ApiProperty({
         type: Date,
@@ -148,6 +158,15 @@ export class ReqUserDto {
         description: 'Updated at',
     })
     readonly updatedAt?: Date;
+
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: false,
+        example: '2022-01-01',
+        description: 'Expires at',
+    })
+    readonly expiresAt: Date;
 
     @IsDate()
     @ApiProperty({
@@ -232,6 +251,15 @@ export class UserJWTPayload {
     })
     readonly allows: Allow[];
 
+    @IsEnum(Role)
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: 'admin',
+        description: 'Role',
+    })
+    readonly role: Role;
+
     @IsString()
     @ApiProperty({
         type: String,
@@ -277,5 +305,3 @@ export class UserJWTPayload {
     })
     readonly exp: number;
 }
-
-export type Auth = ReqUserDto | null;
