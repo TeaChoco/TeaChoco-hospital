@@ -1,9 +1,10 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalDetailPage.tsx"
+import moment from 'moment';
 import { Allow } from '../../types/auth';
 import Activity from '../../components/custom/Activity';
 import { useHospitals } from '../../context/hospitalsAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
-import { FaHospital, FaPhone, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
+import { FaPhone, FaGlobe, FaClock, FaHistory, FaHospital, FaMapMarkerAlt } from 'react-icons/fa';
 
 export default function HospitalDetailPage() {
     const { hospitals } = useHospitals();
@@ -27,38 +28,54 @@ export default function HospitalDetailPage() {
                         </div>
 
                         <div className="space-y-4">
-                            <div className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <FaMapMarkerAlt className="mt-1 text-primary shrink-0" size={20} />
+                            <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${hospital.address}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group">
+                                <FaMapMarkerAlt
+                                    className="mt-1 text-primary shrink-0 group-hover:scale-110 transition-transform"
+                                    size={20}
+                                />
                                 <div>
-                                    <h3 className="font-bold text-text-light dark:text-text-dark mb-1">
+                                    <h3 className="font-bold text-text-light dark:text-text-dark mb-1 group-hover:text-accent transition-colors">
                                         Address
                                     </h3>
                                     <p className="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
                                         {hospital.address || 'No address provided'}
                                     </p>
                                 </div>
-                            </div>
+                            </a>
 
                             {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
                             <div className="flex flex-col md:flex-row gap-4">
-                                <div className="w-full flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                    <FaPhone className="text-accent-secondary shrink-0" size={20} />
+                                <a
+                                    href={
+                                        hospital.contactNumber
+                                            ? `tel:${hospital.contactNumber}`
+                                            : undefined
+                                    }
+                                    className="w-full flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group">
+                                    <FaPhone
+                                        className="text-accent-secondary shrink-0 group-hover:scale-110 transition-transform"
+                                        size={20}
+                                    />
                                     <div>
-                                        <h3 className="font-bold text-text-light dark:text-text-dark mb-1">
+                                        <h3 className="font-bold text-text-light dark:text-text-dark mb-1 group-hover:text-accent transition-colors">
                                             Phone
                                         </h3>
                                         <p className="text-text-secondary-light dark:text-text-secondary-dark">
                                             {hospital.contactNumber || 'No contact number'}
                                         </p>
                                     </div>
-                                </div>
+                                </a>
 
                                 <Activity visible={hospital.website}>
                                     <a
                                         href={hospital.website}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group">
+                                        className="flex w-full items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group">
                                         <FaGlobe
                                             className="text-accent shrink-0 group-hover:scale-110 transition-transform"
                                             size={20}
@@ -74,6 +91,27 @@ export default function HospitalDetailPage() {
                                     </a>
                                 </Activity>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="p-6 md:px-10 py-4 flex flex-col md:flex-row gap-4 border-t border-border-light dark:border-border-dark">
+                        <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
+                            <FaClock className="shrink-0" size={14} />
+                            <span className="text-xs font-medium">Created at:</span>
+                            <span className="text-xs">
+                                {hospital.createdAt
+                                    ? moment(hospital.createdAt).format('DD MMM YYYY, HH:mm')
+                                    : 'N/A'}
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
+                            <FaHistory className="shrink-0" size={14} />
+                            <span className="text-xs font-medium">Last updated:</span>
+                            <span className="text-xs">
+                                {hospital.updatedAt
+                                    ? moment(hospital.updatedAt).format('DD MMM YYYY, HH:mm')
+                                    : 'N/A'}
+                            </span>
                         </div>
                     </div>
                 </div>

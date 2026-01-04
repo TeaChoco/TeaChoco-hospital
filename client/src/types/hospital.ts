@@ -1,11 +1,9 @@
 //-Path: "TeaChoco-Hospital/client/src/types/hospital.ts"
+import type { ApiData } from './types';
 
-export interface Hospital {
-    _id: string;
+export type Hospital = ApiData<{
     name: string;
     address?: string;
     contactNumber?: string;
     website?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+}>;

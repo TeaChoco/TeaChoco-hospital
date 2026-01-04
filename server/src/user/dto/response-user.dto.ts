@@ -1,5 +1,5 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/response-user.dto.ts"
-import {  AllowsDto } from './user.dto';
+import { AllowsDto } from './user.dto';
 import { Allow } from '../../types/auth';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
@@ -77,6 +77,24 @@ export class ResponseUserDto {
     })
     allows?: AllowsDto[];
 
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: 'admin',
+        description: 'Role',
+    })
+    role?: string;
+
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: false,
+        example: '2022-01-01',
+        description: 'Expires at',
+    })
+    expiresAt?: Date;
+
     @IsDate()
     @ApiProperty({
         type: Date,
@@ -149,6 +167,16 @@ export class QueryOptions {
     @ApiProperty()
     @IsOptional()
     @IsString()
+    role?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    expiresAt?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
     createdAt?: string;
 
     @ApiProperty()
@@ -206,12 +234,22 @@ export class ResponseOptions {
     @IsBoolean()
     @IsOptional()
     @ApiProperty()
+    role?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
     createdAt?: boolean;
 
     @IsBoolean()
     @IsOptional()
     @ApiProperty()
     updatedAt?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
+    expiresAt?: boolean;
 
     @IsBoolean()
     @IsOptional()

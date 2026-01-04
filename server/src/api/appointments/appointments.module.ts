@@ -1,7 +1,7 @@
-//-Path: "TeaChoco-Hospital/server/src/api/appointments/appointments.module.ts"
 import { Module } from '@nestjs/common';
-import { AppointmentsService } from './appointments.service';
+import { ApiService } from '../api.service';
 import { ImportsMongoose } from '../../hooks/mongodb';
+import { AppointmentsService } from './appointments.service';
 import { AppointmentsController } from './appointments.controller';
 import { Appointment, AppointmentSchema } from './schemas/appointment.schema';
 
@@ -9,7 +9,7 @@ import { Appointment, AppointmentSchema } from './schemas/appointment.schema';
     imports: [
         ...new ImportsMongoose({ name: Appointment.name, schema: AppointmentSchema }).imports,
     ],
-    providers: [AppointmentsService],
+    providers: [ApiService, AppointmentsService],
     controllers: [AppointmentsController],
 })
 export class AppointmentsModule {}

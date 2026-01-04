@@ -1,5 +1,13 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/dto/create-medicine.dto.ts"
 import {
+    WarningDto,
+    SideEffectDto,
+    PackageInfoDto,
+    HospitalInfoDto,
+    MedicineDosageDto,
+    TakeInstructionDto,
+} from './medicine.dto';
+import {
     IsDate,
     IsEnum,
     IsArray,
@@ -8,33 +16,17 @@ import {
     IsBoolean,
     IsOptional,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
 import {
     MedicineType,
     EffectServeriry,
     StorageCondition,
     EffectProbability,
 } from '../../../types/medicine';
-import {
-    WarningDto,
-    SideEffectDto,
-    PackageInfoDto,
-    HospitalInfoDto,
-    MedicineDosageDto,
-    TakeInstructionDto,
-} from './medicine.dto';
+import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { ApiMetaDto } from '../../../types/dto';
 
-export class CreateMedicineDto {
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: '1234567890',
-        description: 'User ID',
-    })
-    user_id: string;
-
+export class CreateMedicineDto extends ApiMetaDto {
     @IsString()
     @ApiProperty({
         type: String,
@@ -236,25 +228,6 @@ export class CreateMedicineDto {
         description: 'Barcode',
     })
     barcode?: string;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: 'Paracetamol',
-        description: 'Created by',
-    })
-    createdBy: string;
-
-    @IsString()
-    @IsOptional()
-    @ApiProperty({
-        type: String,
-        required: false,
-        example: 'Paracetamol',
-        description: 'Updated by',
-    })
-    updatedBy?: string;
 
     @IsBoolean()
     @ApiProperty({

@@ -1,39 +1,63 @@
 //- Path: "TeaChoco-Hospital/server/src/api/hospitals/hospitals.service.ts"
 import { Model } from 'mongoose';
 import { Auth } from '../../types/auth';
+import { Logger } from '@nestjs/common';
+import { ApiService } from '../api.service';
+import { Injectable } from '@nestjs/common';
 import { nameDB } from '../../hooks/mongodb';
 import { InjectModel } from '@nestjs/mongoose';
-import { Hospital } from './schemas/hospital.schema';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { UpdateHospitalDto } from './dto/update-hospital.dto';
+import { Hospital, HospitalDocument } from './schemas/hospital.schema';
 
 @Injectable()
 export class HospitalsService {
+    logger = new Logger(HospitalsService.name);
+
     constructor(
+        private readonly apiService: ApiService,
         @InjectModel(Hospital.name, nameDB)
         private readonly hospitalModel: Model<Hospital>,
     ) {}
 
     async findAll(auth: Auth) {
         const hospitals = await this.hospitalModel.find();
-        return hospitals.filter((hospital) => hospital.user_id === auth?.user_id);
+        return this.apiService.findAll(auth, hospitals);
     }
 
     async findOne(auth: Auth, id: string) {
         const hospital = await this.hospitalModel.findById(id);
-        if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
-        return hospital;
+        return this.apiService.findOne(auth, hospital);
     }
 
     async create(auth: Auth, data: CreateHospitalDto) {
-        if (auth === null) throw new UnauthorizedException('Unauthorized');
-        const hospital = new this.hospitalModel(data);
+        const newData = await this.apiService.create<Hospital, CreateHospitalDto>(
+            auth,
+            data,
+            (data) => ({
+                name: data.name,
+                address: data.address,
+                contactNumber: data.contactNumber,
+                website: data.website,
+            }),
+        );
+        const hospital = new this.hospitalModel(newData);
         return await hospital.save();
     }
 
-    async update(auth: Auth, id: string, data: Hospital) {
+    async update(auth: Auth, id: string, data: UpdateHospitalDto) {
         const hospital = await this.findOne(auth, id);
-        if (hospital?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
-        return await this.hospitalModel.findByIdAndUpdate(id, data, { new: true });
+        const newData = await this.apiService.update<Hospital, HospitalDocument, UpdateHospitalDto>(
+            auth,
+            hospital,
+            data,
+            (data) => ({
+                name: data.name,
+                address: data.address,
+                contactNumber: data.contactNumber,
+                website: data.website,
+            }),
+        );
+        return await this.hospitalModel.findByIdAndUpdate(id, newData, { new: true });
     }
 }

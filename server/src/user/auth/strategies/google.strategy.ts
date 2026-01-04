@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { UserType } from '../../dto/create-user.dto';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { SecureService } from '../../../secure/secure.service';
+import { Role } from '../../../types/auth';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -25,7 +26,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         refreshToken: string,
         profile: any,
         done: VerifyCallback,
-    ): Promise<any> {
+    ): Promise<UserType> {
         const { id, name, displayName, emails, photos, _json } = profile;
 
         const user: UserType = {
@@ -36,11 +37,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             lastName: name?.familyName ?? _json.family_name ?? '',
             picture: photos[0].value ?? _json.picture ?? '',
             allows: [],
+            role: Role.USER,
+            expiresAt: Date.now() + 3600 * 1000,
             lastLoginAt: Date.now(),
             accessToken,
             refreshToken,
         };
 
         done(null, user);
+        return user;
     }
 }

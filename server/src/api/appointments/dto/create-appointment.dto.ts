@@ -29,16 +29,9 @@ import {
 } from '../../../types/appointment';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { ApiMetaDto } from '../../../types/dto';
 
-export class CreateAppointmentDto {
-    @IsString()
-    @ApiProperty({
-        type: String,
-        example: '123456789',
-        description: 'User ID',
-    })
-    user_id: string;
-
+export class CreateAppointmentDto extends ApiMetaDto {
     @IsString()
     @IsOptional()
     @ApiProperty({
@@ -401,15 +394,16 @@ export class CreateAppointmentDto {
     })
     nurseNotes?: AppointmentNoteDto[];
 
-    @IsString()
+    @IsArray()
     @IsOptional()
+    @ValidateNested({ each: true })
+    @Type(() => AppointmentNoteDto)
     @ApiProperty({
-        type: String,
+        type: [AppointmentNoteDto],
         required: false,
-        example: 'Patient notes',
         description: 'Notes from patient',
     })
-    patientNotes?: string;
+    patientNotes?: AppointmentNoteDto[];
 
     @IsString()
     @IsOptional()
@@ -440,24 +434,6 @@ export class CreateAppointmentDto {
         description: 'Previous appointment ID',
     })
     previousAppointmentId?: string;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        example: '123456789',
-        description: 'Created By',
-    })
-    createdBy: string;
-
-    @IsString()
-    @IsOptional()
-    @ApiProperty({
-        type: String,
-        required: false,
-        example: '123456789',
-        description: 'Updated By',
-    })
-    updatedBy?: string;
 
     @IsString()
     @IsOptional()

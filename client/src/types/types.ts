@@ -8,3 +8,17 @@ export enum Title {
 }
 
 export type QueryOptions = Partial<Record<string, string | boolean | number | undefined | null>>;
+
+export type ApiMeta = {
+    _id: string;
+    user_id: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    updatedBy: string;
+    __v: number;
+};
+
+export type ApiData<Data extends object> = Data & ApiMeta;
+
+export type OutApiData<DataApi extends ApiData<object>> = Omit<DataApi, keyof ApiMeta>;

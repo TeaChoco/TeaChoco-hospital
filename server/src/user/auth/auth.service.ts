@@ -12,7 +12,7 @@ import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -28,31 +28,26 @@ export class AuthService {
         private readonly userModel: Model<UserDocument>,
     ) {}
 
-    async signinQr(data: SiginQrDto) {
-        if (!data.request || !data.submit) return;
-        const submit = await this.cacheManager.get<SiginQrDto>(
-            `signin-qr_${data.request.socketId}`,
-        );
+    async signinQr(
+        data: SiginQrDto,
+    ): Promise<{ access_token: string; user: ResponseUserDto | null; maxAge: number } | undefined> {
+        if (!data.request || !data.response) return;
+        const save = await this.cacheManager.get<SiginQrDto>(`signin-qr_${data.request.socketId}`);
         this.logger.log(data);
-
+        if (!save) throw new NotFoundException('Save not found');
         if (
-            submit &&
-            submit.submit &&
-            submit.request &&
-            data.submit.token === submit.submit.token &&
-            data.submit.socketId === submit.submit.socketId &&
-            data.request.token === submit.request.token &&
-            data.request.socketId === submit.request.socketId
+            save.request &&
+            save.response &&
+            data.request.token === save.request.token &&
+            data.response.token === save.response.token &&
+            data.request.socketId === save.request.socketId &&
+            data.response.socketId === save.response.socketId
         ) {
-            this.logger.log('signin-qr', submit);
+            this.logger.log('signin-qr', save);
             this.cacheManager.del(`signin-qr_${data.request.socketId}`);
-            const result = await this.signin(submit.submit.user);
-            // const maxAge =
-            // user?.allows?.[0].expiresAt.getTime() - Date.now() || 7 * 24 * 60 * 60 * 1000;
-            return {
-                ...result,
-                maxAge: submit.submit.user.expiresAt.getTime() - Date.now(),
-            };
+            const result = await this.signin(save.response.user);
+            const maxAge = new Date(save.response.user.expiresAt).getTime() - Date.now();
+            return { ...result, maxAge };
         }
     }
 
@@ -83,6 +78,8 @@ export class AuthService {
         if (!userDB) return this.signup(user);
         const responseUser = await this.userService.responseUser({ auth: true }, userDB);
 
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        if (responseUser) responseUser.expiresAt = expiresAt;
         const payload: ReqUserDto = {
             user_id: userDB._id.toString(),
             googleId: userDB.googleId,
@@ -95,7 +92,7 @@ export class AuthService {
             role: userDB.role,
             createdAt: userDB.createdAt,
             updatedAt: userDB.updatedAt,
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            expiresAt,
             lastLoginAt: userDB.lastLoginAt,
         };
 
@@ -106,16 +103,18 @@ export class AuthService {
     }
 
     async signup(user: ReqUserDto) {
-        const newUser = new this.userModel({
+        const newUserData: User = {
             googleId: user.googleId,
             email: user.email,
             name: user.name,
             password: '',
+            role: user.role,
             firstName: user.firstName,
             lastName: user.lastName,
             picture: user.picture,
-            lastLoginAt: Date.now(),
-        });
+            lastLoginAt: new Date(),
+        };
+        const newUser = new this.userModel(newUserData);
         await newUser.save();
         return this.signin(user);
     }

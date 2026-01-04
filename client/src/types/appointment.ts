@@ -2,6 +2,7 @@
 import type { Doctor } from './doctor';
 import type { Hospital } from './hospital';
 import type { Medicine } from './medicine';
+import type { ApiData } from './types';
 
 // สถานะการนัดหมาย
 export enum AppointmentStatus {
@@ -202,10 +203,8 @@ export interface StatusHistory {
 }
 
 // Interface หลักสำหรับการนัดหมาย
-export interface Appointment {
+export type Appointment = ApiData<{
     // ข้อมูลพื้นฐาน
-    _id: string;
-    user_id: string;
     appointmentNumber?: string; // เลขที่นัดหมาย (เช่น APT-2024-001)
 
     // ข้อมูลผู้ป่วย
@@ -283,18 +282,13 @@ export interface Appointment {
     previousAppointmentId?: string; // การนัดครั้งก่อน
 
     // เมตาดาต้า
-    createdAt: Date;
-    updatedAt: Date;
-    createdBy: string; // ผู้สร้างนัดหมาย
-    updatedBy?: string; // ผู้แก้ไขล่าสุด
     cancelledBy?: string; // ผู้ยกเลิก (ถ้ามี)
     cancellationReason?: string; // เหตุผลการยกเลิก
     noShowReason?: string; // เหตุผลที่ไม่มาตามนัด
 
     // ฟิลด์พิเศษ
     escorts?: string[]; // ชื่อผู้ติดตาม
-    __v: number;
-}
+}>;
 
 export interface AppointmentFilter {
     doctorId?: string;

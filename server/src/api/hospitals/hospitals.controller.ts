@@ -6,11 +6,14 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
 import { ResponseHospitalDto } from './dto/response-hospital.dto';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
-import { Controller, Get, UseGuards, Req, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Post, Body, Param, Put, Logger } from '@nestjs/common';
+import { UpdateHospitalDto } from './dto/update-hospital.dto';
 
 @ApiTags('Api Hospitals')
 @Controller('api/hospitals')
 export class HospitalsController {
+    logger = new Logger(HospitalsController.name);
+
     constructor(private readonly hospitalsService: HospitalsService) {}
 
     @Get()
@@ -77,8 +80,11 @@ export class HospitalsController {
         type: ResponseHospitalDto,
         description: 'Not Found',
     })
-    async update(@Req() req: Request, @Param('id') id: string, @Body() data: CreateHospitalDto) {
+    async update(@Req() req: Request, @Param('id') id: string, @Body() data: UpdateHospitalDto) {
         const user = req.user as Auth;
-        return this.hospitalsService.update(user, id, data);
+        this.logger.log(`User ${user?.user_id} is updating a hospital`);
+        const result = await this.hospitalsService.update(user, id, data);
+        this.logger.log(`Result: ${JSON.stringify(result)}`);
+        return { user, data, result };
     }
 }

@@ -1,8 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/types/doctor.ts"
+import type { ApiData } from './types';
 
-export interface Doctor {
-    _id: string;
-    user_id: string;
+export type Doctor = ApiData<{
     firstName: string;
     lastName: string;
     nickname?: string;
@@ -10,6 +9,4 @@ export interface Doctor {
     department: string;
     contactNumber?: string;
     picture?: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+}>;

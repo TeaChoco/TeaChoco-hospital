@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaArrowLeft, FaTrash } from 'react-icons/fa';
 import QRScanner from '../../components/code/QRScanner';
 import QRGenerator from '../../components/code/QRGenerator';
-import type { SiginQrData } from '../../types/signin-qr.dto';
+import { ResponseData, SiginQrData } from '../../types/signin-qr';
 
 function AllowsSelects({
     title,
@@ -67,8 +67,6 @@ export default function AllowPage() {
     const [expiresAt, setExpiresAt] = useState<Date>(new Date());
     const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
     const [responseData, setResponseData] = useState<SiginQrData | undefined>(undefined);
-
-    console.log(user);
 
     const getValue = () => {
         if (
@@ -155,16 +153,36 @@ export default function AllowPage() {
                 </button>
                 {isScanner ? (
                     <QRScanner
+                        isDev
                         header="Scan to Login"
                         onScan={(result) => {
-                            const data: SiginQrData = JSON.parse(result);
-                            console.log(data);
-                            if (data.request) emit('signin-qr', data.request);
-                            else console.log(data, 'is not RequestSocketData');
+                            const data = SiginQrData.getData(result);
+                            console.log(data, data instanceof SiginQrData);
+                            if (data instanceof SiginQrData && user) {
+                                data.response = new ResponseData({
+                                    socketId: id,
+                                    expiresAt: qrExpiresAt,
+                                    token: crypto.randomUUID(),
+                                    user: {
+                                        ...user,
+                                        allows: [
+                                            {
+                                                user_id: user.user_id,
+                                                read: reads,
+                                                edit: edits,
+                                                expiresAt: isExpiresAt ? expiresAt : undefined,
+                                            },
+                                        ],
+                                    },
+                                });
+                                emit('signin-qr', data);
+                            } else if (!user) console.log('user not found');
+                            else console.log(data, 'is not SiginQrData');
                         }}
                     />
                 ) : (
                     <QRGenerator
+                        isDev
                         value={value}
                         refresh={getValue}
                         header="Scan to Login"

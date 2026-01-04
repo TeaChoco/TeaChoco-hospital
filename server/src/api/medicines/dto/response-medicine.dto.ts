@@ -1,45 +1,9 @@
 //- Path: "TeaChoco-Hospital/server/src/api/medicine/dto/create-medicine.dto.ts"
-import { IsArray, IsBoolean, IsDate, IsNumber, IsObject, IsString } from 'class-validator';
-import { CreateMedicineDto } from './create-medicine.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateMedicineDto } from './create-medicine.dto';
+import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
 
-export class ResponseMedicineDto extends CreateMedicineDto {
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: '1234567890',
-        description: 'ID',
-    })
-    _id: string;
-
-    @IsDate()
-    @ApiProperty({
-        type: Date,
-        required: true,
-        example: '2022-01-01',
-        description: 'Created at',
-    })
-    createdAt: Date;
-
-    @IsDate()
-    @ApiProperty({
-        type: Date,
-        required: true,
-        example: '2022-01-01',
-        description: 'Updated at',
-    })
-    updatedAt: Date;
-
-    @IsNumber()
-    @ApiProperty({
-        type: Number,
-        required: true,
-        example: 1,
-        description: 'Version',
-    })
-    __v: number;
-}
+export class ResponseMedicineDto extends CreateMedicineDto {}
 
 export class MedicineResponseDto {
     @IsBoolean()

@@ -1,9 +1,13 @@
 //-Path: "TeaChoco-Hospital/client/src/components/layout/DetailLayout.tsx"
+import { useAtom } from 'jotai';
 import { useMemo } from 'react';
+import Paper from '../custom/Paper';
+import Editor from '../custom/Editor';
 import Loading from '../custom/Loading';
 import type { Allow } from '../../types/auth';
 import { useTranslation } from 'react-i18next';
-import { FaArrowLeft, FaPen } from 'react-icons/fa';
+import { detailLayoutAtom } from '../../context/layoutAtom';
+import { FaArrowLeft, FaCode, FaPen } from 'react-icons/fa';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function DetailLayout<Data extends { _id: string }>({
@@ -18,6 +22,7 @@ export default function DetailLayout<Data extends { _id: string }>({
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
+    const [detailLayout, setDetailLayout] = useAtom(detailLayoutAtom);
 
     const data = useMemo(() => datas?.find((data) => data._id === id), [id, datas]);
 
@@ -38,10 +43,23 @@ export default function DetailLayout<Data extends { _id: string }>({
             <Link to={`/${allow}`} className="btn-icon-dark absolute top-2 left-2 z-1">
                 <FaArrowLeft />
             </Link>
-            <Link to={`/${allow}/edit/${id}`} className="btn-icon-dark absolute top-2 right-2 z-1">
-                <FaPen />
-            </Link>
-            {children?.(data)}
+            <div className="absolute top-2 right-2 flex gap-2 z-1">
+                <button
+                    onClick={() => setDetailLayout((prev) => ({ ...prev, isJson: !prev.isJson }))}
+                    className={`btn-icon-dark ${detailLayout.isJson ? 'btn-primary' : ''}`}>
+                    <FaCode />
+                </button>
+                <Link to={`/${allow}/edit/${id}`} className="btn-icon-dark">
+                    <FaPen />
+                </Link>
+            </div>
+            {detailLayout.isJson ? (
+                <Paper className="pt-16">
+                    <Editor data={data} readOnly />
+                </Paper>
+            ) : (
+                children?.(data)
+            )}
         </div>
     );
 }

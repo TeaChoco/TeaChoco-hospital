@@ -1,6 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/api/doctors/doctors.controller.ts"
 import type { Request } from 'express';
 import { Auth } from '../../types/auth';
+import { Logger } from '@nestjs/common';
 import { DoctorsService } from './doctors.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
@@ -11,6 +12,8 @@ import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs
 @ApiTags('Api Doctors')
 @Controller('api/doctors')
 export class DoctorsController {
+    logger = new Logger(DoctorsController.name);
+
     constructor(private readonly doctorsService: DoctorsService) {}
 
     @Get()
@@ -59,9 +62,10 @@ export class DoctorsController {
         type: ResponseDoctorDto,
         description: 'Not Found',
     })
-    async create(@Req() req: Request, @Body() body: CreateDoctorDto) {
+    async create(@Req() req: Request, @Body() data: CreateDoctorDto) {
         const user = req.user as Auth;
-        return this.doctorsService.create(user, body);
+        this.logger.log(data);
+        return this.doctorsService.create(user, data);
     }
 
     @Put(':id')

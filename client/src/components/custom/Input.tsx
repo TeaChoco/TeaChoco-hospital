@@ -4,12 +4,14 @@ import { useId } from 'react';
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     description?: string;
+    icon?: React.ReactNode;
     labelClassName?: string;
     containerClassName?: string;
 }
 
 export default function Input({
     id,
+    icon,
     label,
     disabled,
     className,
@@ -20,7 +22,7 @@ export default function Input({
 }: InputProps) {
     const generatedId = useId();
     const inputId = id || generatedId;
-    const labelClass = `block text-sm font-bold tracking-tight ${
+    const labelClass = `flex gap-2 text-sm font-bold tracking-tight ${
         disabled ? 'text-text-muted-light' : 'text-text-light'
     } dark:${disabled ? 'text-text-muted-dark' : 'text-text-dark'} mb-1 ml-1`;
     const inputClass = `w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm placeholder:text-text-muted-light/50 dark:placeholder:text-text-muted-dark/50 ${
@@ -31,6 +33,7 @@ export default function Input({
         <div className={`flex flex-col gap-1.5 ${containerClassName || ''}`}>
             {label && (
                 <label htmlFor={inputId} className={`${labelClass} ${labelClassName || ''}`}>
+                    {icon}
                     {label}
                 </label>
             )}

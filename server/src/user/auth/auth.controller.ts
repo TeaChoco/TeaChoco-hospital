@@ -37,6 +37,7 @@ export class AuthController {
     async signinQr(@Res({ passthrough: true }) res: Response, @Body() body: SiginQrDto) {
         this.logger.log(body);
         const result = await this.authService.signinQr(body);
+        this.logger.log(result);
         if (result) {
             const { access_token, maxAge } = result;
             res.cookie('access_token', access_token, {

@@ -1,16 +1,9 @@
 //- Path: "TeaChoco-Hospital/server/src/api/doctors/dto/create-doctor.dto.ts"
-import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ApiMetaDto } from '../../../types/dto';
+import { IsOptional, IsString } from 'class-validator';
 
-export class CreateDoctorDto {
-    @IsString()
-    @ApiProperty({
-        type: String,
-        example: '123456789',
-        description: 'User ID',
-    })
-    user_id: string;
-
+export class CreateDoctorDto extends ApiMetaDto {
     @IsString()
     @ApiProperty({
         type: String,
@@ -28,6 +21,7 @@ export class CreateDoctorDto {
     lastName: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         example: 'John Doe',
@@ -52,6 +46,7 @@ export class CreateDoctorDto {
     department: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         example: '123456789',
@@ -60,6 +55,7 @@ export class CreateDoctorDto {
     contactNumber?: string;
 
     @IsString()
+    @IsOptional()
     @ApiProperty({
         type: String,
         example: 'https://example.com/picture.jpg',

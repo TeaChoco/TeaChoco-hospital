@@ -1,33 +1,31 @@
 //- Path: "TeaChoco-Hospital/server/src/api/doctors/schemas/doctor.schema.ts"
 import { Document } from 'mongoose';
+import { ApiMetaSchema } from '../../../types/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type DoctorDocument = Doctor & Document;
 
 @Schema({ collection: 'doctors', timestamps: true })
-export class Doctor {
-    @Prop()
-    user_id: string;
-
-    @Prop()
+export class Doctor extends ApiMetaSchema {
+    @Prop({ type: String, required: true })
     firstName: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     lastName: string;
 
-    @Prop()
+    @Prop({ type: String })
     nickname?: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     hospitalId: string;
 
-    @Prop()
+    @Prop({ type: String, required: true })
     department: string;
 
-    @Prop()
+    @Prop({ type: String })
     contactNumber?: string;
 
-    @Prop()
+    @Prop({ type: String })
     picture?: string;
 }
 

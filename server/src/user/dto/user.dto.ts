@@ -283,6 +283,15 @@ export class UserJWTPayload {
         type: String,
         required: false,
         example: '2022-01-01',
+        description: 'Expires at',
+    })
+    readonly expiresAt: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: false,
+        example: '2022-01-01',
         description: 'Last login at',
     })
     readonly lastLoginAt: string;

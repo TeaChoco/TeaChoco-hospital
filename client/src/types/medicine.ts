@@ -1,5 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/types/medicine.ts"
 
+import type { ApiData } from './types';
+
 export enum MealTime {
     BREAKFAST = 'breakfast',
     LUNCH = 'lunch',
@@ -113,10 +115,9 @@ export interface Warning {
     severity: SeverityLevel;
 }
 
-export interface Medicine {
+export type Medicine = ApiData<{
+    // Interface หลักสำหรับยา
     // Basic Information
-    _id: string;
-    user_id: string;
     name: string; // ชื่อยา (ทางการค้า)
     genericName: string; // ชื่อสามัญทางยา
     brand?: string; // ยี่ห้อ
@@ -153,16 +154,10 @@ export interface Medicine {
     qrCode?: string; // QR Code สำหรับยา
     barcode?: string; // บาร์โค้ด
 
-    // Tracking Information
-    createdAt: Date;
-    updatedAt: Date;
-    createdBy: string; // User ID ผู้สร้าง
-    updatedBy?: string; // User ID ผู้แก้ไขล่าสุด
-
     // Status
     isActive: boolean; // ยังใช้ยาอยู่หรือไม่
     isCompleted: boolean; // รับประทานครบแล้วหรือยัง
-}
+}>;
 
 export interface MedicineResponse {
     success: boolean;

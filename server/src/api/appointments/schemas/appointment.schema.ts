@@ -18,17 +18,15 @@ import {
     AppointmentLocation,
 } from '../../../types/appointment';
 import { Document } from 'mongoose';
+import { ApiMetaSchema } from '../../../types/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type AppointmentDocument = Appointment & Document;
 
 @Schema({ collection: 'appointments', timestamps: true })
-export class Appointment {
-    @Prop()
-    user_id: string;
-
-    @Prop()
-    appointmentNumber: string;
+export class Appointment extends ApiMetaSchema {
+    @Prop({ type: String })
+    appointmentNumber?: string;
 
     @Prop({ type: String, enum: PatientType, required: true })
     patientType: PatientType;
@@ -46,9 +44,9 @@ export class Appointment {
     type: AppointmentType;
 
     @Prop({ type: String })
-    subType: string;
+    subType?: string;
 
-    @Prop({ type: String })
+    @Prop({ type: String, required: true })
     purpose: string;
 
     @Prop({ type: String })
@@ -78,8 +76,8 @@ export class Appointment {
     @Prop({ type: String, enum: AppointmentLocation, required: true })
     location: AppointmentLocation;
 
-    @Prop({ type: String, required: true })
-    roomNumber: string;
+    @Prop({ type: String })
+    roomNumber?: string;
 
     @Prop({ type: String })
     floor?: string;
@@ -88,7 +86,7 @@ export class Appointment {
     status: AppointmentStatus;
 
     @Prop({ type: [Object] })
-    statusHistory: StatusHistoryDto[];
+    statusHistory?: StatusHistoryDto[];
 
     @Prop({ type: String, enum: UrgencyLevel, required: true })
     urgency: UrgencyLevel;
@@ -112,7 +110,7 @@ export class Appointment {
     payment: AppointmentPaymentDto;
 
     @Prop({ type: Object })
-    insurance: InsuranceInfoDto;
+    insurance?: InsuranceInfoDto;
 
     @Prop({ type: [String] })
     prescribedMedicines?: string[];
@@ -152,12 +150,6 @@ export class Appointment {
 
     @Prop({ type: String })
     previousAppointmentId?: string;
-
-    @Prop({ type: String })
-    createdBy?: string;
-
-    @Prop({ type: String })
-    updatedBy?: string;
 
     @Prop({ type: String })
     cancelledBy?: string;

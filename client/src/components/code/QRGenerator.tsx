@@ -13,6 +13,7 @@ export enum Level {
 }
 
 export default function QRGenerator({
+    isDev,
     value,
     header,
     refresh,
@@ -22,6 +23,7 @@ export default function QRGenerator({
 }: {
     value?: string;
     header: string;
+    isDev?: boolean;
     expiresAt?: Date;
     expiresMax?: number;
     refresh?: () => void;
@@ -184,9 +186,9 @@ export default function QRGenerator({
                 </div>
             </Activity>
 
-            <div className="mt-3 text-xs text-gray-500 text-center">
-                <p>Value: {value}</p>
-            </div>
+            <Activity visible={isDev}>
+                <div className="mt-3 text-xs text-gray-500 text-center">{value}</div>
+            </Activity>
         </>
     );
 }

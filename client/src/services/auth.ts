@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/services/auth.ts"
 import serverRest from './axios';
 import type { User } from '../types/auth';
-import type { SiginQrData } from '../types/signin-qr.dto';
+import type { SiginQrData } from '../types/signin-qr';
 
 export const authAPI = {
     auth: () => serverRest.get<User | null>('/user/auth'),

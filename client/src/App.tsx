@@ -50,7 +50,7 @@ export default function App() {
                     </Route>
                 </Route>
                 <Route path="calendar/full" element={<CalendarFull />} />
-                <Route path="signin" element={<Signin />} />
+                <Route path="signin/:tab?" element={<Signin />} />
             </Routes>
         </Setup>
     );

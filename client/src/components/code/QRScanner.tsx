@@ -1,20 +1,23 @@
 //-Path: "TeaChoco-Hospital/client/src/components/code/QRScanner.tsx"
+import Input from '../custom/Input';
 import Select from '../custom/Select';
 import Activity from '../custom/Activity';
 import { useState, useRef, useEffect } from 'react';
 import { BrowserQRCodeReader } from '@zxing/browser';
 
 export default function QRScanner({
+    isDev,
     header,
     onScan,
     description,
 }: {
     header: string;
+    isDev?: boolean;
     description?: string;
     onScan?: (result: string) => void;
 }) {
+    const [result, setResult] = useState('');
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [result, setResult] = useState<string>('');
     const [isScanning, setIsScanning] = useState(false);
     const codeReader = useRef<BrowserQRCodeReader>(null);
     const [error, setError] = useState<string | null>(null);
@@ -156,6 +159,14 @@ export default function QRScanner({
                 </button>
 
                 <p className="text-sm text-gray-600 text-center">{description}</p>
+
+                <Activity visible={isDev}>
+                    <Input
+                        label="Result"
+                        value={result}
+                        onChange={(event) => setResult(event.target.value)}
+                    />
+                </Activity>
             </div>
         </>
     );

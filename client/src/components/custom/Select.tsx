@@ -22,6 +22,7 @@ function SelectOption({ icon, className, ...props }: SelectOptionProps) {
 export interface SelectProps
     extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
     label?: string;
+    icon?: React.ReactNode;
     labelClassName?: string;
     containerClassName?: string;
     options?: { value: string | number; label: string }[];
@@ -33,6 +34,7 @@ export interface SelectProps
 
 export default function Select({
     id,
+    icon,
     label,
     options,
     children,
@@ -43,7 +45,7 @@ export default function Select({
 }: SelectProps) {
     const generatedId = useId();
     const selectId = id || generatedId;
-    const labelClass = 'block text-sm font-medium text-text-light dark:text-text-dark mb-1';
+    const labelClass = 'flex gap-2 text-sm font-medium text-text-light dark:text-text-dark mb-1';
     const inputClass =
         'w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm appearance-none cursor-pointer';
 
@@ -51,6 +53,7 @@ export default function Select({
         <div className={containerClassName}>
             {label && (
                 <label htmlFor={selectId} className={`${labelClass} ${labelClassName || ''}`}>
+                    {icon}
                     {label}
                 </label>
             )}

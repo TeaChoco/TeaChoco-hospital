@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/client/src/hooks/useTheme.ts"
 import { useAtom } from 'jotai';
-import { darkModeAtom } from '../context/theme';
+import { darkModeAtom } from '../context/themeAtom';
 
 export function useTheme() {
     const [isDark, setIsDark] = useAtom(darkModeAtom);

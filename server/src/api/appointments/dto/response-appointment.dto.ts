@@ -1,10 +1,4 @@
 //-Path: "TeaChoco-Hospital/server/src/api/appointments/dto/response-appointment.dto.ts"
-import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-import { CreateAppointmentDto } from './create-appointment.dto';
-import { ResponseDoctorDto } from '../../doctors/dto/response-doctor.dto';
-import { ResponseHospitalDto } from '../../hospitals/dto/response-hospital.dto';
-import { ResponseMedicineDto } from '../../medicines/dto/response-medicine.dto';
 import {
     IsDate,
     IsArray,
@@ -14,17 +8,14 @@ import {
     IsOptional,
     ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { CreateAppointmentDto } from './create-appointment.dto';
+import { ResponseDoctorDto } from '../../doctors/dto/response-doctor.dto';
+import { ResponseHospitalDto } from '../../hospitals/dto/response-hospital.dto';
+import { ResponseMedicineDto } from '../../medicines/dto/response-medicine.dto';
 
 export class ResponseAppointmentDto extends CreateAppointmentDto {
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: '1234567890',
-        description: 'ID',
-    })
-    _id: string;
-
     @IsObject()
     @IsOptional()
     @Type(() => ResponseHospitalDto)
@@ -93,31 +84,4 @@ export class ResponseAppointmentDto extends CreateAppointmentDto {
         description: 'Medicines',
     })
     medicines?: ResponseMedicineDto[];
-
-    @IsDate()
-    @ApiProperty({
-        type: Date,
-        required: true,
-        example: '2022-01-01',
-        description: 'Created at',
-    })
-    createdAt: Date;
-
-    @IsDate()
-    @ApiProperty({
-        type: Date,
-        required: true,
-        example: '2022-01-01',
-        description: 'Updated at',
-    })
-    updatedAt: Date;
-
-    @IsNumber()
-    @ApiProperty({
-        type: Number,
-        required: true,
-        example: 1,
-        description: 'Version',
-    })
-    __v: number;
 }

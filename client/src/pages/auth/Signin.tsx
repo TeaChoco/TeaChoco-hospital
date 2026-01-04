@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { authAPI } from '../../services/auth';
 import Background from '../../layout/Background';
 import { useSocket } from '../../hooks/useSocket';
+import { SiginQrData } from '../../types/signin-qr';
 import { useEffect, useMemo, useState } from 'react';
 import Activity from '../../components/custom/Activity';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
@@ -11,17 +12,17 @@ import SelectLang from '../../components/layout/SelectLang';
 import QRScannerPage from '../../components/auth/QRScanner';
 import ThemeToggle from '../../components/layout/ThemeToggle';
 import QRGeneratorPage from '../../components/auth/QRGenerator';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import type { SiginQrData } from '../../types/signin-qr.dto';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Signin() {
     const navigate = useNavigate();
     const { emit, useEvent } = useSocket();
     const [searchParams] = useSearchParams();
+    const { tab } = useParams<{ tab: string }>();
+    const activeTab = (tab as any) || 'google';
     const { isAuthenticated, loading, error } = useAuth();
     const [queryError, setQueryError] = useState<string | null>(null);
     const [querySource, setQuerySource] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'google' | 'scan' | 'generate'>('google');
 
     const { socketId, token } = useMemo(() => {
         const params = new URLSearchParams(window.location.search);
@@ -47,15 +48,14 @@ export default function Signin() {
         if (socketId && token) signinQr(socketId, token);
     }, [socketId, token]);
 
-    useEvent('signin-qr', (data: SiginQrData) => {
-        if (
-            typeof data === 'object' &&
-            data.request &&
-            typeof data.request.token === 'string' &&
-            typeof data.request.socketId === 'string'
-        )
-            authAPI.signinQr(data);
+    useEvent('signin-qr', async (data: SiginQrData) => {
         console.log(data);
+        const qrData = SiginQrData.getData(data);
+        if (qrData) {
+            const response = await authAPI.signinQr(qrData);
+            console.log(response);
+            if (response) window.location.href = '/';
+        }
     });
 
     if (isAuthenticated && !(socketId && token)) navigate('/');
@@ -130,7 +130,7 @@ export default function Signin() {
                 <div className="border-b border-border-light dark:border-border-dark transition-colors duration-200">
                     <nav className="flex">
                         <button
-                            onClick={() => setActiveTab('google')}
+                            onClick={() => navigate('/signin')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'google'
                                     ? 'text-primary border-b-2 border-primary'
@@ -139,7 +139,7 @@ export default function Signin() {
                             Google Login
                         </button>
                         <button
-                            onClick={() => setActiveTab('scan')}
+                            onClick={() => navigate('/signin/scan')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'scan'
                                     ? 'text-primary border-b-2 border-primary'
@@ -148,7 +148,7 @@ export default function Signin() {
                             Scan QR
                         </button>
                         <button
-                            onClick={() => setActiveTab('generate')}
+                            onClick={() => navigate('/signin/generate')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'generate'
                                     ? 'text-primary border-b-2 border-primary'

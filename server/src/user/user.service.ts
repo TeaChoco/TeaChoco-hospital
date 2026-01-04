@@ -2,9 +2,9 @@
 import { Allow } from '../types/auth';
 import { Model, Types } from 'mongoose';
 import { nameDB } from '../hooks/mongodb';
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserJWTPayload } from './dto/user.dto';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
@@ -12,6 +12,8 @@ import { QueryOptions, ResponseOptions, ResponseUserDto } from './dto/response-u
 
 @Injectable()
 export class UserService {
+    logger = new Logger(UserService.name);
+
     constructor(
         @InjectModel(User.name, nameDB)
         private readonly userModel: Model<UserDocument>,
@@ -25,9 +27,11 @@ export class UserService {
             'googleId',
             'email',
             'name',
+            'role',
             'firstName',
             'lastName',
             'picture',
+            'expiresAt',
             'allows',
             'createdAt',
             'updatedAt',
@@ -64,6 +68,7 @@ export class UserService {
             picture,
             googleId,
             lastName,
+            expiresAt,
             firstName,
             createdAt,
             updatedAt,
@@ -79,6 +84,7 @@ export class UserService {
             lastName: lastName !== undefined,
             picture: picture !== undefined,
             allows: allows !== undefined,
+            expiresAt: expiresAt !== undefined,
             createdAt: createdAt !== undefined,
             updatedAt: updatedAt !== undefined,
             lastLoginAt: lastLoginAt !== undefined,

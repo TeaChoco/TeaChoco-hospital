@@ -2,7 +2,7 @@
 import Paper from '../custom/Paper';
 import QRScanner from '../code/QRScanner';
 import { useSocket } from '../../hooks/useSocket';
-import type { SiginQrData } from '../../types/signin-qr.dto';
+import type { SiginQrData } from '../../types/signin-qr';
 
 export default function QRScannerPage() {
     const { emit } = useSocket();
@@ -10,6 +10,7 @@ export default function QRScannerPage() {
     return (
         <Paper variant="200" className="w-full max-w-md mx-auto">
             <QRScanner
+                isDev
                 header="Scan QR Code"
                 onScan={(result) => {
                     const data: SiginQrData = JSON.parse(result);

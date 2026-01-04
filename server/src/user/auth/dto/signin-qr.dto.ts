@@ -1,11 +1,11 @@
 //-Path: "motiva/client/src/types/types.ts"
 import { ReqUserDto } from '../../dto/user.dto';
 
-export class SubmitDto {
-    socketId: string;
-    token: string;
-    user: ReqUserDto;
-}
+// export class SubmitDto {
+//     socketId: string;
+//     token: string;
+//     user: ReqUserDto;
+// }
 
 export class RequestDto {
     socketId: string;
@@ -20,7 +20,7 @@ export class ResponseDto {
 }
 
 export class SiginQrDto {
-    submit?: SubmitDto;
+    // submit?: SubmitDto;
     request?: RequestDto;
     response?: ResponseDto;
 }

@@ -1,17 +1,9 @@
 //-Path: "TeaChoco-Hospital/server/src/api/hospitals/dto/create-hospital.dto.ts"
 import { ApiProperty } from '@nestjs/swagger';
+import { ApiMetaDto } from '../../../types/dto';
 import { IsOptional, IsString } from 'class-validator';
 
-export class CreateHospitalDto {
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: '123456789',
-        description: 'User ID',
-    })
-    user_id: string;
-
+export class CreateHospitalDto extends ApiMetaDto {
     @IsString()
     @ApiProperty({
         type: String,

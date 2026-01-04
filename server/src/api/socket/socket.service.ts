@@ -23,25 +23,16 @@ export class SocketService {
     }
 
     async signinQr(client: Socket, data: SiginQrDto) {
-        this.logger.log(`Client ${client.id} sent signin-qr: ${data}`);
-        const token = crypto.randomUUID();
+        this.logger.log(`Client ${client.id} sent signin-qr: ${JSON.stringify(data)}`);
         if (data.response && data.request) {
             this.logger.log('Request', data);
-            const submit: SiginQrDto = { ...data };
-            submit.submit = {
-                token,
-                user: data.response.user,
-                socketId: client.id,
-            };
             this.logger.log('cach save', `signin-qr_${data.request.socketId}`);
-            await this.cacheManager.set(`signin-qr_${data.request.socketId}`, submit);
-            this.server.to(data.request.socketId).emit('signin-qr', submit);
-            this.logger.log('Submit Request', submit);
+            await this.cacheManager.set(`signin-qr_${data.request.socketId}`, data);
+            this.server.to(data.request.socketId).emit('signin-qr', data);
         } else if (data.response) {
             this.logger.log('Response', data);
-            const submit: SiginQrDto = { ...data };
-            this.server.to(data.response.socketId).emit('signin-qr', submit);
-            this.logger.log('Submit Response', submit);
+            this.server.to(data.response.socketId).emit('signin-qr', data);
+            this.logger.log('Submit Response', data);
         }
     }
 }

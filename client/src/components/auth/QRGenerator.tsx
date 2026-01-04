@@ -4,7 +4,7 @@ import Paper from '../custom/Paper';
 import { useEffect, useMemo } from 'react';
 import QRGenerator from '../code/QRGenerator';
 import { useSocket } from '../../hooks/useSocket';
-import type { SiginQrData } from '../../types/signin-qr.dto';
+import type { SiginQrData } from '../../types/signin-qr';
 
 export default function QRGeneratorPage() {
     const { id } = useSocket();
@@ -28,6 +28,7 @@ export default function QRGeneratorPage() {
     return (
         <Paper variant="200" className="w-full max-w-sm mx-auto">
             <QRGenerator
+                isDev
                 value={value}
                 refresh={getValue}
                 header="Scan to Login"
