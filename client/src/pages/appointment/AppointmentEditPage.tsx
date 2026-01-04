@@ -103,6 +103,13 @@ export default function AppointmentEditPage() {
             newData={newData}
             title={Title.APPOINTMENTS}
             loading={appointments === undefined}
+            onRemove={async (id) => {
+                await appointmentAPI.remove(id);
+                resetAppointments();
+                resetHospitals();
+                resetDoctors();
+                return true;
+            }}
             onSave={async (data, id) => {
                 if (id === 'new') await appointmentAPI.create(data);
                 else await appointmentAPI.update(id, data);

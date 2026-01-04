@@ -39,5 +39,12 @@ export default function Paper({
         }
     }, [variant]);
 
-    return <div className={`p-4 ${variantClass} rounded-lg ${className || ''}`}>{children}</div>;
+    return (
+        <div
+            className={`p-4 transition-all duration-200 ${variantClass} rounded-lg ${
+                className || ''
+            }`}>
+            {children}
+        </div>
+    );
 }

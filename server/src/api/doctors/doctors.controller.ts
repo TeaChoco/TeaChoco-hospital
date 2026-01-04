@@ -7,7 +7,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { ResponseDoctorDto } from './dto/response-doctor.dto';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 
 @ApiTags('Api Doctors')
 @Controller('api/doctors')
@@ -83,5 +83,22 @@ export class DoctorsController {
     async update(@Req() req: Request, @Param('id') id: string, @Body() body: CreateDoctorDto) {
         const user = req.user as Auth;
         return this.doctorsService.update(user, id, body);
+    }
+
+    @Delete(':id')
+    @UseGuards(UserAuthGuard)
+    @ApiResponse({
+        status: 200,
+        type: ResponseDoctorDto,
+        description: 'Success',
+    })
+    @ApiResponse({
+        status: 404,
+        type: ResponseDoctorDto,
+        description: 'Not Found',
+    })
+    async remove(@Req() req: Request, @Param('id') id: string) {
+        const user = req.user as Auth;
+        return this.doctorsService.remove(user, id);
     }
 }

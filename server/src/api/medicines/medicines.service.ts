@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/medicines.service.ts"
 import { Model } from 'mongoose';
 import { ApiService } from '../api.service';
-import { Auth, Allow } from '../../types/auth';
 import { nameDB } from '../../hooks/mongodb';
+import { Auth, Allow } from '../../types/auth';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
@@ -125,5 +125,11 @@ export class MedicinesService {
             }),
         );
         return await this.medicineModel.findByIdAndUpdate(id, newData, { new: true });
+    }
+
+    async remove(auth: Auth, id: string) {
+        const medicine = await this.medicineModel.findById(id);
+        await this.apiService.remove(auth, medicine);
+        return await this.medicineModel.findByIdAndDelete(id);
     }
 }

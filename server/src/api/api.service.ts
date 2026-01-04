@@ -85,4 +85,10 @@ export class ApiService {
             ...newData,
         };
     }
+
+    async remove<Data extends ApiMetaSchema & Document>(auth: Auth, data: Data | null) {
+        if (auth === null) throw new UnauthorizedException('Unauthorized');
+        if (data?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
+        return data;
+    }
 }

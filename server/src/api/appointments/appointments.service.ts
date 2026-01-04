@@ -142,4 +142,10 @@ export class AppointmentsService {
         }));
         return await this.appointmentModel.findByIdAndUpdate(id, newData, { new: true });
     }
+
+    async remove(auth: Auth, id: string) {
+        const appointment = await this.appointmentModel.findById(id);
+        await this.apiService.remove(auth, appointment);
+        return await this.appointmentModel.findByIdAndDelete(id);
+    }
 }

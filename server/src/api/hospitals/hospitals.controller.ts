@@ -1,13 +1,24 @@
 //-Path: "TeaChoco-Hospital/server/src/api/hospitals/hospitals.controller.ts"
+import {
+    Get,
+    Req,
+    Put,
+    Post,
+    Body,
+    Param,
+    Logger,
+    Delete,
+    UseGuards,
+    Controller,
+} from '@nestjs/common';
 import type { Request } from 'express';
 import { Auth } from '../../types/auth';
 import { HospitalsService } from './hospitals.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
+import { UpdateHospitalDto } from './dto/update-hospital.dto';
 import { ResponseHospitalDto } from './dto/response-hospital.dto';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
-import { Controller, Get, UseGuards, Req, Post, Body, Param, Put, Logger } from '@nestjs/common';
-import { UpdateHospitalDto } from './dto/update-hospital.dto';
 
 @ApiTags('Api Hospitals')
 @Controller('api/hospitals')
@@ -86,5 +97,22 @@ export class HospitalsController {
         const result = await this.hospitalsService.update(user, id, data);
         this.logger.log(`Result: ${JSON.stringify(result)}`);
         return { user, data, result };
+    }
+
+    @Delete(':id')
+    @UseGuards(UserAuthGuard)
+    @ApiResponse({
+        status: 200,
+        type: ResponseHospitalDto,
+        description: 'Success',
+    })
+    @ApiResponse({
+        status: 404,
+        type: ResponseHospitalDto,
+        description: 'Not Found',
+    })
+    async remove(@Req() req: Request, @Param('id') id: string) {
+        const user = req.user as Auth;
+        return this.hospitalsService.remove(user, id);
     }
 }

@@ -1,4 +1,4 @@
-//- Path: "TeaChoco-Hospital/client/src/layout/EditLayout.tsx"
+//- Path: "TeaChoco-Hospital/client/src/components/layout/EditLayout.tsx"
 import { useAtom } from 'jotai';
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
@@ -6,25 +6,37 @@ import Loading from '../custom/Loading';
 import { Obj } from '@teachoco-dev/cli';
 import { Allow } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
+import { useSwal } from '../../hooks/useSwal';
 import type { ApiData } from '../../types/types';
 import { useEffect, useMemo, useState } from 'react';
 import type { OutApiData, Title } from '../../types/types';
 import { detailLayoutAtom } from '../../context/layoutAtom';
-import { FaCircleExclamation, FaArrowLeft, FaCode, FaXmark } from 'react-icons/fa6';
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { FaTrash, FaCode, FaXmark, FaArrowLeft, FaCircleExclamation } from 'react-icons/fa6';
+import { Link, Navigate, useLocation, useNavigate, useParams, useBlocker } from 'react-router-dom';
 
+/**
+ * EditLayout component to provide a consistent layout for editing or creating data.
+ * @param find Function to find data by id.
+ * @param title Title of the data being edited.
+ * @param onSave Callback function to save the data.
+ * @param loading Loading state.
+ * @param newData Default data for creating a new record.
+ * @param children Children component that renders the form fields.
+ */
 export default function EditLayout<Data extends ApiData<object>>({
     find,
     title,
     onSave,
     loading,
     newData,
+    onRemove,
     children,
 }: {
     title: Title;
     loading?: boolean;
     newData: OutApiData<Data>;
     find: (id: string) => Data | undefined;
+    onRemove?: (id: string) => Promise<void | boolean>;
     onSave: (data: Data, id: string) => Promise<void | boolean>;
     children: (
         data: OutApiData<Data>,
@@ -32,12 +44,15 @@ export default function EditLayout<Data extends ApiData<object>>({
     ) => React.ReactNode;
 }) {
     const { id } = useParams();
+    const { fire } = useSwal();
     const location = useLocation();
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const [dataLoading, setDataLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [initialData, setInitialData] = useState<string>('');
     const [detailLayout, setDetailLayout] = useAtom(detailLayoutAtom);
+
     const findData = () => {
         if (!id) return;
         const found = find(id);
@@ -53,6 +68,7 @@ export default function EditLayout<Data extends ApiData<object>>({
                 '__v',
             ) as OutApiData<Data>;
     };
+
     const [data, setData] = useState<OutApiData<Data> | undefined>(() => {
         if (id === 'new') return newData;
         return findData();
@@ -62,22 +78,80 @@ export default function EditLayout<Data extends ApiData<object>>({
         allow.edit.find((edit) => location.pathname.includes(edit) || edit === Allow.AUTH),
     );
 
+    const hasChanges = useMemo(() => {
+        if (!data || !initialData) return false;
+        return JSON.stringify(data) !== initialData;
+    }, [data, initialData]);
+
+    const blocker = useBlocker(
+        ({ nextLocation }) => hasChanges && nextLocation.pathname !== location.pathname,
+    );
+
+    const toBack = useMemo(() => {
+        const base = title.toLowerCase();
+        return id === 'new' ? `/${base}` : `/${base}/${id}`;
+    }, [id, title]);
+
     if (!canEdit && !authLoading) return <Navigate to={`/${location.pathname.split('/')[1]}`} />;
 
     useEffect(() => {
         if (!authLoading) {
-            console.log('update');
-            if (id === 'new') {
-                setData(newData);
-                setDataLoading(false);
-            } else {
-                setDataLoading(true);
-                const found = findData();
-                if (found) setData(found);
-                setDataLoading(false);
+            const found = id === 'new' ? newData : findData();
+            if (found) {
+                setData(found);
+                setInitialData(JSON.stringify(found));
             }
+            setDataLoading(false);
         }
     }, [id, newData, authLoading]);
+
+    useEffect(() => {
+        if (blocker.state === 'blocked') {
+            const proceed = window.confirm(
+                'คุณมีข้อมูลที่ยังไม่ได้บันทึก ต้องการออกจากหน้านี้ใช่หรือไม่?',
+            );
+            if (proceed) blocker.proceed();
+            else blocker.reset();
+        }
+    }, [blocker]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (hasChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [hasChanges]);
+
+    const handleRemove = async () => {
+        if (id && onRemove) {
+            const result = await fire({
+                title: `คุณแน่ใจหรือไม่?`,
+                text: `คุณต้องการลบข้อมูล ${title} นี้ใช่ไหม?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ใช่, ฉันต้องการลบ',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#ef4444',
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const callback = await onRemove(id);
+                    if (callback !== false) {
+                        setInitialData('');
+                        navigate(`/${title.toLowerCase()}`);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    setError('Failed to delete record');
+                }
+            }
+        }
+    };
 
     const handleSave = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -93,10 +167,12 @@ export default function EditLayout<Data extends ApiData<object>>({
                     updatedAt: Date.now(),
                     __v: 0,
                 } as Data;
-                console.log(data, save);
 
                 const callback = await onSave(save, id);
-                if (callback) navigate(toBack);
+                if (callback) {
+                    setInitialData(JSON.stringify(data));
+                    navigate(toBack);
+                }
             } catch (error) {
                 console.error(error);
                 setError(
@@ -111,11 +187,6 @@ export default function EditLayout<Data extends ApiData<object>>({
             }
         }
     };
-
-    const toBack = useMemo(() => {
-        const base = title.toLowerCase();
-        return id === 'new' ? `/${base}` : `/${base}/${id}`;
-    }, [id, title]);
 
     if (loading || authLoading || dataLoading) return <Loading />;
     if (!data)
@@ -199,9 +270,20 @@ export default function EditLayout<Data extends ApiData<object>>({
                     children(data, setData)
                 )}
 
-                <button type="submit" className="btn btn-primary w-full">
-                    Save Changes
-                </button>
+                <div className="flex flex-col gap-4">
+                    {id !== 'new' && onRemove && (
+                        <button
+                            type="button"
+                            onClick={handleRemove}
+                            className="btn bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 flex items-center justify-center gap-2 px-6">
+                            <FaTrash size={14} />
+                            Remove
+                        </button>
+                    )}
+                    <button type="submit" className="btn btn-primary">
+                        {id === 'new' ? 'Create' : 'Save Changes'}
+                    </button>
+                </div>
             </form>
         </>
     );

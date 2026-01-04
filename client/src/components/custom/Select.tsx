@@ -47,7 +47,7 @@ export default function Select({
     const selectId = id || generatedId;
     const labelClass = 'flex gap-2 text-sm font-medium text-text-light dark:text-text-dark mb-1';
     const inputClass =
-        'w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm appearance-none cursor-pointer';
+        'w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 shadow-sm appearance-none cursor-pointer';
 
     return (
         <div className={containerClassName}>

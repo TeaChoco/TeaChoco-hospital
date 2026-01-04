@@ -7,7 +7,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MedicineResponseDto } from './dto/response-medicine.dto';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
 import { CreateMedicineDto, CreateMedicineManyDto } from './dto/create-medicine.dto';
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 
 @ApiTags('Api Medicines')
 @Controller('api/medicines')
@@ -102,5 +102,22 @@ export class MedicinesController {
     async update(@Req() req: Request, @Param('id') id: string, @Body() data: UpdateMedicineDto) {
         const user = req.user as Auth;
         return this.medicinesService.update(user, id, data);
+    }
+
+    @Delete(':id')
+    @UseGuards(UserAuthGuard)
+    @ApiResponse({
+        status: 200,
+        type: MedicineResponseDto,
+        description: 'Success',
+    })
+    @ApiResponse({
+        status: 404,
+        type: MedicineResponseDto,
+        description: 'Not Found',
+    })
+    async remove(@Req() req: Request, @Param('id') id: string) {
+        const user = req.user as Auth;
+        return this.medicinesService.remove(user, id);
     }
 }

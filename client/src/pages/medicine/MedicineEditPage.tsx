@@ -86,6 +86,12 @@ export default function MedicineEditPage() {
         <EditLayout<Medicine>
             newData={newData}
             title={Title.MEDICINES}
+            onRemove={async (id) => {
+                await medicineAPI.remove(id);
+                resetMedicines();
+                resetHospitals();
+                return true;
+            }}
             onSave={async (data, id) => {
                 if (id === 'new') await medicineAPI.create(data);
                 else await medicineAPI.update(id, data);

@@ -13,6 +13,7 @@ export default function Input({
     id,
     icon,
     label,
+    required,
     disabled,
     className,
     description,
@@ -25,7 +26,7 @@ export default function Input({
     const labelClass = `flex gap-2 text-sm font-bold tracking-tight ${
         disabled ? 'text-text-muted-light' : 'text-text-light'
     } dark:${disabled ? 'text-text-muted-dark' : 'text-text-dark'} mb-1 ml-1`;
-    const inputClass = `w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm placeholder:text-text-muted-light/50 dark:placeholder:text-text-muted-dark/50 ${
+    const inputClass = `w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all duration-200 shadow-sm placeholder:text-text-muted-light/50 dark:placeholder:text-text-muted-dark/50 ${
         disabled ? 'text-text-muted-light' : 'text-text-light'
     } dark:${disabled ? 'text-text-muted-dark' : 'text-text-dark'}`;
 
@@ -35,6 +36,7 @@ export default function Input({
                 <label htmlFor={inputId} className={`${labelClass} ${labelClassName || ''}`}>
                     {icon}
                     {label}
+                    {required && <span className="text-red-500">*</span>}
                 </label>
             )}
             <div className="relative">

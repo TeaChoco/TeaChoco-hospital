@@ -8,7 +8,7 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
 import { ResponseAppointmentDto } from './dto/response-appointment.dto';
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 
 @ApiTags('Api Appointments')
 @Controller('api/appointments')
@@ -84,5 +84,22 @@ export class AppointmentsController {
     async update(@Req() req: Request, @Param('id') id: string, @Body() data: UpdateAppointmentDto) {
         const user = req.user as Auth;
         return this.appointmentsService.update(user, id, data);
+    }
+
+    @Delete(':id')
+    @UseGuards(UserAuthGuard)
+    @ApiResponse({
+        status: 200,
+        type: ResponseAppointmentDto,
+        description: 'Success',
+    })
+    @ApiResponse({
+        status: 404,
+        type: ResponseAppointmentDto,
+        description: 'Not Found',
+    })
+    async remove(@Req() req: Request, @Param('id') id: string) {
+        const user = req.user as Auth;
+        return this.appointmentsService.remove(user, id);
     }
 }

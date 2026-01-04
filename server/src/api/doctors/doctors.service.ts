@@ -66,4 +66,10 @@ export class DoctorsService {
         );
         return await this.doctorModel.findByIdAndUpdate(id, newData, { new: true });
     }
+
+    async remove(auth: Auth, id: string) {
+        const doctor = await this.doctorModel.findById(id);
+        await this.apiService.remove(auth, doctor);
+        return await this.doctorModel.findByIdAndDelete(id);
+    }
 }

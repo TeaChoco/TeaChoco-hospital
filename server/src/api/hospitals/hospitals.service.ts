@@ -60,4 +60,10 @@ export class HospitalsService {
         );
         return await this.hospitalModel.findByIdAndUpdate(id, newData, { new: true });
     }
+
+    async remove(auth: Auth, id: string) {
+        const hospital = await this.hospitalModel.findById(id);
+        await this.apiService.remove(auth, hospital);
+        return await this.hospitalModel.findByIdAndDelete(id);
+    }
 }
