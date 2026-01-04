@@ -1,7 +1,8 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/auth/Signin.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/auth/Signin.tsx"
 import SigninGoogle from './SigninGoogle';
 import { useAuth } from '../../hooks/useAuth';
 import { authAPI } from '../../services/auth';
+import { useTranslation } from 'react-i18next';
 import Background from '../../layout/Background';
 import { useSocket } from '../../hooks/useSocket';
 import { SiginQrData } from '../../types/signin-qr';
@@ -15,6 +16,7 @@ import QRGeneratorPage from '../../components/auth/QRGenerator';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Signin() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { emit, useEvent } = useSocket();
     const [searchParams] = useSearchParams();
@@ -85,19 +87,19 @@ export default function Signin() {
         }
     }, [searchParams, navigate]);
 
-    // แปลง error message เป็นภาษาไทย
+    // แปลง error message
     const getLocalizedErrorMessage = (error: string): string => {
         const errorMap: Record<string, string> = {
-            'No user data received from Google': 'ไม่ได้รับข้อมูลผู้ใช้จาก Google',
-            'Authentication failed': 'การยืนยันตัวตนล้มเหลว',
-            invalid_client: 'ข้อมูลการยืนยันตัวตนไม่ถูกต้อง',
-            invalid_grant: 'การอนุญาตไม่ถูกต้อง',
-            access_denied: 'ถูกปฏิเสธการเข้าถึง',
-            unauthorized_client: 'ไคลเอ็นต์ไม่ได้รับอนุญาต',
-            unsupported_response_type: 'ประเภทการตอบสนองไม่รองรับ',
-            invalid_scope: 'ขอบเขตไม่ถูกต้อง',
-            server_error: 'ข้อผิดพลาดเซิร์ฟเวอร์',
-            temporarily_unavailable: 'บริการไม่พร้อมใช้งานชั่วคราว',
+            'No user data received from Google': t('signin.errors.noUserData'),
+            'Authentication failed': t('signin.errors.authFailed'),
+            invalid_client: t('signin.errors.invalidClient'),
+            invalid_grant: t('signin.errors.invalidGrant'),
+            access_denied: t('signin.errors.accessDenied'),
+            unauthorized_client: t('signin.errors.unauthorizedClient'),
+            unsupported_response_type: t('signin.errors.unsupportedResponseType'),
+            invalid_scope: t('signin.errors.invalidScope'),
+            server_error: t('signin.errors.serverError'),
+            temporarily_unavailable: t('signin.errors.temporarilyUnavailable'),
         };
         return errorMap[error] || error;
     };
@@ -114,16 +116,16 @@ export default function Signin() {
                 <div className="bg-linear-to-r relative from-primary to-primary-dark p-8 text-center text-white">
                     <div className="flex absolute top-4 left-4">
                         <button
-                            title="Go to Home"
+                            title={t('signin.goToHome')}
                             className="btn-icon"
-                            aria-label="Go to Home"
+                            aria-label={t('signin.goToHome')}
                             onClick={() => navigate('/')}>
                             <IoHome />
                         </button>
                     </div>
 
-                    <h1 className="text-3xl font-bold mb-2">TeaChoco Hospital</h1>
-                    <p className="text-white/80">Please sign in to continue</p>
+                    <h1 className="text-3xl font-bold mb-2">{t('navbar.appName')}</h1>
+                    <p className="text-white/80">{t('signin.signInTitle')}</p>
                 </div>
 
                 {/* Tabs */}
@@ -136,7 +138,7 @@ export default function Signin() {
                                     ? 'text-primary border-b-2 border-primary'
                                     : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
                             }`}>
-                            Google Login
+                            {t('signin.googleLogin')}
                         </button>
                         <button
                             onClick={() => navigate('/signin/scan')}
@@ -145,7 +147,7 @@ export default function Signin() {
                                     ? 'text-primary border-b-2 border-primary'
                                     : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
                             }`}>
-                            Scan QR
+                            {t('signin.scanQR')}
                         </button>
                         <button
                             onClick={() => navigate('/signin/generate')}
@@ -154,7 +156,7 @@ export default function Signin() {
                                     ? 'text-primary border-b-2 border-primary'
                                     : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
                             }`}>
-                            Generate QR
+                            {t('signin.generateQR')}
                         </button>
                     </nav>
                 </div>
@@ -167,7 +169,7 @@ export default function Signin() {
                             <div className="flex items-center justify-center">
                                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                                 <span className="ml-3 text-primary-dark font-medium">
-                                    Signing in...
+                                    {t('auth.google.signingIn')}
                                 </span>
                             </div>
                         </div>
@@ -183,7 +185,7 @@ export default function Signin() {
                                         {error ? getLocalizedErrorMessage(error) : queryError}
                                     </p>
                                     <p className="text-red-500 dark:text-red-300 text-sm mt-1">
-                                        Please try again or use another sign-in method.
+                                        {t('signin.tryAgainInfo')}
                                     </p>
                                 </div>
                             </div>
@@ -208,8 +210,8 @@ export default function Signin() {
                     <div className="mt-8 pt-6 border-t border-border-light dark:border-border-dark">
                         <p className="text-center text-sm text-text-muted-light dark:text-text-muted-dark">
                             {queryError
-                                ? 'Please try another sign-in method or contact support'
-                                : 'Choose your preferred login method above'}
+                                ? t('signin.supportMethodInfo')
+                                : t('signin.choosePreferredMethod')}
                         </p>
 
                         {/* Support Links */}
@@ -218,17 +220,17 @@ export default function Signin() {
                                 <button
                                     onClick={() => window.location.reload()}
                                     className="text-sm text-primary hover:text-primary-dark transition-colors">
-                                    Refresh Page
+                                    {t('signin.refreshPage')}
                                 </button>
                                 <button
                                     onClick={() => navigate('/help')}
                                     className="text-sm text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors">
-                                    Get Help
+                                    {t('signin.getHelp')}
                                 </button>
                                 <button
                                     onClick={() => navigate('/contact')}
                                     className="text-sm text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors">
-                                    Contact Support
+                                    {t('signin.contactSupport')}
                                 </button>
                             </div>
                         )}

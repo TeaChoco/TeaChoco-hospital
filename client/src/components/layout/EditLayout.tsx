@@ -1,4 +1,4 @@
-//- Path: "TeaChoco-Hospital/client/src/components/layout/EditLayout.tsx"
+// -Path: "TeaChoco-Hospital/client/src/components/layout/EditLayout.tsx"
 import { useAtom } from 'jotai';
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
@@ -7,6 +7,7 @@ import { Obj } from '@teachoco-dev/cli';
 import { Allow } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useSwal } from '../../hooks/useSwal';
+import { useTranslation } from 'react-i18next';
 import type { ApiData } from '../../types/types';
 import { useEffect, useMemo, useState } from 'react';
 import type { OutApiData, Title } from '../../types/types';
@@ -36,7 +37,7 @@ export default function EditLayout<Data extends ApiData<object>>({
     loading?: boolean;
     newData: OutApiData<Data>;
     find: (id: string) => Data | undefined;
-    onRemove?: (id: string) => Promise<void | boolean>;
+    onRemove: (id: string) => Promise<void | boolean>;
     onSave: (data: Data, id: string) => Promise<void | boolean>;
     children: (
         data: OutApiData<Data>,
@@ -45,8 +46,10 @@ export default function EditLayout<Data extends ApiData<object>>({
 }) {
     const { id } = useParams();
     const { fire } = useSwal();
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
+    const [isSaving, setIsSaving] = useState(false);
     const { user, loading: authLoading } = useAuth();
     const [dataLoading, setDataLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -84,7 +87,8 @@ export default function EditLayout<Data extends ApiData<object>>({
     }, [data, initialData]);
 
     const blocker = useBlocker(
-        ({ nextLocation }) => hasChanges && nextLocation.pathname !== location.pathname,
+        ({ nextLocation }) =>
+            !isSaving && hasChanges && nextLocation.pathname !== location.pathname,
     );
 
     const toBack = useMemo(() => {
@@ -107,13 +111,11 @@ export default function EditLayout<Data extends ApiData<object>>({
 
     useEffect(() => {
         if (blocker.state === 'blocked') {
-            const proceed = window.confirm(
-                'คุณมีข้อมูลที่ยังไม่ได้บันทึก ต้องการออกจากหน้านี้ใช่หรือไม่?',
-            );
+            const proceed = window.confirm(t('editLayout.unsavedChanges'));
             if (proceed) blocker.proceed();
             else blocker.reset();
         }
-    }, [blocker]);
+    }, [blocker, t]);
 
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -127,14 +129,16 @@ export default function EditLayout<Data extends ApiData<object>>({
     }, [hasChanges]);
 
     const handleRemove = async () => {
-        if (id && onRemove) {
+        if (id) {
             const result = await fire({
-                title: `คุณแน่ใจหรือไม่?`,
-                text: `คุณต้องการลบข้อมูล ${title} นี้ใช่ไหม?`,
+                title: t('editLayout.confirmDeleteTitle'),
+                text: t('editLayout.confirmDeleteText', {
+                    title: t(`navbar.${title.toLowerCase()}`),
+                }),
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'ใช่, ฉันต้องการลบ',
-                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: t('editLayout.confirmDeleteConfirm'),
+                cancelButtonText: t('editLayout.confirmDeleteCancel'),
                 confirmButtonColor: '#ef4444',
             });
 
@@ -168,11 +172,13 @@ export default function EditLayout<Data extends ApiData<object>>({
                     __v: 0,
                 } as Data;
 
+                setIsSaving(true);
                 const callback = await onSave(save, id);
                 if (callback) {
                     setInitialData(JSON.stringify(data));
                     navigate(toBack);
                 }
+                setIsSaving(false);
             } catch (error) {
                 console.error(error);
                 setError(
@@ -200,19 +206,19 @@ export default function EditLayout<Data extends ApiData<object>>({
                     </div>
                     <div className="space-y-2">
                         <h2 className="text-2xl font-black text-text-light dark:text-text-dark tracking-tight">
-                            Record Not Found
+                            {t('editLayout.recordNotFound')}
                         </h2>
                         <p className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark leading-relaxed">
-                            We couldn't retrieve the{' '}
-                            <span className="text-primary font-bold lowercase">{title}</span> data
-                            you're looking for. It might have been moved or deleted.
+                            {t('editLayout.notFoundInfo', {
+                                title: t(`navbar.${title.toLowerCase()}`),
+                            })}
                         </p>
                     </div>
                     <button
                         onClick={() => navigate(-1)}
                         className="btn btn-primary w-full flex items-center justify-center gap-2 group">
                         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-                        Go Back to Previous Page
+                        {t('editLayout.goBack')}
                     </button>
                 </Paper>
             </div>
@@ -225,7 +231,7 @@ export default function EditLayout<Data extends ApiData<object>>({
                     <FaArrowLeft />
                 </Link>
                 <h1 className="text-2xl font-bold text-text-light dark:text-text-dark">
-                    Edit {title}
+                    {t('editLayout.edit')} {t(`navbar.${title.toLowerCase()}`)}
                 </h1>
                 <button
                     onClick={() =>
@@ -248,7 +254,7 @@ export default function EditLayout<Data extends ApiData<object>>({
                             </div>
                             <div className="flex-1 space-y-1 py-1">
                                 <p className="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest">
-                                    Execution Error
+                                    {t('editLayout.executionError')}
                                 </p>
                                 <p className="text-sm font-medium text-red-500/80 leading-relaxed">
                                     {typeof error === 'object' ? JSON.stringify(error) : error}
@@ -271,17 +277,17 @@ export default function EditLayout<Data extends ApiData<object>>({
                 )}
 
                 <div className="flex flex-col gap-4">
-                    {id !== 'new' && onRemove && (
+                    {id !== 'new' && (
                         <button
                             type="button"
                             onClick={handleRemove}
                             className="btn bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 flex items-center justify-center gap-2 px-6">
                             <FaTrash size={14} />
-                            Remove
+                            {t('editLayout.remove')}
                         </button>
                     )}
                     <button type="submit" className="btn btn-primary">
-                        {id === 'new' ? 'Create' : 'Save Changes'}
+                        {id === 'new' ? t('editLayout.create') : t('editLayout.saveChanges')}
                     </button>
                 </div>
             </form>

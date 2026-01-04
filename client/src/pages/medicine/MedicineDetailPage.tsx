@@ -13,10 +13,12 @@ import {
 } from 'react-icons/fa';
 import moment from 'moment';
 import { Allow } from '../../types/auth';
+import { useTranslation } from 'react-i18next';
 import { useMedicines } from '../../context/medicinesAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
 
 export default function MedicineDetailPage() {
+    const { t } = useTranslation();
     const { medicines } = useMedicines();
 
     return (
@@ -40,7 +42,9 @@ export default function MedicineDetailPage() {
                                                 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
                                                 : 'bg-slate-500/10 text-slate-600 border-slate-500/20'
                                         }`}>
-                                        {medicine.isActive ? 'Active' : 'Inactive'}
+                                        {medicine.isActive
+                                            ? t('medicines.active')
+                                            : t('medicines.inactive')}
                                     </div>
                                     <div className="px-3 py-1 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-xl shadow-xs">
                                         <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">
@@ -94,7 +98,7 @@ export default function MedicineDetailPage() {
                                                 </span>
                                             </div>
                                             <span className="text-[9px] font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest leading-none mt-1">
-                                                Doses Daily
+                                                {t('medicines.dosesDaily')}
                                             </span>
                                         </div>
                                     </div>
@@ -110,7 +114,7 @@ export default function MedicineDetailPage() {
                             <div className="space-y-6">
                                 <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                     <div className="w-6 h-px bg-primary/30" />
-                                    Product Visualization
+                                    {t('medicines.productVisualization')}
                                 </h3>
 
                                 <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark group shadow-sm">
@@ -127,7 +131,7 @@ export default function MedicineDetailPage() {
                                     )}
                                     <div className="absolute bottom-4 right-4 p-4 bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-2xl border border-white/50 dark:border-white/10 shadow-lg">
                                         <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                            Expiry Date
+                                            {t('medicines.expiryDate')}
                                         </p>
                                         <p className="text-sm font-bold text-text-light dark:text-text-dark">
                                             {moment(medicine.expiryDate).format('DD MMM YYYY')}
@@ -142,20 +146,21 @@ export default function MedicineDetailPage() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase leading-none mb-1">
-                                                Full Package
+                                                {t('medicines.fullPackage')}
                                             </p>
                                             <p className="text-sm font-bold text-text-light dark:text-text-dark">
-                                                {medicine.package?.tabletsPerStrip || '-'} Units
-                                                Left
+                                                {medicine.package?.tabletsPerStrip || '-'}{' '}
+                                                {t('medicines.unitsLeft')}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                            Units In Box
+                                            {t('medicines.unitsInBox')}
                                         </p>
                                         <p className="text-xs font-bold text-primary">
-                                            {medicine.package?.stripsPerBox || 1} Strips / Box
+                                            {medicine.package?.stripsPerBox || 1}{' '}
+                                            {t('medicines.stripsPerBox')}
                                         </p>
                                     </div>
                                 </div>
@@ -166,7 +171,7 @@ export default function MedicineDetailPage() {
                                 <div className="space-y-6">
                                     <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                         <div className="w-6 h-px bg-amber-500/30" />
-                                        Administration Protocols
+                                        {t('medicines.administrationProtocols')}
                                     </h3>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,7 +188,8 @@ export default function MedicineDetailPage() {
                                                             {inst.mealTime}
                                                         </p>
                                                         <p className="text-sm font-bold text-text-light dark:text-text-dark capitalize italic opacity-70">
-                                                            {inst.relation?.replace('_', ' ')} Meal
+                                                            {inst.relation?.replace('_', ' ')}{' '}
+                                                            {t('medicines.meal')}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -194,8 +200,7 @@ export default function MedicineDetailPage() {
                                                         className="text-text-muted-light"
                                                     />
                                                     <p className="text-sm text-text-muted-light dark:text-text-muted-dark leading-relaxed">
-                                                        {inst.notes ||
-                                                            'Strict adherence to prescribed timing recommended.'}
+                                                        {inst.notes || t('common.notAvailable')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -206,7 +211,7 @@ export default function MedicineDetailPage() {
                                 <div className="space-y-6">
                                     <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                         <div className="w-6 h-px bg-indigo-500/30" />
-                                        Clinical Context & Safety
+                                        {t('medicines.clinicalContextSafety')}
                                     </h3>
 
                                     <div className="p-8 rounded-2xl bg-linear-to-br from-indigo-500/5 to-primary/5 border border-primary/10 shadow-sm relative overflow-hidden group">
@@ -217,7 +222,7 @@ export default function MedicineDetailPage() {
                                         <div className="relative z-1 grid grid-cols-1 sm:grid-cols-3 gap-8">
                                             <div className="space-y-2">
                                                 <p className="text-[10px] font-black text-primary uppercase tracking-widest">
-                                                    Storage Protocol
+                                                    {t('medicines.storageProtocol')}
                                                 </p>
                                                 <div className="flex flex-wrap gap-2 pt-1">
                                                     {medicine.storageConditions.map((cond, idx) => (
@@ -231,7 +236,7 @@ export default function MedicineDetailPage() {
                                             </div>
                                             <div className="space-y-2">
                                                 <p className="text-[10px] font-black text-primary uppercase tracking-widest">
-                                                    Dispensed At
+                                                    {t('medicines.dispensedAt')}
                                                 </p>
                                                 <div className="flex items-center gap-2 pt-1">
                                                     <FaHospital
@@ -240,13 +245,13 @@ export default function MedicineDetailPage() {
                                                     />
                                                     <p className="text-sm font-bold text-text-light dark:text-text-dark capitalize">
                                                         {medicine.hospital?.department ||
-                                                            'Main Pharmacy'}
+                                                            t('common.na')}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <p className="text-[10px] font-black text-primary uppercase tracking-widest">
-                                                    Medicine Class
+                                                    {t('medicines.medicineClass')}
                                                 </p>
                                                 <div className="flex items-center gap-2 pt-1">
                                                     <FaVial
@@ -254,7 +259,7 @@ export default function MedicineDetailPage() {
                                                         className="text-text-muted-light"
                                                     />
                                                     <p className="text-sm font-bold text-text-light dark:text-text-dark capitalize">
-                                                        {medicine.category || 'Standard Care'}
+                                                        {medicine.category || t('common.na')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -269,7 +274,7 @@ export default function MedicineDetailPage() {
                             <div className="pt-10 border-t border-border-light dark:border-border-dark space-y-6">
                                 <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                     <div className="w-6 h-px bg-red-500/30" />
-                                    Security & Safety Manifest
+                                    {t('medicines.securitySafetyManifest')}
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {medicine.warnings.map((warning, idx) => (
@@ -294,7 +299,7 @@ export default function MedicineDetailPage() {
                         <div className="flex items-center gap-3 text-text-muted-light dark:text-text-muted-dark">
                             <FaClock className="shrink-0 opacity-40" size={14} />
                             <p className="text-[10px] font-bold uppercase tracking-widest">
-                                Registered:{' '}
+                                {t('common.recorded')}:{' '}
                                 <span className="text-text-light dark:text-text-dark ml-1 italic">
                                     {moment(medicine.createdAt).format('DD MMM YYYY, HH:mm')}
                                 </span>
@@ -303,7 +308,7 @@ export default function MedicineDetailPage() {
                         <div className="flex items-center gap-3 text-text-muted-light dark:text-text-muted-dark">
                             <FaHistory className="shrink-0 opacity-40" size={14} />
                             <p className="text-[10px] font-bold uppercase tracking-widest">
-                                Modified:{' '}
+                                {t('common.modified')}:{' '}
                                 <span className="text-text-light dark:text-text-dark ml-1 italic">
                                     {moment(medicine.updatedAt).format('DD MMM YYYY, HH:mm')}
                                 </span>

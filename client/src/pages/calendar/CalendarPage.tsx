@@ -1,13 +1,15 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/calendar/CalendarPage.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/calendar/CalendarPage.tsx"
+import { Allow } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Loading from '../../components/custom/Loading';
 import ListLayout from '../../components/layout/ListLayout';
 import { useCalendarEvents } from '../../hooks/useCalendarEvents';
 import Calendar, { type CalendarEvent } from '../../components/calendar/Calendar';
-import { Allow } from '../../types/auth';
 
 export default function CalendarPage() {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
     const { appointmentEvents, medicineEvents } = useCalendarEvents();
@@ -23,18 +25,18 @@ export default function CalendarPage() {
     return (
         <ListLayout
             datas={events}
-            header="Health Calendar"
+            header={t('calendarPage.header')}
             buttons={(NewButton) => (
                 <>
                     <NewButton to={`/appointments/edit/new`} visible={canEdit}>
-                        New Appointment
+                        {t('calendarPage.newAppointment')}
                     </NewButton>
                     <NewButton to={`/medicines/edit/new`} visible={canEdit}>
-                        New Medicine
+                        {t('calendarPage.newMedicine')}
                     </NewButton>
                 </>
             )}
-            description="Track your appointments and medication schedule">
+            description={t('calendarPage.description')}>
             <div className="h-200 bg-bg-card-light dark:bg-bg-card-dark p-4 rounded-xl shadow-sm border border-border-light dark:border-border-dark text-text-light dark:text-text-dark transition-all duration-200">
                 <Calendar
                     events={events}

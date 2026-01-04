@@ -10,10 +10,10 @@ export default function ProfilePage() {
     const { user, signout } = useAuth();
 
     const infoItems = [
-        { icon: FaIdCard, label: 'User ID', value: user?.user_id },
-        { icon: FaEnvelope, label: 'Email Address', value: user?.email },
-        { icon: FaUser, label: 'First Name', value: user?.firstName },
-        { icon: FaUser, label: 'Last Name', value: user?.lastName },
+        { icon: FaUser, label: t('profile.lastName'), value: user?.lastName },
+        { icon: FaIdCard, label: t('profile.userID'), value: user?.user_id },
+        { icon: FaUser, label: t('profile.firstName'), value: user?.firstName },
+        { icon: FaEnvelope, label: t('profile.emailAddress'), value: user?.email },
     ];
 
     return (
@@ -42,11 +42,11 @@ export default function ProfilePage() {
 
                         <div className="flex-1 text-center md:text-left">
                             <h1 className="text-3xl md:text-4xl font-black text-text-light dark:text-text-dark mb-2 tracking-tight">
-                                {user?.name || 'User Profile'}
+                                {user?.name || t('profile.title')}
                             </h1>
                             <p className="text-text-muted-light dark:text-text-muted-dark font-medium flex items-center justify-center md:justify-start gap-2">
                                 <span className="w-2 h-2 rounded-full bg-primary shrink-0"></span>
-                                Registered via Google
+                                {t('profile.registeredViaGoogle')}
                             </p>
                             <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3">
                                 <button className="btn btn-primary px-6 shadow-lg shadow-primary/20">
@@ -56,7 +56,7 @@ export default function ProfilePage() {
                                     to="/profile/allow"
                                     className="btn btn-primary px-6 flex items-center gap-2">
                                     <FaQrcode />
-                                    Allow with QR Code
+                                    {t('profile.allowWithQR')}
                                 </Link>
                                 <Link to="/" onClick={signout} className="btn btn-error">
                                     {t('auth.signout')}
@@ -74,7 +74,7 @@ export default function ProfilePage() {
                             <span className="p-2 bg-primary/10 rounded-lg">
                                 <FaIdCard className="text-primary text-xl" />
                             </span>
-                            Personal Information
+                            {t('profile.personalInfo')}
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {infoItems.map((item, index) => (
@@ -98,13 +98,21 @@ export default function ProfilePage() {
                             <span className="p-2 bg-accent/10 rounded-lg">
                                 <FaCalendarCheck className="text-accent text-xl" />
                             </span>
-                            Account Statistics
+                            {t('profile.accountStats')}
                         </h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {[
-                                { label: 'Appointments', count: '12', color: 'bg-primary' },
-                                { label: 'Medicines', count: '5', color: 'bg-accent' },
-                                { label: 'Hospitals', count: '2', color: 'bg-accent-secondary' },
+                                { count: '5', color: 'bg-accent', label: t('navbar.medicines') },
+                                {
+                                    count: '2',
+                                    color: 'bg-accent-secondary',
+                                    label: t('navbar.hospitals'),
+                                },
+                                {
+                                    count: '12',
+                                    color: 'bg-primary',
+                                    label: t('navbar.appointments'),
+                                },
                             ].map((stat, i) => (
                                 <div
                                     key={i}
@@ -126,19 +134,21 @@ export default function ProfilePage() {
                 <div className="space-y-6">
                     <Paper className="p-6">
                         <h3 className="text-lg font-bold text-text-light dark:text-text-dark mb-6">
-                            Security
+                            {t('profile.security')}
                         </h3>
                         <div className="space-y-4">
                             <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                <span className="text-sm font-medium">Password</span>
+                                <span className="text-sm font-medium">{t('profile.password')}</span>
                                 <span className="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500 uppercase font-black">
-                                    Linked
+                                    {t('profile.linked')}
                                 </span>
                             </button>
                             <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                <span className="text-sm font-medium">Two-Factor Auth</span>
+                                <span className="text-sm font-medium">
+                                    {t('profile.twoFactorAuth')}
+                                </span>
                                 <span className="text-xs bg-primary/10 px-2 py-1 rounded text-primary uppercase font-black tracking-tighter">
-                                    Enable
+                                    {t('profile.enable')}
                                 </span>
                             </button>
                         </div>
@@ -146,12 +156,14 @@ export default function ProfilePage() {
 
                     <Paper className="p-6 overflow-hidden relative">
                         <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-red-500 to-orange-500"></div>
-                        <h3 className="text-lg font-bold text-red-500 mb-2">Danger Zone</h3>
+                        <h3 className="text-lg font-bold text-red-500 mb-2">
+                            {t('profile.dangerZone')}
+                        </h3>
                         <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-4">
-                            Once you delete your account, there is no going back. Please be certain.
+                            {t('profile.deleteAccountInfo')}
                         </p>
                         <button className="w-full btn btn-error text-white font-bold py-3 shadow-lg shadow-red-500/20">
-                            Delete Account
+                            {t('profile.deleteAccount')}
                         </button>
                     </Paper>
                 </div>

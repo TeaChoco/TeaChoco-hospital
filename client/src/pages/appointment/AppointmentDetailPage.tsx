@@ -10,10 +10,12 @@ import {
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
+import { useTranslation } from 'react-i18next';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { useAppointments } from '../../context/appointmentsAtom';
 
 export default function AppointmentDetailPage() {
+    const { t } = useTranslation();
     const { appointments } = useAppointments();
 
     return (
@@ -68,7 +70,7 @@ export default function AppointmentDetailPage() {
                                             <div className="w-1 h-5 bg-primary rounded-full group-hover:h-7 transition-all duration-300" />
                                             <div>
                                                 <p className="text-[9px] font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest leading-none mb-0.5">
-                                                    Visit Type
+                                                    {t('appointments.visitType')}
                                                 </p>
                                                 <p className="text-xs font-bold text-text-light dark:text-text-dark capitalize">
                                                     {appointment.type}
@@ -82,7 +84,7 @@ export default function AppointmentDetailPage() {
                                             </div>
                                             <div>
                                                 <p className="text-[9px] font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest leading-none mb-0.5">
-                                                    Department
+                                                    {t('appointments.department')}
                                                 </p>
                                                 <p className="text-xs font-bold text-text-light dark:text-text-dark">
                                                     {appointment.department}
@@ -139,7 +141,7 @@ export default function AppointmentDetailPage() {
                             <div className="space-y-6">
                                 <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                     <div className="w-6 h-px bg-primary/30" />
-                                    Doctor & Clinical Location
+                                    {t('appointments.doctorClinicalLocation')}
                                 </h3>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -152,7 +154,7 @@ export default function AppointmentDetailPage() {
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-[10px] font-bold text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                                    Attending Physician
+                                                    {t('appointments.attendingPhysician')}
                                                 </p>
                                                 <p className="font-bold text-text-light dark:text-text-dark group-hover:text-primary transition-colors">
                                                     {appointment.doctor?.firstName}{' '}
@@ -161,7 +163,8 @@ export default function AppointmentDetailPage() {
                                             </div>
                                         </div>
                                         <p className="text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-1 italic">
-                                            Specializing in {appointment.doctor?.department}
+                                            {t('appointments.specializingIn')}{' '}
+                                            {appointment.doctor?.department}
                                         </p>
                                     </Link>
 
@@ -174,7 +177,7 @@ export default function AppointmentDetailPage() {
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-[10px] font-bold text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                                    Medical Center
+                                                    {t('appointments.medicalCenter')}
                                                 </p>
                                                 <p className="font-bold text-text-light dark:text-text-dark group-hover:text-accent-secondary transition-colors line-clamp-1">
                                                     {appointment.hospital?.name}
@@ -182,8 +185,9 @@ export default function AppointmentDetailPage() {
                                             </div>
                                         </div>
                                         <p className="text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-1 italic text-right capitalize">
-                                            Room {appointment.roomNumber || 'TBA'}, Floor{' '}
-                                            {appointment.floor || '-'}
+                                            {t('appointments.room')}{' '}
+                                            {appointment.roomNumber || t('common.tba')},{' '}
+                                            {t('appointments.floor')} {appointment.floor || '-'}
                                         </p>
                                     </Link>
                                 </div>
@@ -195,7 +199,7 @@ export default function AppointmentDetailPage() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-bold text-text-light dark:text-text-dark">
-                                                Appointment Sub-type
+                                                {t('appointments.appointmentSubType')}
                                             </p>
                                             <p className="text-sm text-text-muted-light dark:text-text-muted-dark capitalize">
                                                 {appointment.subType || 'General Examination'}
@@ -204,7 +208,7 @@ export default function AppointmentDetailPage() {
                                     </div>
                                     <div className="text-right space-y-4">
                                         <p className="text-xs font-bold text-text-light dark:text-text-dark">
-                                            Patient Class
+                                            {t('appointments.patientClass')}
                                         </p>
                                         <p className="text-sm p-1.5 px-3 bg-white dark:bg-slate-800 rounded-lg shadow-xs text-primary font-bold inline-block capitalize">
                                             {appointment.patientType}
@@ -217,7 +221,7 @@ export default function AppointmentDetailPage() {
                             <div className="space-y-6">
                                 <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                     <div className="w-6 h-px bg-amber-500/30" />
-                                    Protocols & Preparation
+                                    {t('appointments.protocolsPreparation')}
                                 </h3>
 
                                 <div className="space-y-4">
@@ -228,7 +232,7 @@ export default function AppointmentDetailPage() {
                                                     <FaNotesMedical />
                                                 </div>
                                                 <p className="font-black text-amber-700 dark:text-amber-400 uppercase text-xs tracking-wider">
-                                                    Required Instructions
+                                                    {t('appointments.requiredInstructions')}
                                                 </p>
                                             </div>
                                             <ul className="space-y-3">
@@ -246,16 +250,16 @@ export default function AppointmentDetailPage() {
                                             {appointment.preparation.fastingHours && (
                                                 <div className="mt-4 p-3 bg-white/50 dark:bg-black/20 rounded-xl border border-amber-200/50 text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2">
                                                     <FaClock size={12} />
-                                                    FASTING REQUIRED:{' '}
-                                                    {appointment.preparation.fastingHours} HOURS
-                                                    PRIOR
+                                                    {t('appointments.fastingRequired')}:{' '}
+                                                    {appointment.preparation.fastingHours}{' '}
+                                                    {t('appointments.hoursPrior')}
                                                 </div>
                                             )}
                                         </div>
                                     ) : (
                                         <div className="p-6 rounded-2xl bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200/50 dark:border-emerald-800/30 text-center">
                                             <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
-                                                No specific preparation required for this visit.
+                                                {t('appointments.noPreparationRequired')}
                                             </p>
                                         </div>
                                     )}
@@ -263,7 +267,7 @@ export default function AppointmentDetailPage() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="p-4 rounded-xl border border-border-light dark:border-border-dark bg-slate-50 dark:bg-slate-800/40">
                                             <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase mb-2">
-                                                Location Code
+                                                {t('appointments.locationCode')}
                                             </p>
                                             <p className="text-sm font-bold text-text-light dark:text-text-dark flex items-center gap-2 capitalize">
                                                 <div className="w-2 h-2 rounded-full bg-primary" />
@@ -272,7 +276,7 @@ export default function AppointmentDetailPage() {
                                         </div>
                                         <div className="p-4 rounded-xl border border-border-light dark:border-border-dark bg-slate-50 dark:bg-slate-800/40">
                                             <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase mb-2">
-                                                Reminders
+                                                {t('appointments.reminders')}
                                             </p>
                                             <p className="text-sm font-bold text-text-light dark:text-text-dark flex items-center gap-2">
                                                 <div
@@ -283,8 +287,8 @@ export default function AppointmentDetailPage() {
                                                     }`}
                                                 />
                                                 {appointment.remindersSent
-                                                    ? 'Notification Sent'
-                                                    : 'Pending Queue'}
+                                                    ? t('appointments.notificationSent')
+                                                    : t('appointments.pendingQueue')}
                                             </p>
                                         </div>
                                     </div>
@@ -297,7 +301,7 @@ export default function AppointmentDetailPage() {
                             <div className="pt-10 border-t border-border-light dark:border-border-dark space-y-6">
                                 <h3 className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-[0.2em] flex items-center gap-2">
                                     <div className="w-6 h-px bg-indigo-500/30" />
-                                    Symptoms & Preliminary Diagnosis
+                                    {t('appointments.symptomsPreliminaryDiagnosis')}
                                 </h3>
                                 <div className="flex flex-wrap gap-4">
                                     {appointment.symptoms.map((symptom, idx) => (
@@ -320,7 +324,8 @@ export default function AppointmentDetailPage() {
                                                 </span>
                                             </div>
                                             <p className="text-xs text-text-muted-light dark:text-text-muted-dark italic">
-                                                Duration: {symptom.duration || 'Not specified'}
+                                                {t('appointments.duration')}:{' '}
+                                                {symptom.duration || t('appointments.notSpecified')}
                                             </p>
                                         </div>
                                     ))}
@@ -328,7 +333,7 @@ export default function AppointmentDetailPage() {
                                 {appointment.preliminaryDiagnosis && (
                                     <div className="p-6 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 italic font-medium shadow-xl">
                                         <span className="text-primary font-black not-italic uppercase text-[10px] tracking-widest block mb-2 opacity-70">
-                                            Initial Diagnosis Ref:
+                                            {t('appointments.initialDiagnosisRef')}:
                                         </span>
                                         "{appointment.preliminaryDiagnosis}"
                                     </div>
@@ -340,28 +345,48 @@ export default function AppointmentDetailPage() {
                         <div className="pt-10 border-t border-border-light dark:border-border-dark grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div className="space-y-4">
                                 <h4 className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
-                                    Medical Notes
+                                    {t('appointments.medicalNotes')}
                                 </h4>
-                                <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark italic">
-                                    {appointment.patientNotes ||
-                                        'No additional patient notes provided for this appointment.'}
+                                <div className="space-y-4">
+                                    {appointment.patientNotes &&
+                                    appointment.patientNotes.length > 0 ? (
+                                        appointment.patientNotes.map((note) => (
+                                            <div
+                                                key={note.noteId}
+                                                className="p-4 rounded-xl bg-white dark:bg-slate-800/60 border border-border-light dark:border-border-dark shadow-xs">
+                                                <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed italic">
+                                                    "{note.content}"
+                                                </p>
+                                                <div className="mt-2 flex items-center justify-between text-[10px] font-bold text-primary/70 uppercase tracking-tighter">
+                                                    <span>{note.author}</span>
+                                                    <span>
+                                                        {new Date(note.createdAt).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark text-sm text-text-muted-light dark:text-text-muted-dark italic text-center">
+                                            {t('appointments.noNotesProvided')}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
                             <div className="space-y-4">
                                 <h4 className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
-                                    Billing & Settlement
+                                    {t('appointments.billingSettlement')}
                                 </h4>
                                 <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark flex items-center justify-between">
                                     <div>
                                         <p className="text-2xl font-black text-text-light dark:text-text-dark tracking-tight">
                                             {appointment.payment?.netAmount.toLocaleString()}{' '}
                                             <span className="text-sm font-bold opacity-50">
-                                                THB
+                                                {t('appointments.thb')}
                                             </span>
                                         </p>
                                         <p className="text-xs font-bold text-text-muted-light dark:text-text-muted-dark uppercase">
-                                            Total Settlement
+                                            {t('appointments.totalSettlement')}
                                         </p>
                                     </div>
                                     <div
@@ -381,20 +406,20 @@ export default function AppointmentDetailPage() {
                     <div className="p-6 md:px-10 py-4 flex flex-col md:flex-row gap-4 border-t border-border-light dark:border-border-dark bg-slate-50/50 dark:bg-transparent">
                         <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
                             <FaClock className="shrink-0" size={14} />
-                            <span className="text-xs font-medium">Recorded:</span>
+                            <span className="text-xs font-medium">{t('common.recorded')}:</span>
                             <span className="text-xs">
                                 {appointment.createdAt
                                     ? moment(appointment.createdAt).format('DD MMM YYYY, HH:mm')
-                                    : 'N/A'}
+                                    : t('common.na')}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
                             <FaHistory className="shrink-0" size={14} />
-                            <span className="text-xs font-medium">Last Modified:</span>
+                            <span className="text-xs font-medium">{t('common.modified')}:</span>
                             <span className="text-xs">
                                 {appointment.updatedAt
                                     ? moment(appointment.updatedAt).format('DD MMM YYYY, HH:mm')
-                                    : 'N/A'}
+                                    : t('common.na')}
                             </span>
                         </div>
                     </div>

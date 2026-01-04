@@ -556,7 +556,7 @@ export class AppointmentNoteDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'Note ID',
+        example: '12345678',
         description: 'Note ID',
     })
     noteId: string;

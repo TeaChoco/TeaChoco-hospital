@@ -37,6 +37,7 @@ export default function Select({
     icon,
     label,
     options,
+    required,
     children,
     className,
     labelClassName,
@@ -55,6 +56,7 @@ export default function Select({
                 <label htmlFor={selectId} className={`${labelClass} ${labelClassName || ''}`}>
                     {icon}
                     {label}
+                    {required && <span className="text-red-500">*</span>}
                 </label>
             )}
             <div className="relative">

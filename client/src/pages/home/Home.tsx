@@ -1,54 +1,54 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/Home.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/home/Home.tsx"
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
             <div className="max-w-4xl w-full space-y-8 animate-fade-in-up">
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
-                    Welcome to <span className="linear-text">TeaChoco Hospital</span>
+                    {t('home.welcome')} <span className="linear-text">{t('navbar.appName')}</span>
                 </h1>
 
                 <p className="text-xl text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto leading-relaxed">
-                    Experience modern healthcare management with a touch of elegance. Secure, fast,
-                    and user-friendly.
+                    {t('home.description')}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
                     <button
                         onClick={() => navigate('/signin')}
                         className="btn btn-secondary text-lg">
-                        Get Started
+                        {t('home.getStarted')}
                     </button>
-                    <button className="btn btn-primary text-lg">Learn More</button>
+                    <button className="btn btn-primary text-lg">{t('home.learnMore')}</button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left">
                     <div className="card">
                         <h3 className="text-xl font-semibold mb-2 text-primary">
-                            Smart Management
+                            {t('home.smartManagement')}
                         </h3>
                         <p className="text-text-muted-light dark:text-text-muted-dark">
-                            Efficient patient tracking and hospital resource optimization using
-                            AI-driven insights.
+                            {t('home.smartManagementDesc')}
                         </p>
                     </div>
                     <div className="card">
-                        <h3 className="text-xl font-semibold mb-2 text-accent">Secure Access</h3>
+                        <h3 className="text-xl font-semibold mb-2 text-accent">
+                            {t('home.secureAccess')}
+                        </h3>
                         <p className="text-text-muted-light dark:text-text-muted-dark">
-                            Enterprise-grade security with multi-factor authentication and
-                            role-based access control.
+                            {t('home.secureAccessDesc')}
                         </p>
                     </div>
                     <div className="card">
                         <h3 className="text-xl font-semibold mb-2 text-primary-dark">
-                            24/7 Support
+                            {t('home.support')}
                         </h3>
                         <p className="text-text-muted-light dark:text-text-muted-dark">
-                            Round-the-clock technical support to ensure your hospital operations
-                            never stop.
+                            {t('home.supportDesc')}
                         </p>
                     </div>
                 </div>

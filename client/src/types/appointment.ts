@@ -274,7 +274,7 @@ export type Appointment = ApiData<{
     // บันทึกต่างๆ
     doctorNotes?: AppointmentNote[]; // บันทึกแพทย์
     nurseNotes?: AppointmentNote[]; // บันทึกพยาบาล
-    patientNotes?: string; // บันทึกจากผู้ป่วย
+    patientNotes?: AppointmentNote[]; // บันทึกจากผู้ป่วย
 
     // การอ้างอิง
     referralFrom?: string; // อ้างอิงจาก (แพทย์/โรงพยาบาล)

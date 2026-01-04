@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/components/layout/ListLayout.tsx"
+// -Path: "TeaChoco-Hospital/client/src/components/layout/ListLayout.tsx"
 import Header from '../custom/Header';
 import Search from '../custom/Search';
 import Loading from '../custom/Loading';
@@ -6,6 +6,7 @@ import { Allow } from '../../types/auth';
 import Activity from '../custom/Activity';
 import { useMemo, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import type { FilterOption } from '../custom/Search';
@@ -48,6 +49,7 @@ export default function ListLayout<Data>({
     children?: ((filteredDatas: Data[]) => React.ReactNode) | React.ReactNode;
     filter?: (data: Data, search: string, filters: Record<string, string[]>) => boolean | undefined;
 }) {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
@@ -111,10 +113,10 @@ export default function ListLayout<Data>({
                                 <FaSearch className="text-slate-300 dark:text-slate-600 text-xl" />
                             </div>
                             <h3 className="text-text-light dark:text-text-dark font-medium mb-1">
-                                No found "{searchTerm}"
+                                {t('listLayout.noResultsFound', { searchTerm })}
                             </h3>
                             <p className="text-text-muted-light dark:text-text-muted-dark text-sm">
-                                Try adjusting your search terms
+                                {t('listLayout.tryAdjustingSearch')}
                             </p>
                         </div>
                     )}

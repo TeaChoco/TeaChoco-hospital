@@ -24,6 +24,7 @@ import {
     StorageCondition,
 } from '../../types/medicine';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { medicineAPI } from '../../services/api';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
@@ -34,6 +35,7 @@ import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
 
 export default function MedicineEditPage() {
+    const { t } = useTranslation();
     const { medicines, resetMedicines } = useMedicines();
     const { hospitals, resetHospitals } = useHospitals();
 
@@ -109,7 +111,7 @@ export default function MedicineEditPage() {
                                 <FaNotesMedical size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Clinical Identity
+                                {t('medicines.sectionClinical')}
                             </h3>
                         </div>
 
@@ -117,8 +119,8 @@ export default function MedicineEditPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <Input
                                     required
-                                    label="Commercial Name"
-                                    placeholder="e.g. Tylenol"
+                                    label={t('medicines.commercialName')}
+                                    placeholder={t('medicines.commercialNamePlaceholder')}
                                     value={data?.name}
                                     onChange={(e) =>
                                         setData((prev) => prev && { ...prev, name: e.target.value })
@@ -126,8 +128,8 @@ export default function MedicineEditPage() {
                                 />
                                 <Input
                                     required
-                                    label="Generic Composition"
-                                    placeholder="e.g. Paracetamol"
+                                    label={t('medicines.genericComposition')}
+                                    placeholder={t('medicines.genericCompositionPlaceholder')}
                                     value={data?.genericName || ''}
                                     onChange={(e) =>
                                         setData(
@@ -140,7 +142,7 @@ export default function MedicineEditPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <Input
-                                    label="Manufacturer / Brand"
+                                    label={t('medicines.brand')}
                                     value={data?.brand || ''}
                                     onChange={(e) =>
                                         setData(
@@ -149,7 +151,7 @@ export default function MedicineEditPage() {
                                     }
                                 />
                                 <Select
-                                    label="Medicine Form"
+                                    label={t('medicines.form')}
                                     value={data?.type}
                                     onChange={(e) =>
                                         setData(
@@ -172,7 +174,7 @@ export default function MedicineEditPage() {
                                     }
                                 </Select>
                                 <Input
-                                    label="Therapeutic Category"
+                                    label={t('medicines.category')}
                                     value={data.category || ''}
                                     onChange={(e) =>
                                         setData(
@@ -184,8 +186,8 @@ export default function MedicineEditPage() {
 
                             <div className="pt-2">
                                 <Input
-                                    label="Medicine Image URL"
-                                    placeholder="https://..."
+                                    label={t('medicines.imageUrl')}
+                                    placeholder={t('medicines.imageUrlPlaceholder')}
                                     value={data.imageUrl || ''}
                                     onChange={(e) =>
                                         setData(
@@ -204,7 +206,7 @@ export default function MedicineEditPage() {
                                 <FaPrescription size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Administration Protocol
+                                {t('medicines.sectionAdministration')}
                             </h3>
                         </div>
 
@@ -215,7 +217,7 @@ export default function MedicineEditPage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10">
                                 <Input
                                     type="number"
-                                    label="Quantity Per Dose"
+                                    label={t('medicines.quantity')}
                                     value={data.dosage.quantity}
                                     onChange={(e) =>
                                         setData(
@@ -231,7 +233,7 @@ export default function MedicineEditPage() {
                                     }
                                 />
                                 <Select
-                                    label="Unit"
+                                    label={t('medicines.unit')}
                                     value={data.dosage.unit}
                                     onChange={(e) =>
                                         setData(
@@ -255,7 +257,7 @@ export default function MedicineEditPage() {
                                 </Select>
                                 <Input
                                     type="number"
-                                    label="Times Per Day"
+                                    label={t('medicines.frequency')}
                                     value={data.dosage.frequencyPerDay}
                                     onChange={(e) =>
                                         setData(
@@ -276,7 +278,7 @@ export default function MedicineEditPage() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <p className="text-sm font-bold text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
-                                        Timing Schedule
+                                        {t('medicines.timingSchedule')}
                                     </p>
                                     <button
                                         type="button"
@@ -293,7 +295,7 @@ export default function MedicineEditPage() {
                                             )
                                         }
                                         className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary text-xs font-black rounded-xl hover:bg-primary transition-colors hover:text-white">
-                                        <FaPlus size={10} /> Add Schedule
+                                        <FaPlus size={10} /> {t('medicines.addSchedule')}
                                     </button>
                                 </div>
 
@@ -323,7 +325,7 @@ export default function MedicineEditPage() {
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <Select
-                                                    label="Meal Reference"
+                                                    label={t('medicines.mealReference')}
                                                     value={inst.mealTime}
                                                     onChange={(e) =>
                                                         setData(
@@ -355,7 +357,7 @@ export default function MedicineEditPage() {
                                                     }
                                                 </Select>
                                                 <Select
-                                                    label="Food Relation"
+                                                    label={t('medicines.foodRelation')}
                                                     value={inst.relation || ''}
                                                     onChange={(e) =>
                                                         setData(
@@ -393,8 +395,10 @@ export default function MedicineEditPage() {
                                                 </Select>
                                             </div>
                                             <Input
-                                                label="Special Instructions"
-                                                placeholder="e.g. Swallow whole"
+                                                label={t('medicines.specialInstructions')}
+                                                placeholder={t(
+                                                    'medicines.specialInstructionsPlaceholder',
+                                                )}
                                                 value={inst.notes || ''}
                                                 onChange={(e) =>
                                                     setData(
@@ -431,7 +435,7 @@ export default function MedicineEditPage() {
                                 <FaClock size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Timing & Logistics
+                                {t('medicines.sectionLogistics')}
                             </h3>
                         </div>
 
@@ -441,7 +445,7 @@ export default function MedicineEditPage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <Input
                                     type="date"
-                                    label="Treatment Start"
+                                    label={t('medicines.treatmentStart')}
                                     value={formatDate(data.startDate)}
                                     onChange={(e) =>
                                         setData(
@@ -455,7 +459,7 @@ export default function MedicineEditPage() {
                                 />
                                 <Input
                                     type="date"
-                                    label="Treatment End"
+                                    label={t('medicines.treatmentEnd')}
                                     value={formatDate(data.endDate)}
                                     onChange={(e) =>
                                         setData(
@@ -469,7 +473,7 @@ export default function MedicineEditPage() {
                                 />
                                 <Input
                                     type="date"
-                                    label="Medicine Expiry"
+                                    label={t('medicines.expiry')}
                                     value={formatDate(data.expiryDate)}
                                     onChange={(e) =>
                                         setData(
@@ -484,7 +488,7 @@ export default function MedicineEditPage() {
                             </div>
 
                             <Select
-                                label="Prescribing Hospital"
+                                label={t('medicines.prescribingHospital')}
                                 value={data.hospital.hospitalId}
                                 icon={<FaHospital />}
                                 onChange={(e) =>
@@ -501,7 +505,7 @@ export default function MedicineEditPage() {
                                 }>
                                 {(Option) => (
                                     <>
-                                        <Option value="">Unknown Provider</Option>
+                                        <Option value="">{t('medicines.unknownProvider')}</Option>
                                         {hospitals?.map((h) => (
                                             <Option key={h._id} value={h._id} icon={<FaHospital />}>
                                                 {h.name}
@@ -518,7 +522,7 @@ export default function MedicineEditPage() {
                                     </div>
                                     <Input
                                         type="number"
-                                        label="Units Left"
+                                        label={t('medicines.unitsLeft')}
                                         value={data.package.tabletsPerStrip || 0}
                                         onChange={(e) =>
                                             setData(
@@ -540,7 +544,7 @@ export default function MedicineEditPage() {
                                     </div>
                                     <Input
                                         type="number"
-                                        label="Units Per Strip"
+                                        label={t('medicines.unitsPerStrip')}
                                         value={data.package.stripsPerBox || 1}
                                         onChange={(e) =>
                                             setData(
@@ -567,7 +571,7 @@ export default function MedicineEditPage() {
                                 <FaShieldCat size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Safety Workspace
+                                {t('medicines.sectionSafety')}
                             </h3>
                         </div>
 
@@ -575,7 +579,7 @@ export default function MedicineEditPage() {
                             variant="100"
                             className="p-6 space-y-6 border-l-4 border-emerald-500/40">
                             <Select
-                                label="Storage Protocol"
+                                label={t('medicines.storageProtocol')}
                                 value=""
                                 onChange={(e) => {
                                     const val = e.target.value as StorageCondition;
@@ -593,7 +597,7 @@ export default function MedicineEditPage() {
                                 }}>
                                 {(Option) => (
                                     <>
-                                        <Option value="">Add Condition...</Option>
+                                        <Option value="">{t('medicines.addCondition')}</Option>
                                         {Object.values(StorageCondition).map((sc) => (
                                             <Option key={sc} value={sc}>
                                                 {sc.replace('_', ' ')}
@@ -632,7 +636,7 @@ export default function MedicineEditPage() {
                             <div className="space-y-4 pt-4 border-t border-border-light dark:border-border-dark">
                                 <div className="flex items-center justify-between">
                                     <p className="text-xs font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
-                                        Clinical Warnings
+                                        {t('medicines.clinicalWarnings')}
                                     </p>
                                     <button
                                         type="button"
@@ -652,7 +656,7 @@ export default function MedicineEditPage() {
                                             )
                                         }
                                         className="text-[10px] font-black text-primary hover:underline">
-                                        + Add Warning
+                                        + {t('medicines.addWarning')}
                                     </button>
                                 </div>
 
@@ -661,7 +665,7 @@ export default function MedicineEditPage() {
                                         <div key={idx} className="flex gap-4 items-end">
                                             <div className="flex-1">
                                                 <Input
-                                                    placeholder="e.g. May cause drowsiness"
+                                                    placeholder={t('medicines.warningPlaceholder')}
                                                     value={w.description}
                                                     onChange={(e) =>
                                                         setData(
@@ -711,15 +715,11 @@ export default function MedicineEditPage() {
                         variant="100"
                         className="p-4 bg-primary/5 border border-primary/20 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div
-                                className={`w-3 h-3 rounded-full ${
-                                    data.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
-                                }`}
-                            />
+                            <FaShieldCat size={20} />
                             <span className="text-sm font-black text-text-light dark:text-text-dark uppercase tracking-widest">
                                 {data.isActive
-                                    ? 'Medicine is currently Active'
-                                    : 'Medicine is Inactive'}
+                                    ? t('medicines.isActiveMsg')
+                                    : t('medicines.isInactiveMsg')}
                             </span>
                         </div>
                         <button
@@ -730,7 +730,7 @@ export default function MedicineEditPage() {
                                     ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
                                     : 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
                             }`}>
-                            {data.isActive ? 'Deactivate' : 'Activate'}
+                            {data.isActive ? t('medicines.deactivate') : t('medicines.activate')}
                         </button>
                     </Paper>
                 </div>

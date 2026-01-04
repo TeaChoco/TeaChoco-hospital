@@ -1,6 +1,7 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalEditPage.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalEditPage.tsx"
 import { useMemo } from 'react';
 import { Title } from '../../types/types';
+import { useTranslation } from 'react-i18next';
 import { hospitalAPI } from '../../services/api';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
@@ -11,6 +12,7 @@ import EditLayout from '../../components/layout/EditLayout';
 import { FaGlobe, FaPhone, FaHospital, FaMapLocationDot, FaBuildingShield } from 'react-icons/fa6';
 
 export default function HospitalEditPage() {
+    const { t } = useTranslation();
     const { hospitals, resetHospitals } = useHospitals();
 
     const newData: OutApiData<Hospital> = useMemo(
@@ -47,7 +49,7 @@ export default function HospitalEditPage() {
                                 <FaBuildingShield size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Institution Identity
+                                {t('hospitals.sectionIdentity')}
                             </h3>
                         </div>
 
@@ -56,8 +58,8 @@ export default function HospitalEditPage() {
                             className="p-6 space-y-6 border-l-4 border-primary/40 transition-all">
                             <Input
                                 required
-                                label="Hospital Name"
-                                placeholder="e.g. St. Mary's General Hospital"
+                                label={t('hospitals.name')}
+                                placeholder={t('hospitals.namePlaceholder')}
                                 icon={<FaHospital className="text-primary/60" />}
                                 value={data.name}
                                 onChange={(e) =>
@@ -65,8 +67,8 @@ export default function HospitalEditPage() {
                                 }
                             />
                             <Input
-                                label="Official Website"
-                                placeholder="https://www.hospital-example.com"
+                                label={t('hospitals.website')}
+                                placeholder={t('hospitals.websitePlaceholder')}
                                 icon={<FaGlobe className="text-primary/60" />}
                                 value={data.website || ''}
                                 onChange={(e) =>
@@ -82,7 +84,7 @@ export default function HospitalEditPage() {
                                 <FaMapLocationDot size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Location & Connection
+                                {t('hospitals.sectionLocation')}
                             </h3>
                         </div>
 
@@ -90,8 +92,8 @@ export default function HospitalEditPage() {
                             variant="100"
                             className="p-6 space-y-6 border-l-4 border-accent/40 transition-all">
                             <Input
-                                label="Physical Address"
-                                placeholder="123 Medical Ave, Health City, HC 12345"
+                                label={t('hospitals.address')}
+                                placeholder={t('hospitals.addressPlaceholder')}
                                 icon={<FaMapLocationDot className="text-accent/60" />}
                                 value={data.address || ''}
                                 onChange={(e) =>
@@ -99,8 +101,8 @@ export default function HospitalEditPage() {
                                 }
                             />
                             <Input
-                                label="Primary Contact Number"
-                                placeholder="+1 (234) 567-8900"
+                                label={t('hospitals.contact')}
+                                placeholder={t('hospitals.contactPlaceholder')}
                                 icon={<FaPhone className="text-accent/60" />}
                                 value={data.contactNumber || ''}
                                 onChange={(e) =>
@@ -115,7 +117,7 @@ export default function HospitalEditPage() {
 
                     <div className="opacity-50">
                         <p className="text-[10px] font-black uppercase tracking-widest text-center">
-                            Institution profile securely encrypted and stored
+                            {t('hospitals.footerInfo')}
                         </p>
                     </div>
                 </>

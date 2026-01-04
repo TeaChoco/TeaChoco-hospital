@@ -24,9 +24,9 @@ export class ApiService {
     ) {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
         if (
-            auth.user_id !== data.user_id ||
-            auth.user_id !== data.createdBy ||
-            auth.user_id !== data.updatedBy
+            (data.user_id && auth.user_id !== data.user_id) ||
+            (data.createdBy && auth.user_id !== data.createdBy) ||
+            (data.updatedBy && auth.user_id !== data.updatedBy)
         )
             throw new BadRequestException('Unauthorized');
         const newData = getNewData(data);
@@ -47,9 +47,9 @@ export class ApiService {
         if (
             datas.find(
                 (data) =>
-                    data.user_id !== auth.user_id ||
-                    data.createdBy !== auth.user_id ||
-                    data.updatedBy !== auth.user_id,
+                    (data.user_id && data.user_id !== auth.user_id) ||
+                    (data.createdBy && data.createdBy !== auth.user_id) ||
+                    (data.updatedBy && data.updatedBy !== auth.user_id),
             )
         )
             throw new BadRequestException('Unauthorized');
@@ -75,8 +75,8 @@ export class ApiService {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
         if (
             auth.user_id !== data?.user_id ||
-            auth.user_id !== update.user_id ||
-            auth.user_id !== update.updatedBy
+            (update.user_id && auth.user_id !== update.user_id) ||
+            (update.updatedBy && auth.user_id !== update.updatedBy)
         )
             throw new BadRequestException('Unauthorized');
         const newData = getNewData(update);

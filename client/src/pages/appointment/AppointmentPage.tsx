@@ -1,18 +1,20 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorsPage.tsx"
+//-Path: "TeaChoco-Hospital/client/src/pages/appointment/AppointmentPage.tsx"
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ListLayout from '../../components/layout/ListLayout';
 import { useAppointments } from '../../context/appointmentsAtom';
 import type { FilterOption } from '../../components/custom/Search';
 import { AppointmentCard } from '../../components/content/AppointmentCard';
 
 export default function AppointmentPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { appointments } = useAppointments();
 
     const filterOptions: FilterOption[] = [
         {
             key: 'department',
-            label: 'Department',
+            label: t('appointments.department'),
             options: [
                 { value: 'Cardiology', label: 'Cardiology' },
                 { value: 'Dermatology', label: 'Dermatology' },
@@ -22,7 +24,7 @@ export default function AppointmentPage() {
         },
         {
             key: 'status',
-            label: 'Status',
+            label: t('appointments.status'),
             options: [
                 { value: 'Upcoming', label: 'Upcoming' },
                 { value: 'Completed', label: 'Completed' },
@@ -34,10 +36,10 @@ export default function AppointmentPage() {
     return (
         <ListLayout
             datas={appointments}
-            newData="New Appointment"
-            header="Find a Appointment"
-            placeholder="Search by name or department..."
-            description="Specialized care from our experienced team"
+            newData={t('appointments.new')}
+            header={t('appointments.header')}
+            placeholder={t('appointments.placeholder')}
+            description={t('appointments.description')}
             filterOptions={filterOptions}
             filter={(app, searchTerm, filters) => {
                 const matchesSearch =

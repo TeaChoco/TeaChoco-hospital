@@ -2,12 +2,14 @@
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Allow } from '../../types/auth';
+import { useTranslation } from 'react-i18next';
 import { useDoctors } from '../../context/doctorsAtom';
 import { useHospitals } from '../../context/hospitalsAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaPhone, FaClock, FaHistory, FaUserMd, FaHospital, FaChevronRight } from 'react-icons/fa';
 
 export default function DoctorDetailPage() {
+    const { t } = useTranslation();
     const { doctors } = useDoctors();
     const { hospitals } = useHospitals();
 
@@ -52,10 +54,10 @@ export default function DoctorDetailPage() {
                                 </div>
                                 <div className="text-left flex-1">
                                     <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark uppercase font-bold tracking-widest mb-0.5">
-                                        Contact Number
+                                        {t('doctors.contactNumber')}
                                     </p>
                                     <p className="font-semibold text-text-light dark:text-text-dark group-hover:text-primary transition-colors">
-                                        {doctor.contactNumber || 'Not Available'}
+                                        {doctor.contactNumber || t('common.notAvailable')}
                                     </p>
                                 </div>
                                 <FaChevronRight
@@ -72,12 +74,12 @@ export default function DoctorDetailPage() {
                                 </div>
                                 <div className="text-left flex-1">
                                     <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark uppercase font-bold tracking-widest mb-0.5">
-                                        Affiliated Hospital
+                                        {t('doctors.affiliatedHospital')}
                                     </p>
                                     <p className="font-semibold text-text-light dark:text-text-dark group-hover:text-accent-secondary transition-colors line-clamp-1">
                                         {hospitals?.find(
                                             (hospital) => hospital._id === doctor.hospitalId,
-                                        )?.name || 'Not Available'}
+                                        )?.name || t('common.notAvailable')}
                                     </p>
                                 </div>
                                 <FaChevronRight
@@ -98,20 +100,20 @@ export default function DoctorDetailPage() {
                     <div className="p-6 md:px-10 py-4 flex flex-col md:flex-row gap-4 border-t border-border-light dark:border-border-dark">
                         <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
                             <FaClock className="shrink-0" size={14} />
-                            <span className="text-xs font-medium">Created at:</span>
+                            <span className="text-xs font-medium">{t('common.createdAt')}:</span>
                             <span className="text-xs">
                                 {doctor.createdAt
                                     ? moment(doctor.createdAt).format('DD MMM YYYY, HH:mm')
-                                    : 'N/A'}
+                                    : t('common.na')}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
                             <FaHistory className="shrink-0" size={14} />
-                            <span className="text-xs font-medium">Last updated:</span>
+                            <span className="text-xs font-medium">{t('common.updatedAt')}:</span>
                             <span className="text-xs">
                                 {doctor.updatedAt
                                     ? moment(doctor.updatedAt).format('DD MMM YYYY, HH:mm')
-                                    : 'N/A'}
+                                    : t('common.na')}
                             </span>
                         </div>
                     </div>

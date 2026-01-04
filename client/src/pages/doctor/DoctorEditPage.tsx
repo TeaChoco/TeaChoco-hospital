@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorEditPage.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorEditPage.tsx"
 import {
     FaPhone,
     FaImage,
@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa6';
 import { useMemo } from 'react';
 import { doctorAPI } from '../../services/api';
+import { useTranslation } from 'react-i18next';
 import type { Doctor } from '../../types/doctor';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
@@ -20,6 +21,7 @@ import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
 
 export default function DoctorEditPage() {
+    const { t } = useTranslation();
     const { hospitals, resetHospitals } = useHospitals();
     const { doctors, resetDoctors } = useDoctors();
 
@@ -60,7 +62,7 @@ export default function DoctorEditPage() {
                                 <FaUserDoctor size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Practitioner Identity
+                                {t('doctors.sectionIdentity')}
                             </h3>
                         </div>
 
@@ -68,8 +70,8 @@ export default function DoctorEditPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <Input
                                     required
-                                    label="First Name"
-                                    placeholder="e.g. John"
+                                    label={t('doctors.firstName')}
+                                    placeholder={t('doctors.firstNamePlaceholder')}
                                     icon={<FaUserTie className="text-primary/60" />}
                                     value={data?.firstName}
                                     onChange={(e) =>
@@ -78,8 +80,8 @@ export default function DoctorEditPage() {
                                 />
                                 <Input
                                     required
-                                    label="Last Name"
-                                    placeholder="e.g. Doe"
+                                    label={t('doctors.lastName')}
+                                    placeholder={t('doctors.lastNamePlaceholder')}
                                     icon={<FaUserTie className="text-primary/60" />}
                                     value={data?.lastName}
                                     onChange={(e) =>
@@ -89,8 +91,8 @@ export default function DoctorEditPage() {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <Input
-                                    label="Nickname / Alias"
-                                    placeholder="e.g. Dr. John"
+                                    label={t('doctors.nickname')}
+                                    placeholder={t('doctors.nicknamePlaceholder')}
                                     icon={<FaAddressCard className="text-primary/60" />}
                                     value={data?.nickname || ''}
                                     onChange={(e) =>
@@ -98,8 +100,8 @@ export default function DoctorEditPage() {
                                     }
                                 />
                                 <Input
-                                    label="Professional Profile Image"
-                                    placeholder="https://..."
+                                    label={t('doctors.profileImage')}
+                                    placeholder={t('doctors.profileImagePlaceholder')}
                                     icon={<FaImage className="text-primary/60" />}
                                     value={data?.picture || ''}
                                     onChange={(e) =>
@@ -117,7 +119,7 @@ export default function DoctorEditPage() {
                                 <FaBriefcase size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Professional Credentials
+                                {t('doctors.sectionCredentials')}
                             </h3>
                         </div>
 
@@ -126,7 +128,7 @@ export default function DoctorEditPage() {
                             className="p-6 space-y-6 border-l-4 border-indigo-500/40">
                             <Select
                                 required
-                                label="Affiliated Hospital"
+                                label={t('doctors.affiliatedHospital')}
                                 icon={<FaHospital className="text-indigo-500/60" />}
                                 value={data?.hospitalId}
                                 onChange={(e) =>
@@ -134,7 +136,7 @@ export default function DoctorEditPage() {
                                 }>
                                 {(Option) => (
                                     <>
-                                        <Option value="">Select Institution</Option>
+                                        <Option value="">{t('doctors.selectInstitution')}</Option>
                                         {hospitals?.map((h) => (
                                             <Option key={h._id} value={h._id}>
                                                 {h.name}
@@ -145,8 +147,8 @@ export default function DoctorEditPage() {
                             </Select>
                             <Input
                                 required
-                                label="Medical Department"
-                                placeholder="e.g. Cardiology"
+                                label={t('doctors.medicalDepartment')}
+                                placeholder={t('doctors.departmentPlaceholder')}
                                 icon={<FaBriefcase className="text-indigo-500/60" />}
                                 value={data?.department}
                                 onChange={(e) =>
@@ -163,7 +165,7 @@ export default function DoctorEditPage() {
                                 <FaPhone size={20} />
                             </div>
                             <h3 className="text-xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Communication
+                                {t('doctors.sectionCommunication')}
                             </h3>
                         </div>
 
@@ -171,8 +173,8 @@ export default function DoctorEditPage() {
                             variant="100"
                             className="p-6 space-y-6 border-l-4 border-emerald-500/40">
                             <Input
-                                label="Primary Contact Number"
-                                placeholder="+1 (234) 567-8900"
+                                label={t('doctors.contact')}
+                                placeholder={t('doctors.contactPlaceholder')}
                                 icon={<FaPhone className="text-emerald-500/60" />}
                                 value={data?.contactNumber || ''}
                                 onChange={(e) =>
@@ -184,7 +186,7 @@ export default function DoctorEditPage() {
 
                     <div className="opacity-50">
                         <p className="text-[10px] font-black uppercase tracking-widest text-center">
-                            practitioner profile securely encrypted and stored
+                            {t('doctors.footerInfo')}
                         </p>
                     </div>
                 </div>

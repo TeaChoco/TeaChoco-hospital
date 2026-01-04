@@ -1,20 +1,22 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorsPage.tsx"
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useDoctors } from '../../context/doctorsAtom';
 import ListLayout from '../../components/layout/ListLayout';
 import { DoctorCard } from '../../components/content/DoctorCard';
 
 export default function DoctorsPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { doctors } = useDoctors();
 
     return (
         <ListLayout
             datas={doctors}
-            newData="New Doctor"
-            header="Find a Doctor"
-            placeholder="Search by name or department..."
-            description="Specialized care from our experienced team"
+            newData={t('doctors.new')}
+            header={t('doctors.header')}
+            placeholder={t('doctors.placeholder')}
+            description={t('doctors.description')}
             filter={(doc, searchTerm) => {
                 const matchesSearch =
                     doc.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||

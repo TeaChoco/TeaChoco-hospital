@@ -18,7 +18,7 @@ async function bootstrap() {
     const { SERVER_HOST, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(new ValidationPipe({ transform: true }));
     app.use(cookieParserSDK());
     app.enableCors({
         origin: secureService.getAllowedUrls(),

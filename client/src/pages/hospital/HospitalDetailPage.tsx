@@ -1,12 +1,14 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalDetailPage.tsx"
 import moment from 'moment';
 import { Allow } from '../../types/auth';
+import { useTranslation } from 'react-i18next';
 import Activity from '../../components/custom/Activity';
 import { useHospitals } from '../../context/hospitalsAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaPhone, FaGlobe, FaClock, FaHistory, FaHospital, FaMapMarkerAlt } from 'react-icons/fa';
 
 export default function HospitalDetailPage() {
+    const { t } = useTranslation();
     const { hospitals } = useHospitals();
 
     return (
@@ -23,7 +25,7 @@ export default function HospitalDetailPage() {
                                 {hospital.name}
                             </h1>
                             <p className="text-text-muted-light dark:text-text-muted-dark">
-                                Partner Hospital
+                                {t('hospitals.partnerHospital')}
                             </p>
                         </div>
 
@@ -39,10 +41,10 @@ export default function HospitalDetailPage() {
                                 />
                                 <div>
                                     <h3 className="font-bold text-text-light dark:text-text-dark mb-1 group-hover:text-accent transition-colors">
-                                        Address
+                                        {t('common.address')}
                                     </h3>
                                     <p className="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
-                                        {hospital.address || 'No address provided'}
+                                        {hospital.address || t('hospitals.addressPlaceholder')}
                                     </p>
                                 </div>
                             </a>
@@ -62,10 +64,10 @@ export default function HospitalDetailPage() {
                                     />
                                     <div>
                                         <h3 className="font-bold text-text-light dark:text-text-dark mb-1 group-hover:text-accent transition-colors">
-                                            Phone
+                                            {t('common.phone')}
                                         </h3>
                                         <p className="text-text-secondary-light dark:text-text-secondary-dark">
-                                            {hospital.contactNumber || 'No contact number'}
+                                            {hospital.contactNumber || t('common.notAvailable')}
                                         </p>
                                     </div>
                                 </a>
@@ -82,7 +84,7 @@ export default function HospitalDetailPage() {
                                         />
                                         <div>
                                             <h3 className="font-bold text-text-light dark:text-text-dark mb-1 group-hover:text-accent transition-colors">
-                                                Website
+                                                {t('common.website')}
                                             </h3>
                                             <p className="text-text-secondary-light dark:text-text-secondary-dark truncate max-w-[200px]">
                                                 {hospital.website}
@@ -97,20 +99,20 @@ export default function HospitalDetailPage() {
                     <div className="p-6 md:px-10 py-4 flex flex-col md:flex-row gap-4 border-t border-border-light dark:border-border-dark">
                         <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
                             <FaClock className="shrink-0" size={14} />
-                            <span className="text-xs font-medium">Created at:</span>
+                            <span className="text-xs font-medium">{t('common.createdAt')}:</span>
                             <span className="text-xs">
                                 {hospital.createdAt
                                     ? moment(hospital.createdAt).format('DD MMM YYYY, HH:mm')
-                                    : 'N/A'}
+                                    : t('common.na')}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark">
                             <FaHistory className="shrink-0" size={14} />
-                            <span className="text-xs font-medium">Last updated:</span>
+                            <span className="text-xs font-medium">{t('common.updatedAt')}:</span>
                             <span className="text-xs">
                                 {hospital.updatedAt
                                     ? moment(hospital.updatedAt).format('DD MMM YYYY, HH:mm')
-                                    : 'N/A'}
+                                    : t('common.na')}
                             </span>
                         </div>
                     </div>

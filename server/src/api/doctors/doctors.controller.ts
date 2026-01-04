@@ -64,7 +64,6 @@ export class DoctorsController {
     })
     async create(@Req() req: Request, @Body() data: CreateDoctorDto) {
         const user = req.user as Auth;
-        this.logger.log(data);
         return this.doctorsService.create(user, data);
     }
 

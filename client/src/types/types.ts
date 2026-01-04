@@ -1,4 +1,4 @@
-//-Path: "motiva/client/src/types/types.ts"
+//-Path: "TeaChoco-Hospital/client/src/types/types.ts"
 
 export enum Title {
     MEDICINES = 'Medicines',
