@@ -129,7 +129,7 @@
     }
 
     .btn-dis {
-        @apply text-text-muted-light dark:text-text-muted-dark cursor-not-allowed;
+        @apply bg-bg-card-light dark:bg-bg-card-dark text-text-muted-light dark:text-text-muted-dark cursor-not-allowed;
     }
 
     .btn-icon {
@@ -158,7 +158,7 @@
     }
 
     .btn-error {
-        @apply bg-red-600 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600;
+        @apply bg-red-600 dark:bg-red-700 text-white hover:bg-red-700 dark:hover:bg-red-600 shadow-lg shadow-red-500/20;
     }
 
     .btn-primary-active {

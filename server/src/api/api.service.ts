@@ -2,26 +2,36 @@
 import { Document } from 'mongoose';
 import { Auth } from '../types/auth';
 import { ApiMetaDto, ApiMetaSchema, ApiOutMetaSchema } from '../types/dto';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException, Scope } from '@nestjs/common';
 
-@Injectable()
-export class ApiService {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ApiService<
+    DataSchema extends ApiMetaSchema,
+    DataDocument extends DataSchema & Document,
+    DataCreate extends ApiMetaDto,
+    DataResponse extends DataCreate,
+    DataUpdate extends Partial<ApiMetaDto>,
+> {
+    public response: (data: DataSchema) => Promise<DataResponse> = async (data) =>
+        ({ ...data }) as unknown as DataResponse;
     constructor() {}
 
-    async findAll<Data extends ApiMetaSchema & Document>(auth: Auth, datas: Data[]) {
-        return datas.filter((data) => data.user_id === auth?.user_id);
+    async findAll(auth: Auth, datas: DataDocument[]): Promise<DataResponse[]> {
+        const results = datas.filter((data) => data.user_id === auth?.user_id);
+        return Promise.all(results.map((data) => this.response(data.toObject())));
     }
 
-    async findOne<Data extends ApiMetaSchema & Document>(auth: Auth, data: Data | null) {
+    async findOne(auth: Auth, data: DataDocument | null): Promise<DataResponse | null> {
         if (data?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
-        return data;
+        if (data) return this.response(data.toObject());
+        return null;
     }
 
-    async create<DataDocument, Data extends ApiMetaDto>(
+    async create(
         auth: Auth,
-        data: Data,
-        getNewData: (data: Data) => ApiOutMetaSchema<DataDocument>,
-    ) {
+        data: DataCreate,
+        getNewData: (data: DataCreate) => ApiOutMetaSchema<DataSchema>,
+    ): Promise<DataResponse> {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
         if (
             (data.user_id && auth.user_id !== data.user_id) ||
@@ -30,19 +40,20 @@ export class ApiService {
         )
             throw new BadRequestException('Unauthorized');
         const newData = getNewData(data);
-        return {
+        const result = {
             user_id: auth.user_id,
             createdBy: auth.user_id,
             updatedBy: auth.user_id,
             ...newData,
-        };
+        } as DataSchema;
+        return this.response(result);
     }
 
-    async createMany<DataDocument, Data extends ApiMetaDto>(
+    async createMany(
         auth: Auth,
-        datas: Data[],
-        getNewData: (data: Data) => ApiOutMetaSchema<DataDocument>,
-    ) {
+        datas: DataCreate[],
+        getNewData: (data: DataCreate) => ApiOutMetaSchema<DataSchema>,
+    ): Promise<DataResponse[]> {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
         if (
             datas.find(
@@ -54,24 +65,21 @@ export class ApiService {
         )
             throw new BadRequestException('Unauthorized');
         const newData = datas.map((data) => getNewData(data));
-        return newData.map((data) => ({
+        const results = newData.map((data) => ({
             user_id: auth.user_id,
             createdBy: auth.user_id,
             updatedBy: auth.user_id,
             ...data,
-        }));
+        })) as DataSchema[];
+        return Promise.all(results.map((data) => this.response(data)));
     }
 
-    async update<
-        DataDocument,
-        Data extends ApiMetaSchema & Document,
-        Update extends Partial<ApiMetaDto>,
-    >(
+    async update(
         auth: Auth,
-        data: Data | null,
-        update: Update,
-        getNewData: (data: Update) => Partial<ApiOutMetaSchema<DataDocument>>,
-    ) {
+        data: DataResponse | null,
+        update: DataUpdate,
+        getNewData: (data: DataUpdate) => Partial<ApiOutMetaSchema<DataSchema>>,
+    ): Promise<DataResponse> {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
         if (
             auth.user_id !== data?.user_id ||
@@ -80,15 +88,16 @@ export class ApiService {
         )
             throw new BadRequestException('Unauthorized');
         const newData = getNewData(update);
-        return {
+        const updatedData = {
             updatedBy: auth.user_id,
             ...newData,
-        };
+        } as DataSchema;
+        return this.response(updatedData);
     }
 
-    async remove<Data extends ApiMetaSchema & Document>(auth: Auth, data: Data | null) {
+    async remove(auth: Auth, data: DataDocument | null): Promise<DataResponse> {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
         if (data?.user_id !== auth?.user_id) throw new BadRequestException('Unauthorized');
-        return data;
+        return this.response(data);
     }
 }

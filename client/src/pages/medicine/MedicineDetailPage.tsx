@@ -12,7 +12,7 @@ import {
     FaExclamationTriangle,
 } from 'react-icons/fa';
 import moment from 'moment';
-import { Allow } from '../../types/auth';
+import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
 import { useMedicines } from '../../context/medicinesAtom';
 import DetailLayout from '../../components/layout/DetailLayout';
@@ -22,7 +22,7 @@ export default function MedicineDetailPage() {
     const { medicines } = useMedicines();
 
     return (
-        <DetailLayout datas={medicines} allow={Allow.MEDICINES}>
+        <DetailLayout datas={medicines} title={Title.MEDICINES}>
             {(medicine) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     {/* Refined Premium Header Section - Compact & Elegant */}

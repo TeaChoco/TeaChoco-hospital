@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/appointment/AppointmentPage.tsx"
+import { Resource } from '../../types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ListLayout from '../../components/layout/ListLayout';
@@ -35,6 +36,7 @@ export default function AppointmentPage() {
 
     return (
         <ListLayout
+            resource={Resource.APPOINTMENTS}
             datas={appointments}
             newData={t('appointments.new')}
             header={t('appointments.header')}

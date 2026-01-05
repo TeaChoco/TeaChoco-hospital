@@ -42,6 +42,7 @@ export default function Input({
             <div className="relative">
                 <input
                     id={inputId}
+                    required={required}
                     disabled={disabled}
                     placeholder={label}
                     className={`${inputClass} ${className || ''}`}

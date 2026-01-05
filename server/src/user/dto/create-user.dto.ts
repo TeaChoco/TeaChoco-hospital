@@ -1,7 +1,8 @@
 //-Path: "motiva/server/src/user/dto/create-user.dto.ts"
-import { Allow, Role } from '../../types/auth';
+import { Role } from '../../types/auth';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
+import { AllowsDto } from './user.dto';
 
 export class CreateUserDto {
     @IsString()
@@ -60,13 +61,24 @@ export class CreateUserDto {
 
     @IsArray()
     @ApiProperty({
-        type: [String],
+        type: [AllowsDto],
         isArray: true,
         required: true,
-        example: [''],
+        example: [
+            {
+                user_id: '1234567890',
+                expiresAt: '2022-01-01',
+                auth: { read: true, edit: true },
+                hospitals: { read: true, edit: true },
+                appointments: { read: true, edit: true },
+                doctors: { read: true, edit: true },
+                medicines: { read: true, edit: true },
+                calendars: { read: true, edit: true },
+            },
+        ],
         description: 'Allows',
     })
-    allows: Allow[];
+    allows: AllowsDto[];
 
     @IsEnum(Role)
     @ApiProperty({

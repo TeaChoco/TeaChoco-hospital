@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalDetailPage.tsx"
 import moment from 'moment';
-import { Allow } from '../../types/auth';
+import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
 import Activity from '../../components/custom/Activity';
 import { useHospitals } from '../../context/hospitalsAtom';
@@ -12,7 +12,7 @@ export default function HospitalDetailPage() {
     const { hospitals } = useHospitals();
 
     return (
-        <DetailLayout datas={hospitals} allow={Allow.HOSPITALS}>
+        <DetailLayout datas={hospitals} title={Title.HOSPITALS}>
             {(hospital) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     <div className="h-40 bg-linear-to-r from-primary/10 to-accent/10 flex items-center justify-center text-primary/20">

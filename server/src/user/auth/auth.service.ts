@@ -1,7 +1,6 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.service.ts"
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
-import { Allow } from '../../types/auth';
 import { JwtService } from '@nestjs/jwt';
 import { nameDB } from '../../hooks/mongodb';
 import { ReqUserDto } from '../dto/user.dto';
@@ -88,7 +87,36 @@ export class AuthService {
             firstName: userDB.firstName,
             lastName: userDB.lastName,
             picture: userDB.picture,
-            allows: [],
+            allows: [
+                {
+                    user_id: userDB._id.toString(),
+                    expiresAt,
+                    auth: {
+                        read: true,
+                        edit: true,
+                    },
+                    doctors: {
+                        read: true,
+                        edit: true,
+                    },
+                    hospitals: {
+                        read: true,
+                        edit: true,
+                    },
+                    medicines: {
+                        read: true,
+                        edit: true,
+                    },
+                    calendars: {
+                        read: true,
+                        edit: true,
+                    },
+                    appointments: {
+                        read: true,
+                        edit: true,
+                    },
+                },
+            ],
             role: userDB.role,
             createdAt: userDB.createdAt,
             updatedAt: userDB.updatedAt,

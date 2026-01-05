@@ -4,7 +4,6 @@ import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
 import Loading from '../custom/Loading';
 import { Obj } from '@teachoco-dev/cli';
-import { Allow } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useSwal } from '../../hooks/useSwal';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +13,7 @@ import type { OutApiData, Title } from '../../types/types';
 import { detailLayoutAtom } from '../../context/layoutAtom';
 import { FaTrash, FaCode, FaXmark, FaArrowLeft, FaCircleExclamation } from 'react-icons/fa6';
 import { Link, Navigate, useLocation, useNavigate, useParams, useBlocker } from 'react-router-dom';
+import type { Allows } from '../../types/auth';
 
 /**
  * EditLayout component to provide a consistent layout for editing or creating data.
@@ -77,8 +77,8 @@ export default function EditLayout<Data extends ApiData<object>>({
         return findData();
     });
 
-    const canEdit = user?.allows?.some((allow) =>
-        allow.edit.find((edit) => location.pathname.includes(edit) || edit === Allow.AUTH),
+    const canEdit = user?.allows?.some(
+        (allow) => allow.user_id === user?.user_id && allow[title.toLowerCase() as keyof Allows],
     );
 
     const hasChanges = useMemo(() => {
@@ -179,10 +179,15 @@ export default function EditLayout<Data extends ApiData<object>>({
                     navigate(toBack);
                 }
                 setIsSaving(false);
-            } catch (error) {
+            } catch (error: any) {
                 console.error(error);
+                const serverError = error.response?.data?.message;
                 setError(
-                    error instanceof Error
+                    Array.isArray(serverError)
+                        ? serverError.join(', ')
+                        : typeof serverError === 'string'
+                        ? serverError
+                        : error instanceof Error
                         ? error.message
                         : typeof error === 'string'
                         ? error

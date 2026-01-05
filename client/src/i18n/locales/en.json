@@ -92,7 +92,7 @@
         "accountStats": "Account Statistics",
         "security": "Security",
         "password": "Password",
-        "linked": "Linked",
+        "changepassword": "Change Password",
         "twoFactorAuth": "Two-Factor Auth",
         "enable": "Enable",
         "dangerZone": "Danger Zone",

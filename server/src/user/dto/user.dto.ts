@@ -1,7 +1,16 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/user.dto.ts"
+import { Role } from '../../types/auth';
 import { ApiProperty } from '@nestjs/swagger';
-import { Allow, Role } from '../../types/auth';
-import { IsArray, IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsBoolean,
+    IsDate,
+    IsEnum,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsString,
+} from 'class-validator';
 
 export class UserLoginDto {
     @IsString()
@@ -21,6 +30,26 @@ export class UserLoginDto {
     readonly password: string;
 }
 
+export class AllowDto {
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty({
+        type: Boolean,
+        example: true,
+        description: 'Read',
+    })
+    read?: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty({
+        type: Boolean,
+        example: true,
+        description: 'Edit',
+    })
+    edit?: boolean;
+}
+
 export class AllowsDto {
     @IsString()
     @ApiProperty({
@@ -31,24 +60,6 @@ export class AllowsDto {
     })
     user_id: string;
 
-    @IsArray()
-    @ApiProperty({
-        type: [String],
-        required: true,
-        example: [Allow.AUTH],
-        description: 'Read',
-    })
-    read: Allow[];
-
-    @IsArray()
-    @ApiProperty({
-        type: [String],
-        required: true,
-        example: [Allow.AUTH],
-        description: 'Edit',
-    })
-    edit: Allow[];
-
     @IsDate()
     @ApiProperty({
         type: Date,
@@ -57,6 +68,66 @@ export class AllowsDto {
         description: 'Expires at',
     })
     expiresAt: Date;
+
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: Object,
+        required: false,
+        example: { read: true, edit: true },
+        description: 'Allows',
+    })
+    auth?: AllowDto;
+
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: Object,
+        required: false,
+        example: { read: true, edit: true },
+        description: 'Allows',
+    })
+    hospitals?: AllowDto;
+
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: Object,
+        required: false,
+        example: { read: true, edit: true },
+        description: 'Allows',
+    })
+    appointments?: AllowDto;
+
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: Object,
+        required: false,
+        example: { read: true, edit: true },
+        description: 'Allows',
+    })
+    doctors?: AllowDto;
+
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: Object,
+        required: false,
+        example: { read: true, edit: true },
+        description: 'Allows',
+    })
+    medicines?: AllowDto;
+
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: Object,
+        required: false,
+        example: { read: true, edit: true },
+        description: 'Allows',
+    })
+    calendars?: AllowDto;
 }
 
 export class ReqUserDto {
@@ -127,7 +198,18 @@ export class ReqUserDto {
     @ApiProperty({
         type: [AllowsDto],
         required: true,
-        example: [{ user_id: '1234567890', read: [Allow.AUTH], edit: [Allow.AUTH] }],
+        example: [
+            {
+                user_id: '1234567890',
+                expiresAt: '2022-01-01',
+                auth: { read: true, edit: true },
+                hospitals: { read: true, edit: true },
+                appointments: { read: true, edit: true },
+                doctors: { read: true, edit: true },
+                medicines: { read: true, edit: true },
+                calendars: { read: true, edit: true },
+            },
+        ],
         description: 'Allows',
     })
     readonly allows: AllowsDto[];
@@ -246,10 +328,21 @@ export class UserJWTPayload {
     @ApiProperty({
         type: [String],
         required: true,
-        example: [Allow.AUTH],
+        example: [
+            {
+                user_id: '1234567890',
+                expiresAt: '2022-01-01',
+                auth: { read: true, edit: true },
+                hospitals: { read: true, edit: true },
+                appointments: { read: true, edit: true },
+                doctors: { read: true, edit: true },
+                medicines: { read: true, edit: true },
+                calendars: { read: true, edit: true },
+            },
+        ],
         description: 'Allows',
     })
-    readonly allows: Allow[];
+    readonly allows: AllowsDto[];
 
     @IsEnum(Role)
     @ApiProperty({

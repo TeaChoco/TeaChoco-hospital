@@ -1,8 +1,9 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/medicine/MedicinesPage.tsx"
+import { Resource } from '../../types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useMedicines } from '../../context/medicinesAtom';
 import ListLayout from '../../components/layout/ListLayout';
+import { useMedicines } from '../../context/medicinesAtom';
 import { MedicineCard } from '../../components/content/MedicineCard';
 
 export default function MedicinesPage() {
@@ -12,6 +13,7 @@ export default function MedicinesPage() {
 
     return (
         <ListLayout
+            resource={Resource.MEDICINES}
             datas={medicines}
             newData={t('medicines.new')}
             header={t('medicines.header')}

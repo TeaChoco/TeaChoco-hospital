@@ -144,6 +144,7 @@ export class InsuranceInfoDto {
     isVerified: boolean;
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
@@ -250,6 +251,7 @@ export class AppointmentPaymentDto {
     paymentStatus: PaymentStatus;
 
     @IsArray()
+    @IsOptional()
     @ApiProperty({
         type: [String],
         required: false,
@@ -259,6 +261,7 @@ export class AppointmentPaymentDto {
     paymentMethod?: PaymentMethod[];
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
@@ -329,6 +332,7 @@ export class SymptomDto {
     duration?: string;
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
@@ -521,6 +525,7 @@ export class FollowUpInfoDto {
     isRequired: boolean;
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,

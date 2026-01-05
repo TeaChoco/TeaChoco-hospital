@@ -3,16 +3,20 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import Paper from '../../components/custom/Paper';
+import { useMedicines } from '../../context/medicinesAtom';
+import { useAppointments } from '../../context/appointmentsAtom';
 import { FaUser, FaIdCard, FaQrcode, FaEnvelope, FaCalendarCheck } from 'react-icons/fa';
 
 export default function ProfilePage() {
     const { t } = useTranslation();
     const { user, signout } = useAuth();
+    const { medicines } = useMedicines();
+    const { appointments } = useAppointments();
 
     const infoItems = [
+        { icon: FaUser, label: t('profile.firstName'), value: user?.firstName },
         { icon: FaUser, label: t('profile.lastName'), value: user?.lastName },
         { icon: FaIdCard, label: t('profile.userID'), value: user?.user_id },
-        { icon: FaUser, label: t('profile.firstName'), value: user?.firstName },
         { icon: FaEnvelope, label: t('profile.emailAddress'), value: user?.email },
     ];
 
@@ -49,12 +53,10 @@ export default function ProfilePage() {
                                 {t('profile.registeredViaGoogle')}
                             </p>
                             <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3">
-                                <button className="btn btn-primary px-6 shadow-lg shadow-primary/20">
+                                <button className="btn btn-dis px-6 shadow-lg shadow-primary/20">
                                     {t('profile.editProfile')}
                                 </button>
-                                <Link
-                                    to="/profile/allow"
-                                    className="btn btn-primary px-6 flex items-center gap-2">
+                                <Link to="/profile/allow" className="btn btn-primary gap-2">
                                     <FaQrcode />
                                     {t('profile.allowWithQR')}
                                 </Link>
@@ -100,16 +102,15 @@ export default function ProfilePage() {
                             </span>
                             {t('profile.accountStats')}
                         </h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                             {[
-                                { count: '5', color: 'bg-accent', label: t('navbar.medicines') },
                                 {
-                                    count: '2',
-                                    color: 'bg-accent-secondary',
-                                    label: t('navbar.hospitals'),
+                                    count: medicines?.length || 0,
+                                    color: 'bg-accent',
+                                    label: t('navbar.medicines'),
                                 },
                                 {
-                                    count: '12',
+                                    count: appointments?.length || 0,
                                     color: 'bg-primary',
                                     label: t('navbar.appointments'),
                                 },
@@ -140,17 +141,17 @@ export default function ProfilePage() {
                             <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 <span className="text-sm font-medium">{t('profile.password')}</span>
                                 <span className="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500 uppercase font-black">
-                                    {t('profile.linked')}
+                                    {t('profile.changepassword')}
                                 </span>
                             </button>
-                            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                            {/* <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 <span className="text-sm font-medium">
                                     {t('profile.twoFactorAuth')}
                                 </span>
                                 <span className="text-xs bg-primary/10 px-2 py-1 rounded text-primary uppercase font-black tracking-tighter">
                                     {t('profile.enable')}
                                 </span>
-                            </button>
+                            </button> */}
                         </div>
                     </Paper>
 
@@ -162,7 +163,7 @@ export default function ProfilePage() {
                         <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-4">
                             {t('profile.deleteAccountInfo')}
                         </p>
-                        <button className="w-full btn btn-error text-white font-bold py-3 shadow-lg shadow-red-500/20">
+                        <button disabled className="w-full btn btn-dis">
                             {t('profile.deleteAccount')}
                         </button>
                     </Paper>

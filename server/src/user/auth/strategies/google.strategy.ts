@@ -1,10 +1,10 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/strategies/google.strategy.ts"
+import { Role } from '../../../types/auth';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { UserType } from '../../dto/create-user.dto';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { SecureService } from '../../../secure/secure.service';
-import { Role } from '../../../types/auth';
+import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -36,7 +36,36 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             firstName: name?.givenName ?? _json.given_name ?? '',
             lastName: name?.familyName ?? _json.family_name ?? '',
             picture: photos[0].value ?? _json.picture ?? '',
-            allows: [],
+            allows: [
+                {
+                    user_id: id,
+                    expiresAt: new Date(Date.now() + 3600 * 1000),
+                    auth: {
+                        read: true,
+                        edit: true,
+                    },
+                    doctors: {
+                        read: true,
+                        edit: true,
+                    },
+                    hospitals: {
+                        read: true,
+                        edit: true,
+                    },
+                    medicines: {
+                        read: true,
+                        edit: true,
+                    },
+                    calendars: {
+                        read: true,
+                        edit: true,
+                    },
+                    appointments: {
+                        read: true,
+                        edit: true,
+                    },
+                },
+            ],
             role: Role.USER,
             expiresAt: Date.now() + 3600 * 1000,
             lastLoginAt: Date.now(),

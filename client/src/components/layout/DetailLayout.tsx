@@ -4,18 +4,18 @@ import { useMemo } from 'react';
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
 import Loading from '../custom/Loading';
-import type { Allow } from '../../types/auth';
 import { useTranslation } from 'react-i18next';
+import type { Title } from '../../types/types';
 import { detailLayoutAtom } from '../../context/layoutAtom';
 import { FaArrowLeft, FaCode, FaPen } from 'react-icons/fa';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function DetailLayout<Data extends { _id: string }>({
+    title,
     datas,
-    allow,
     children,
 }: {
-    allow: Allow;
+    title: Title;
     datas?: Data[];
     children?: (data: Data) => React.ReactNode;
 }) {
@@ -40,18 +40,20 @@ export default function DetailLayout<Data extends { _id: string }>({
 
     return (
         <div className="relative">
-            <Link to={`/${allow}`} className="btn-icon-dark absolute top-2 left-2 z-1">
+            <Link
+                to={`/${title.toLocaleLowerCase()}`}
+                className="btn-icon-dark absolute top-2 left-2 z-1">
                 <FaArrowLeft />
             </Link>
             <div className="absolute top-2 right-2 flex gap-2 z-1">
+                <Link to={`/${title.toLocaleLowerCase()}/edit/${id}`} className="btn-icon-dark">
+                    <FaPen />
+                </Link>
                 <button
                     onClick={() => setDetailLayout((prev) => ({ ...prev, isJson: !prev.isJson }))}
                     className={`btn-icon-dark ${detailLayout.isJson ? 'btn-primary' : ''}`}>
                     <FaCode />
                 </button>
-                <Link to={`/${allow}/edit/${id}`} className="btn-icon-dark">
-                    <FaPen />
-                </Link>
             </div>
             {detailLayout.isJson ? (
                 <Paper className="pt-16">

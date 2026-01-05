@@ -92,7 +92,7 @@
         "accountStats": "สถิติการใช้งาน",
         "security": "ความปลอดภัย",
         "password": "รหัสผ่าน",
-        "linked": "เชื่อมต่อแล้ว",
+        "changepassword": "เปลี่ยนรหัสผ่าน",
         "twoFactorAuth": "การยืนยันตัวตนสองระดับ",
         "enable": "เปิดใช้งาน",
         "dangerZone": "พื้นที่อันตราย",

@@ -74,10 +74,13 @@ export default function AppointmentEditPage() {
             type: AppointmentType.CONSULTATION,
             subType: '',
             purpose: '',
+            description: '',
             scheduledDate: new Date(),
             scheduledTime: new Date(),
             expectedDuration: 30,
             location: AppointmentLocation.OPD,
+            roomNumber: '',
+            floor: '',
             status: AppointmentStatus.PENDING,
             statusHistory: [],
             urgency: UrgencyLevel.ROUTINE,
@@ -87,6 +90,7 @@ export default function AppointmentEditPage() {
             },
             remindersSent: false,
             symptoms: [],
+            preliminaryDiagnosis: '',
             payment: {
                 totalAmount: 0,
                 patientResponsibility: 0,
@@ -268,14 +272,44 @@ export default function AppointmentEditPage() {
                         </div>
 
                         <Paper variant="100" className="p-6 space-y-6 border-l-4 border-primary/40">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <Input
+                                    required
+                                    label={t('appointments.purpose')}
+                                    placeholder={t('appointments.purposePlaceholder')}
+                                    icon={<FaStethoscope className="text-primary/60" />}
+                                    value={data?.purpose}
+                                    onChange={(e) =>
+                                        setData(
+                                            (prev) => prev && { ...prev, purpose: e.target.value },
+                                        )
+                                    }
+                                />
+                                <Input
+                                    label={t('appointments.appointmentSubType')}
+                                    placeholder={t('appointments.subTypePlaceholder', {
+                                        defaultValue: 'e.g. Annual Checkup',
+                                    })}
+                                    icon={<FaStethoscope className="text-primary/10" />}
+                                    value={data?.subType}
+                                    onChange={(e) =>
+                                        setData(
+                                            (prev) => prev && { ...prev, subType: e.target.value },
+                                        )
+                                    }
+                                />
+                            </div>
                             <Input
-                                required
-                                label={t('appointments.purpose')}
-                                placeholder={t('appointments.purposePlaceholder')}
-                                icon={<FaStethoscope className="text-primary/60" />}
-                                value={data?.purpose}
+                                label={t('appointments.description')}
+                                placeholder={t('appointments.descriptionPlaceholder', {
+                                    defaultValue: 'Additional details about the appointment',
+                                })}
+                                icon={<FaFileMedical size={16} className="text-primary/60" />}
+                                value={data?.description}
                                 onChange={(e) =>
-                                    setData((prev) => prev && { ...prev, purpose: e.target.value })
+                                    setData(
+                                        (prev) => prev && { ...prev, description: e.target.value },
+                                    )
                                 }
                             />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -348,11 +382,21 @@ export default function AppointmentEditPage() {
                                 label={t('appointments.doctor')}
                                 icon={<FaUserDoctor className="text-indigo-500/60" />}
                                 value={data?.doctor_id}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    const docId = e.target.value;
+                                    const selectedDoc = doctors?.find((d) => d._id === docId);
                                     setData(
-                                        (prev) => prev && { ...prev, doctor_id: e.target.value },
-                                    )
-                                }>
+                                        (prev) =>
+                                            prev && {
+                                                ...prev,
+                                                doctor_id: docId,
+                                                hospitalId:
+                                                    selectedDoc?.hospitalId || prev.hospitalId,
+                                                department:
+                                                    selectedDoc?.department || prev.department,
+                                            },
+                                    );
+                                }}>
                                 {(Option) => (
                                     <>
                                         <Option value="">
@@ -579,6 +623,25 @@ export default function AppointmentEditPage() {
                                         ))
                                     }
                                 </Select>
+                            </div>
+                            <div className="pt-2">
+                                <Input
+                                    label={t('appointments.initialDiagnosisRef')}
+                                    placeholder={t('appointments.diagnosisPlaceholder', {
+                                        defaultValue: 'Preliminary clinical finding',
+                                    })}
+                                    icon={<FaStethoscope className="text-amber-500/60" />}
+                                    value={data?.preliminaryDiagnosis}
+                                    onChange={(e) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    preliminaryDiagnosis: e.target.value,
+                                                },
+                                        )
+                                    }
+                                />
                             </div>
                             <div className="grid grid-cols-1 gap-8">
                                 <NoteManager

@@ -1,6 +1,5 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/response-user.dto.ts"
 import { AllowsDto } from './user.dto';
-import { Allow } from '../../types/auth';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
 
@@ -72,7 +71,18 @@ export class ResponseUserDto {
     @ApiProperty({
         type: [AllowsDto],
         required: false,
-        example: [Allow.AUTH],
+        example: [
+            {
+                user_id: '1234567890',
+                expiresAt: '2022-01-01',
+                auth: { read: true, edit: true },
+                hospitals: { read: true, edit: true },
+                appointments: { read: true, edit: true },
+                doctors: { read: true, edit: true },
+                medicines: { read: true, edit: true },
+                calendars: { read: true, edit: true },
+            },
+        ],
         description: 'Allows',
     })
     allows?: AllowsDto[];

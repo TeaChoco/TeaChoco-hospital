@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
+import { ResponseDoctorDto } from './dto/response-doctor.dto';
 import { Doctor, DoctorDocument } from './schemas/doctor.schema';
 
 @Injectable()
@@ -14,7 +15,13 @@ export class DoctorsService {
     logger = new Logger(DoctorsService.name);
 
     constructor(
-        private readonly apiService: ApiService,
+        private readonly apiService: ApiService<
+            Doctor,
+            DoctorDocument,
+            CreateDoctorDto,
+            ResponseDoctorDto,
+            UpdateDoctorDto
+        >,
         @InjectModel(Doctor.name, nameDB)
         private readonly doctorModel: Model<Doctor>,
     ) {}
@@ -29,41 +36,36 @@ export class DoctorsService {
         return this.apiService.findOne(auth, doctor);
     }
 
+    async response(doctor: Doctor): Promise<ResponseDoctorDto> {
+        return this.apiService.response(doctor);
+    }
+
     async create(auth: Auth, data: CreateDoctorDto) {
-        const newData = await this.apiService.create<Doctor, CreateDoctorDto>(
-            auth,
-            data,
-            (data) => ({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                nickname: data.nickname,
-                hospitalId: data.hospitalId,
-                department: data.department,
-                contactNumber: data.contactNumber,
-                picture: data.picture,
-            }),
-        );
+        const newData = await this.apiService.create(auth, data, (data) => ({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            nickname: data.nickname,
+            hospitalId: data.hospitalId,
+            department: data.department,
+            contactNumber: data.contactNumber,
+            picture: data.picture,
+        }));
 
         const doctor = new this.doctorModel(newData);
         return await doctor.save();
     }
 
     async update(auth: Auth, id: string, data: UpdateDoctorDto) {
-        const doctor = await this.doctorModel.findById(id);
-        const newData = await this.apiService.update<Doctor, DoctorDocument, UpdateDoctorDto>(
-            auth,
-            doctor,
-            data,
-            (data) => ({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                nickname: data.nickname,
-                hospitalId: data.hospitalId,
-                department: data.department,
-                contactNumber: data.contactNumber,
-                picture: data.picture,
-            }),
-        );
+        const doctor = await this.findOne(auth, id);
+        const newData = await this.apiService.update(auth, doctor, data, (data) => ({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            nickname: data.nickname,
+            hospitalId: data.hospitalId,
+            department: data.department,
+            contactNumber: data.contactNumber,
+            picture: data.picture,
+        }));
         return await this.doctorModel.findByIdAndUpdate(id, newData, { new: true });
     }
 

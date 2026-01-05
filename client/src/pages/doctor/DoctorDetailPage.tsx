@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorDetailPage.tsx"
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Allow } from '../../types/auth';
+import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
 import { useDoctors } from '../../context/doctorsAtom';
 import { useHospitals } from '../../context/hospitalsAtom';
@@ -14,7 +14,7 @@ export default function DoctorDetailPage() {
     const { hospitals } = useHospitals();
 
     return (
-        <DetailLayout datas={doctors} allow={Allow.DOCTORS}>
+        <DetailLayout datas={doctors} title={Title.DOCTORS}>
             {(doctor) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark p-6 md:p-10 pb-0 md:pb-0">
                     <div className="flex flex-col items-center text-center py-6">

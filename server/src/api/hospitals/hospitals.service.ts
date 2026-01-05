@@ -9,13 +9,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
 import { UpdateHospitalDto } from './dto/update-hospital.dto';
 import { Hospital, HospitalDocument } from './schemas/hospital.schema';
+import { ResponseHospitalDto } from './dto/response-hospital.dto';
 
 @Injectable()
 export class HospitalsService {
     logger = new Logger(HospitalsService.name);
 
     constructor(
-        private readonly apiService: ApiService,
+        private readonly apiService: ApiService<
+            Hospital,
+            HospitalDocument,
+            CreateHospitalDto,
+            ResponseHospitalDto,
+            UpdateHospitalDto
+        >,
         @InjectModel(Hospital.name, nameDB)
         private readonly hospitalModel: Model<Hospital>,
     ) {}
@@ -25,39 +32,34 @@ export class HospitalsService {
         return this.apiService.findAll(auth, hospitals);
     }
 
-    async findOne(auth: Auth, id: string) {
+    async findOne(auth: Auth, id: string): Promise<ResponseHospitalDto | null> {
         const hospital = await this.hospitalModel.findById(id);
         return this.apiService.findOne(auth, hospital);
     }
 
+    async response(hospital: Hospital): Promise<ResponseHospitalDto> {
+        return this.apiService.response(hospital);
+    }
+
     async create(auth: Auth, data: CreateHospitalDto) {
-        const newData = await this.apiService.create<Hospital, CreateHospitalDto>(
-            auth,
-            data,
-            (data) => ({
-                name: data.name,
-                address: data.address,
-                contactNumber: data.contactNumber,
-                website: data.website,
-            }),
-        );
+        const newData = await this.apiService.create(auth, data, (data) => ({
+            name: data.name,
+            address: data.address,
+            contactNumber: data.contactNumber,
+            website: data.website,
+        }));
         const hospital = new this.hospitalModel(newData);
         return await hospital.save();
     }
 
     async update(auth: Auth, id: string, data: UpdateHospitalDto) {
         const hospital = await this.findOne(auth, id);
-        const newData = await this.apiService.update<Hospital, HospitalDocument, UpdateHospitalDto>(
-            auth,
-            hospital,
-            data,
-            (data) => ({
-                name: data.name,
-                address: data.address,
-                contactNumber: data.contactNumber,
-                website: data.website,
-            }),
-        );
+        const newData = await this.apiService.update(auth, hospital, data, (data) => ({
+            name: data.name,
+            address: data.address,
+            contactNumber: data.contactNumber,
+            website: data.website,
+        }));
         return await this.hospitalModel.findByIdAndUpdate(id, newData, { new: true });
     }
 

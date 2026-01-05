@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/services/user.ts"
+//-Path: "TeaChoco-Hospital/client/src/services/api.ts"
 import serverRest from './axios';
 import type { Doctor } from '../types/doctor';
 import type { Medicine } from '../types/medicine';

@@ -1,13 +1,12 @@
 //-Path: "TeaChoco-Hospital/server/src/user/user.service.ts"
-import { Allow } from '../types/auth';
 import { Model, Types } from 'mongoose';
 import { nameDB } from '../hooks/mongodb';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserJWTPayload } from './dto/user.dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
+import { AllowsDto, UserJWTPayload } from './dto/user.dto';
 import { QueryOptions, ResponseOptions, ResponseUserDto } from './dto/response-user.dto';
 
 @Injectable()
@@ -43,16 +42,43 @@ export class UserService {
                     ? (user as UserDocument)._id.toString()
                     : (user as UserJWTPayload).user_id,
             };
-            const allows = [
-                {
-                    user_id: responseUser.user_id,
-                    read: [Allow.AUTH],
-                    edit: [Allow.AUTH],
+
+            const allow: AllowsDto = {
+                user_id: responseUser.user_id,
+                expiresAt: responseUser.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                auth: {
+                    read: true,
+                    edit: true,
                 },
-            ];
+                doctors: {
+                    read: true,
+                    edit: true,
+                },
+                hospitals: {
+                    read: true,
+                    edit: true,
+                },
+                medicines: {
+                    read: true,
+                    edit: true,
+                },
+                calendars: {
+                    read: true,
+                    edit: true,
+                },
+                appointments: {
+                    read: true,
+                    edit: true,
+                },
+            };
             keys.forEach((key) => {
                 if (options[key] || options.auth)
-                    responseUser[key] = key === 'allows' ? allows : user[key];
+                    responseUser[key] =
+                        key === 'allows'
+                            ? (user as UserDocument)._id
+                                ? [allow]
+                                : (user as UserJWTPayload).allows
+                            : user[key];
             });
             return responseUser;
         }

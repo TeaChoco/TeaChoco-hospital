@@ -60,7 +60,11 @@ export default function Select({
                 </label>
             )}
             <div className="relative">
-                <select id={selectId} className={`${inputClass} ${className || ''}`} {...props}>
+                <select
+                    id={selectId}
+                    required={required}
+                    className={`${inputClass} ${className || ''}`}
+                    {...props}>
                     {children?.(SelectOption, options) ||
                         options?.map((option) => <SelectOption key={option.value} {...option} />)}
                 </select>

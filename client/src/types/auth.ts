@@ -1,25 +1,28 @@
 //-Path: "TeaChoco-Hospital/client/src/types/auth.ts"
 import type { QueryOptions } from './types';
 
-export enum Allow {
-    AUTH = 'auth',
-    HOSPITALS = 'hospitals',
-    APPOINTMENTS = 'appointments',
-    DOCTORS = 'doctors',
-    MEDICINES = 'medicines',
-    CALENDARS = 'calendars',
-}
-
 export enum Role {
     ADMIN = 'admin',
     USER = 'user',
     VISITOR = 'visitor',
 }
 
-export interface Allows {
+export enum Resource {
+    AUTH = 'auth',
+    DOCTORS = 'doctors',
+    HOSPITALS = 'hospitals',
+    MEDICINES = 'medicines',
+    CALENDARS = 'calendars',
+    APPOINTMENTS = 'appointments',
+}
+
+export interface Allow {
+    edit: boolean;
+    read: boolean;
+}
+
+export interface Allows extends Record<Resource, Allow> {
     user_id: string;
-    read: Allow[];
-    edit: Allow[];
     expiresAt?: Date;
 }
 

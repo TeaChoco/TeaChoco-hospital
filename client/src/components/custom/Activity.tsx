@@ -6,7 +6,7 @@ export default function Activity({
     children,
 }: {
     children: React.ReactNode;
-    visible?: boolean | string | null;
+    visible?: boolean | string | null | object;
 }) {
     return <ReactActivity mode={Boolean(visible) ? 'visible' : 'hidden'}>{children}</ReactActivity>;
 }

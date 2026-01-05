@@ -2,11 +2,11 @@
 import Header from '../custom/Header';
 import Search from '../custom/Search';
 import Loading from '../custom/Loading';
-import { Allow } from '../../types/auth';
 import Activity from '../custom/Activity';
 import { useMemo, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import type { Resource } from '../../types/auth';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import type { FilterOption } from '../custom/Search';
@@ -34,6 +34,7 @@ export default function ListLayout<Data>({
     filter,
     buttons,
     newData,
+    resource,
     children,
     description,
     placeholder,
@@ -42,6 +43,7 @@ export default function ListLayout<Data>({
     datas?: Data[];
     header: string;
     newData?: string;
+    resource: Resource;
     description: string;
     placeholder?: string;
     filterOptions?: FilterOption[];
@@ -70,9 +72,7 @@ export default function ListLayout<Data>({
         [datas, searchTerm, activeFilters],
     );
 
-    const canAdd = user?.allows?.some((allow) =>
-        allow.edit.find((edit) => location.pathname.includes(edit) || edit === Allow.AUTH),
-    );
+    const canAdd = user?.allows?.some((allow) => allow[resource as Resource]?.edit);
 
     if (!datas) return <Loading />;
 

@@ -9,8 +9,9 @@ import {
 } from 'react-icons/fa';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Allow } from '../../types/auth';
+import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
+import Activity from '../../components/custom/Activity';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { useAppointments } from '../../context/appointmentsAtom';
 
@@ -19,7 +20,7 @@ export default function AppointmentDetailPage() {
     const { appointments } = useAppointments();
 
     return (
-        <DetailLayout datas={appointments} allow={Allow.APPOINTMENTS}>
+        <DetailLayout datas={appointments} title={Title.APPOINTMENTS}>
             {(appointment) => (
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-2xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
                     {/* Header Section Compact Redesign */}
@@ -145,51 +146,55 @@ export default function AppointmentDetailPage() {
                                 </h3>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <Link
-                                        to={`/doctors/${appointment.doctor_id}`}
-                                        className="group p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark hover:border-primary/50 transition-all">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <div className="p-3 bg-white dark:bg-slate-700 rounded-xl text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
-                                                <FaUserMd size={20} />
+                                    <Activity visible={appointment.doctor}>
+                                        <Link
+                                            to={`/doctors/${appointment.doctor_id}`}
+                                            className="group p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark hover:border-primary/50 transition-all">
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="p-3 bg-white dark:bg-slate-700 rounded-xl text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                                    <FaUserMd size={20} />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-[10px] font-bold text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
+                                                        {t('appointments.attendingPhysician')}
+                                                    </p>
+                                                    <p className="font-bold text-text-light dark:text-text-dark group-hover:text-primary transition-colors">
+                                                        {appointment.doctor?.firstName}{' '}
+                                                        {appointment.doctor?.lastName}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="flex-1">
-                                                <p className="text-[10px] font-bold text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                                    {t('appointments.attendingPhysician')}
-                                                </p>
-                                                <p className="font-bold text-text-light dark:text-text-dark group-hover:text-primary transition-colors">
-                                                    {appointment.doctor?.firstName}{' '}
-                                                    {appointment.doctor?.lastName}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <p className="text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-1 italic">
-                                            {t('appointments.specializingIn')}{' '}
-                                            {appointment.doctor?.department}
-                                        </p>
-                                    </Link>
+                                            <p className="text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-1 italic">
+                                                {t('appointments.specializingIn')}{' '}
+                                                {appointment.doctor?.department}
+                                            </p>
+                                        </Link>
+                                    </Activity>
 
-                                    <Link
-                                        to={`/hospitals/${appointment.hospitalId}`}
-                                        className="group p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark hover:border-accent-secondary/50 transition-all">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <div className="p-3 bg-white dark:bg-slate-700 rounded-xl text-accent-secondary shadow-sm group-hover:bg-accent-secondary group-hover:text-white transition-all">
-                                                <FaHospital size={20} />
+                                    <Activity visible={appointment.hospital}>
+                                        <Link
+                                            to={`/hospitals/${appointment.hospitalId}`}
+                                            className="group p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark hover:border-accent-secondary/50 transition-all">
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="p-3 bg-white dark:bg-slate-700 rounded-xl text-accent-secondary shadow-sm group-hover:bg-accent-secondary group-hover:text-white transition-all">
+                                                    <FaHospital size={20} />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-[10px] font-bold text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
+                                                        {t('appointments.medicalCenter')}
+                                                    </p>
+                                                    <p className="font-bold text-text-light dark:text-text-dark group-hover:text-accent-secondary transition-colors line-clamp-1">
+                                                        {appointment.hospital?.name}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="flex-1">
-                                                <p className="text-[10px] font-bold text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                                    {t('appointments.medicalCenter')}
-                                                </p>
-                                                <p className="font-bold text-text-light dark:text-text-dark group-hover:text-accent-secondary transition-colors line-clamp-1">
-                                                    {appointment.hospital?.name}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <p className="text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-1 italic text-right capitalize">
-                                            {t('appointments.room')}{' '}
-                                            {appointment.roomNumber || t('common.tba')},{' '}
-                                            {t('appointments.floor')} {appointment.floor || '-'}
-                                        </p>
-                                    </Link>
+                                            <p className="text-xs text-text-muted-light dark:text-text-muted-dark line-clamp-1 italic text-right capitalize">
+                                                {t('appointments.room')}{' '}
+                                                {appointment.roomNumber || t('common.tba')},{' '}
+                                                {t('appointments.floor')} {appointment.floor || '-'}
+                                            </p>
+                                        </Link>
+                                    </Activity>
                                 </div>
 
                                 <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-between">

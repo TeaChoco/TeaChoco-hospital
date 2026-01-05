@@ -1,4 +1,5 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorsPage.tsx"
+import { Resource } from '../../types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDoctors } from '../../context/doctorsAtom';
@@ -12,6 +13,7 @@ export default function DoctorsPage() {
 
     return (
         <ListLayout
+            resource={Resource.DOCTORS}
             datas={doctors}
             newData={t('doctors.new')}
             header={t('doctors.header')}

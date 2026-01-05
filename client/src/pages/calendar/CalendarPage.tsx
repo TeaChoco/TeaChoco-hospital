@@ -1,5 +1,5 @@
 // -Path: "TeaChoco-Hospital/client/src/pages/calendar/CalendarPage.tsx"
-import { Allow } from '../../types/auth';
+import { Resource } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +9,8 @@ import { useCalendarEvents } from '../../hooks/useCalendarEvents';
 import Calendar, { type CalendarEvent } from '../../components/calendar/Calendar';
 
 export default function CalendarPage() {
-    const { t } = useTranslation();
     const { user } = useAuth();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { appointmentEvents, medicineEvents } = useCalendarEvents();
 
@@ -18,13 +18,12 @@ export default function CalendarPage() {
 
     const events: CalendarEvent[] = [...appointmentEvents, ...medicineEvents];
 
-    const canEdit = user?.allows?.some((allow) =>
-        allow.edit.find((edit) => location.pathname.includes(edit) || edit === Allow.AUTH),
-    );
+    const canEdit = user?.allows?.some((allow) => allow.calendars?.edit);
 
     return (
         <ListLayout
             datas={events}
+            resource={Resource.CALENDARS}
             header={t('calendarPage.header')}
             buttons={(NewButton) => (
                 <>

@@ -10,5 +10,6 @@ import { Medicine, MedicineSchema } from './schemas/medicine.schema';
     imports: [...new ImportsMongoose({ name: Medicine.name, schema: MedicineSchema }).imports],
     providers: [ApiService, MedicinesService],
     controllers: [MedicinesController],
+    exports: [MedicinesService],
 })
 export class MedicinesModule {}
