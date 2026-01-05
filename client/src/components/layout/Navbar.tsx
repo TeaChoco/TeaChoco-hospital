@@ -19,7 +19,7 @@ import { Link, NavLink } from 'react-router-dom';
 export default function Navbar() {
     const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { user, isAuthenticated, signout } = useAuth();
+    const { user, loading, isAuthenticated, signout } = useAuth();
 
     const NavbarLink = ({
         to,
@@ -65,7 +65,9 @@ export default function Navbar() {
     );
 
     const SignBtn = ({ className }: { className?: string }) =>
-        isAuthenticated ? (
+        loading ? (
+            <button className={`btn btn-dis ${className}`}>{t('common.loading')}</button>
+        ) : isAuthenticated ? (
             <button onClick={signout} className={`btn btn-secondary ${className}`}>
                 {t('auth.signout')}
             </button>
@@ -100,7 +102,7 @@ export default function Navbar() {
 
             <div className="flex items-center gap-2">
                 <div className="hidden md:flex">
-                    {isAuthenticated ? (
+                    {isAuthenticated && !loading ? (
                         <Link
                             to="/profile"
                             className="w-12 h-12 rounded-full overflow-hidden border border-border-light dark:border-border-dark group hover:border-primary transition-colors">

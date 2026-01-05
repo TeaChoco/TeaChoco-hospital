@@ -2,6 +2,7 @@
 import env from '../../configs/env';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
@@ -46,6 +47,7 @@ function PermissionRow({
 
 export default function AllowPage() {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const expiresMax = 5 * 60 * 1000;
     const { id, emit } = useSocket();
     const [isScanner, setIsScanner] = useState(true);
@@ -54,12 +56,12 @@ export default function AllowPage() {
     const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
     const [responseData, setResponseData] = useState<SiginQrData | undefined>(undefined);
     const [permissions, setPermissions] = useState<Record<Resource, Allow>>({
-        [Resource.AUTH]: { edit: false, read: true },
-        [Resource.DOCTORS]: { edit: false, read: false },
-        [Resource.HOSPITALS]: { edit: false, read: false },
-        [Resource.MEDICINES]: { edit: false, read: false },
-        [Resource.CALENDARS]: { edit: false, read: false },
-        [Resource.APPOINTMENTS]: { edit: false, read: false },
+        [Resource.AUTH]: { edit: true, read: true },
+        [Resource.DOCTORS]: { edit: true, read: true },
+        [Resource.HOSPITALS]: { edit: true, read: true },
+        [Resource.MEDICINES]: { edit: true, read: true },
+        [Resource.CALENDARS]: { edit: true, read: true },
+        [Resource.APPOINTMENTS]: { edit: true, read: true },
     });
 
     const updatePermission = (resource: Resource, value: Allow) =>
@@ -107,10 +109,10 @@ export default function AllowPage() {
                         </Link>
                         <div>
                             <h2 className="text-3xl font-black text-text-light dark:text-text-dark tracking-tight">
-                                Access Control
+                                {t('accessControl.header')}
                             </h2>
                             <p className="text-sm text-text-light/60 dark:text-text-dark/60 font-medium">
-                                Manage permissions and temporary access tokens
+                                {t('accessControl.description')}
                             </p>
                         </div>
                     </div>
@@ -120,7 +122,8 @@ export default function AllowPage() {
                             variant="200"
                             className="p-5 flex flex-col gap-3 border border-border-light/50">
                             <h3 className="font-bold flex items-center gap-2 text-primary">
-                                <FaShieldAlt className="text-sm" /> Expiration Setting
+                                <FaShieldAlt className="text-sm" />{' '}
+                                {t('accessControl.expirationSetting')}
                             </h3>
                             <div className="flex items-center gap-4">
                                 <Switch checked={isExpiresAt} onCheckedChange={setIsExpiresAt} />
@@ -144,16 +147,16 @@ export default function AllowPage() {
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="text-text-light/40 dark:text-text-dark/40 uppercase text-[10px] font-black tracking-widest border-b border-border-light/50">
-                                    <th className="pb-4">Resource</th>
-                                    <th className="pb-4 px-4">Read</th>
-                                    <th className="pb-4 px-4">Edit</th>
+                                    <th className="pb-4">{t('accessControl.resource')}</th>
+                                    <th className="pb-4 px-4">{t('accessControl.read')}</th>
+                                    <th className="pb-4 px-4">{t('accessControl.edit')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Object.values(Resource).map((res) => (
                                     <PermissionRow
                                         key={res}
-                                        label={res.toUpperCase()}
+                                        label={t(`accessControl.resources.${res}`)}
                                         value={permissions[res]}
                                         onChange={(val) => updatePermission(res, val)}
                                     />
@@ -169,12 +172,12 @@ export default function AllowPage() {
                     <button
                         onClick={() => setIsScanner(false)}
                         className={`btn flex-1 ${!isScanner ? 'btn-primary' : ''}`}>
-                        Generate QR
+                        {t('accessControl.generateQR')}
                     </button>
                     <button
                         onClick={() => setIsScanner(true)}
                         className={`btn flex-1 ${isScanner ? 'btn-primary' : ''}`}>
-                        Scan QR
+                        {t('accessControl.scanQR')}
                     </button>
                 </div>
 
@@ -187,7 +190,7 @@ export default function AllowPage() {
                     {isScanner ? (
                         <QRScanner
                             isDev
-                            header="Scan to Grant Access"
+                            header={t('accessControl.scanHeader')}
                             onScan={(result) => {
                                 const data = SiginQrData.getData(result);
                                 if (data instanceof SiginQrData && user) {
@@ -217,7 +220,7 @@ export default function AllowPage() {
                             refresh={getValue}
                             expiresAt={qrExpiresAt}
                             expiresMax={expiresMax}
-                            header="Remote Access QR"
+                            header={t('accessControl.remoteAccessQR')}
                         />
                     )}
                 </Paper>

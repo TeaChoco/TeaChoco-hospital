@@ -5,11 +5,12 @@ export default function Paper({
     variant,
     children,
     className,
+    ...props
 }: {
     variant?: '50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | '950';
     className?: string;
     children?: React.ReactNode;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
     const variantClass = useMemo(() => {
         switch (variant) {
             case '50':
@@ -43,7 +44,8 @@ export default function Paper({
         <div
             className={`p-4 transition-all duration-200 ${variantClass} rounded-lg ${
                 className || ''
-            }`}>
+            }`}
+            {...props}>
             {children}
         </div>
     );
