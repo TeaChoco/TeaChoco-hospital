@@ -246,8 +246,8 @@ export default function Home() {
 
             {/* --- Usage Guide --- */}
             <section className="max-w-7xl mx-auto px-4">
-                <div className="relative p-1 px-1 bg-linear-to-br from-primary via-accent to-secondary rounded-[64px] shadow-2xl">
-                    <Paper className="p-10 md:p-20 rounded-[62px] relative overflow-hidden bg-bg-paper-light-50/90 dark:bg-bg-paper-dark-50/90 backdrop-blur-xl">
+                <div className="relative p-1 px-1 bg-linear-to-br from-primary via-accent to-secondary rounded-2xl shadow-2xl">
+                    <Paper className="p-10 md:p-20 relative overflow-hidden bg-bg-paper-light-50/90 dark:bg-bg-paper-dark-50/90 backdrop-blur-xl rounded-2xl">
                         <div className="absolute top-0 right-0 p-20 opacity-5 scale-[2] rotate-12 pointer-events-none">
                             <HiLightningBolt className="text-9xl text-primary" />
                         </div>
