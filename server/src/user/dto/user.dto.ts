@@ -1,16 +1,16 @@
 //-Path: "TeaChoco-Hospital/server/src/user/dto/user.dto.ts"
-import { Role } from '../../types/auth';
-import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsArray,
-    IsBoolean,
     IsDate,
     IsEnum,
+    IsArray,
     IsNumber,
     IsObject,
-    IsOptional,
     IsString,
+    IsBoolean,
+    IsOptional,
 } from 'class-validator';
+import { Role } from '../../types/auth';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserLoginDto {
     @IsString()
@@ -147,7 +147,7 @@ export class ReqUserDto {
         example: '1234567890',
         description: 'Google ID',
     })
-    readonly googleId: string;
+    readonly googleId?: string;
 
     @IsString()
     @ApiProperty({
@@ -277,7 +277,7 @@ export class UserJWTPayload {
         example: '1234567890',
         description: 'Google ID',
     })
-    readonly googleId: string;
+    readonly googleId?: string;
 
     @IsString()
     @ApiProperty({
