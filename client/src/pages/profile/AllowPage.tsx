@@ -49,7 +49,7 @@ export default function AllowPage() {
     const { user } = useAuth();
     const { t } = useTranslation();
     const expiresMax = 5 * 60 * 1000;
-    const { id, emit } = useSocket();
+    const { id, emit, useEvent } = useSocket();
     const [isScanner, setIsScanner] = useState(true);
     const [isExpiresAt, setIsExpiresAt] = useState(false);
     const [expiresAt, setExpiresAt] = useState<Date>(new Date());
@@ -96,6 +96,25 @@ export default function AllowPage() {
         const { socketId, token } = responseData.response as any;
         return `${url}/signin?socketId=${socketId}&token=${token}`;
     }, [responseData]);
+
+    // Handle incoming Remote Access Requests
+    useEvent('signin-qr', (incomingData: SiginQrData) => {
+        if (
+            incomingData.request &&
+            responseData?.response &&
+            incomingData.request.token === responseData.response.token &&
+            incomingData.senderSocketId
+        ) {
+            // Found a matching request! Send the response back to the requester.
+            const responseToSend: SiginQrData = {
+                response: {
+                    ...responseData.response,
+                    socketId: incomingData.senderSocketId, // Reply to SENDER
+                } as any,
+            };
+            emit('signin-qr', responseToSend);
+        }
+    });
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-0">
@@ -194,6 +213,10 @@ export default function AllowPage() {
                             onScan={(result) => {
                                 const data = SiginQrData.getData(result);
                                 if (data instanceof SiginQrData && user) {
+                                    // Standard Scan Mode:
+                                    // QR contains { request: { socketId: 'RequesterID', token: '...' } }
+                                    // We send back { request: ..., response: ... }
+                                    // Server forwards to data.request.socketId
                                     data.response = new ResponseData({
                                         socketId: id,
                                         token: crypto.randomUUID(),

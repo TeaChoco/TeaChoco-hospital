@@ -1,16 +1,5 @@
-//-Path: "motiva/client/src/types/types.ts"
+//-Path: "TeaChoco-Hospital/client/src/types/signin-qr.ts"
 import type { User } from './auth';
-
-// export class SubmitData {
-//     constructor(data: any) {
-//         this.socketId = data.socketId;
-//         this.token = data.token;
-//         this.user = data.user;
-//     }
-//     socketId: string = '';
-//     token: string = '';
-//     user: User = {} as User;
-// }
 
 export class RequestData {
     constructor(data: any) {
@@ -36,23 +25,23 @@ export class ResponseData {
 
 export class SiginQrData {
     constructor(data: any) {
-        // this.submit = data.submit ? new SubmitData(data.submit) : undefined;
         this.request = data.request ? new RequestData(data.request) : undefined;
         this.response = data.response ? new ResponseData(data.response) : undefined;
+        this.senderSocketId = data.senderSocketId;
     }
     static getData(qr_data: string | object) {
         const result = typeof qr_data === 'string' ? JSON.parse(qr_data) : qr_data;
         try {
             return new SiginQrData({
-                // submit: result.submit,
                 request: result.request,
                 response: result.response,
+                senderSocketId: result.senderSocketId,
             });
         } catch (error) {
             return null;
         }
     }
-    // submit?: SubmitData;
     request?: RequestData;
     response?: ResponseData;
+    senderSocketId?: string;
 }

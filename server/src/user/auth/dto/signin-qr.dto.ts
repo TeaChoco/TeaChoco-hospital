@@ -1,11 +1,5 @@
-//-Path: "motiva/client/src/types/types.ts"
+//-Path: "TeaChoco-Hospital/server/src/user/auth/dto/signin-qr.dto.ts"
 import { ReqUserDto } from '../../dto/user.dto';
-
-// export class SubmitDto {
-//     socketId: string;
-//     token: string;
-//     user: ReqUserDto;
-// }
 
 export class RequestDto {
     socketId: string;
@@ -20,7 +14,7 @@ export class ResponseDto {
 }
 
 export class SiginQrDto {
-    // submit?: SubmitDto;
     request?: RequestDto;
     response?: ResponseDto;
+    senderSocketId?: string;
 }

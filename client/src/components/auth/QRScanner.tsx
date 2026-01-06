@@ -1,8 +1,8 @@
-//-Path: "TeaChoco-Hospital/client/src/components/QRScanner.tsx"
+//-Path: "TeaChoco-Hospital/client/src/components/auth/QRScanner.tsx"
 import Paper from '../custom/Paper';
 import QRScanner from '../code/QRScanner';
 import { useSocket } from '../../hooks/useSocket';
-import type { SiginQrData } from '../../types/signin-qr';
+import { SiginQrData } from '../../types/signin-qr';
 
 export default function QRScannerPage() {
     const { emit } = useSocket();
@@ -13,10 +13,18 @@ export default function QRScannerPage() {
                 isDev
                 header="Scan QR Code"
                 onScan={(result) => {
-                    const data: SiginQrData = JSON.parse(result);
-                    console.log(data);
-                    if (typeof data === 'object' && data.response) emit('signin-qr', data);
-                    else console.log(data, 'is not SiginQrData');
+                    try {
+                        const data = SiginQrData.getData(result);
+                        console.log('Scanned data:', data);
+                        if (data && data instanceof SiginQrData && data.response) {
+                            emit('signin-qr', data);
+                        } else {
+                            console.log('Invalid QR data format for Signin:', data);
+                            // Optional: Show error toast/message to user
+                        }
+                    } catch (error) {
+                        console.error('Error parsing QR code:', error);
+                    }
                 }}
                 description="Point your camera at the QR code to login"
             />

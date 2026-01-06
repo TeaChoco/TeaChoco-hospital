@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/layout/BottomNav.tsx"
+//-Path: "TeaChoco-Hospital/client/src/components/navbar/BottomNav.tsx"
 import { SignBtn } from './Custom';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ export default function BottomNav() {
                     </NavLink>
                 ))}
                 <div className="flex justify-center w-full">
-                    <SignBtn />
+                    <SignBtn isMobile />
                 </div>
             </div>
         </div>

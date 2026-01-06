@@ -46,9 +46,7 @@ export default function Signin() {
         else console.log(data, 'is not RequestSocketData');
     };
 
-    useEffect(() => {
-        if (socketId && token) signinQr(socketId, token);
-    }, [socketId, token]);
+    if (socketId && token) signinQr(socketId, token);
 
     useEvent('signin-qr', async (data: SiginQrData) => {
         console.log(data);
