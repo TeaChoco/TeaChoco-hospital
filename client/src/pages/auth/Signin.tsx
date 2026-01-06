@@ -60,7 +60,9 @@ export default function Signin() {
         }
     });
 
-    if (isAuthenticated && !(socketId && token)) navigate('/');
+    useEffect(() => {
+        if (isAuthenticated && !(socketId && token)) navigate('/');
+    }, [isAuthenticated, socketId, token, navigate]);
 
     useEffect(() => {
         const errorParam = searchParams.get('error');
@@ -132,7 +134,7 @@ export default function Signin() {
                 <div className="border-b border-border-light dark:border-border-dark transition-colors duration-200">
                     <nav className="flex">
                         <button
-                            onClick={() => navigate('/signin')}
+                            onClick={() => navigate(isAuthenticated ? '/profile' : '/signin')}
                             className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                                 activeTab === 'google'
                                     ? 'text-primary border-b-2 border-primary'

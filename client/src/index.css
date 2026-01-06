@@ -58,6 +58,46 @@
 
     /* Fonts */
     --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+    @keyframes orbit {
+        from {
+            transform: rotate(0deg) translateX(100px) rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg) translateX(100px) rotate(-360deg);
+        }
+    }
+    @keyframes pulse-slow {
+        0%,
+        100% {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.6;
+            transform: scale(1.1);
+        }
+    }
 }
 
 @layer base {
@@ -178,6 +218,19 @@
     .card:hover {
         @apply bg-bg-card-hover-light dark:bg-bg-card-hover-dark
             border-primary shadow-lg shadow-primary/30;
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    .animate-orbit {
+        animation: orbit 20s linear infinite;
+    }
+    .animate-pulse-slow {
+        animation: pulse-slow 8s ease-in-out infinite;
     }
 }
 
