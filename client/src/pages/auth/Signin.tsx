@@ -9,9 +9,9 @@ import { SiginQrData } from '../../types/signin-qr';
 import { useEffect, useMemo, useState } from 'react';
 import Activity from '../../components/custom/Activity';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
-import SelectLang from '../../components/layout/SelectLang';
+import SelectLang from '../../components/navbar/SelectLang';
 import QRScannerPage from '../../components/auth/QRScanner';
-import ThemeToggle from '../../components/layout/ThemeToggle';
+import ThemeToggle from '../../components/navbar/ThemeToggle';
 import QRGeneratorPage from '../../components/auth/QRGenerator';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
