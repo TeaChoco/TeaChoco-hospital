@@ -6,10 +6,11 @@ import { DoctorsModule } from './doctors/doctors.module';
 import { MedicinesModule } from './medicines/medicines.module';
 import { HospitalsModule } from './hospitals/hospitals.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { ImgModule } from './img/img.module';
 
 @Module({
     exports: [ApiService],
     providers: [ApiService],
-    imports: [SocketModule, DoctorsModule, MedicinesModule, HospitalsModule, AppointmentsModule],
+    imports: [SocketModule, DoctorsModule, MedicinesModule, HospitalsModule, AppointmentsModule, ImgModule],
 })
 export class ApiModule {}

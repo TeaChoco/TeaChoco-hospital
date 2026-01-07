@@ -33,6 +33,7 @@ import { useMedicines } from '../../context/medicinesAtom';
 import { useHospitals } from '../../context/hospitalsAtom';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
+import InputImg from '../../components/custom/InputImg';
 
 export default function MedicineEditPage() {
     const { t } = useTranslation();
@@ -184,18 +185,15 @@ export default function MedicineEditPage() {
                                 />
                             </div>
 
-                            <div className="pt-2">
-                                <Input
-                                    label={t('medicines.imageUrl')}
-                                    placeholder={t('medicines.imageUrlPlaceholder')}
-                                    value={data.imageUrl || ''}
-                                    onChange={(e) =>
-                                        setData(
-                                            (prev) => prev && { ...prev, imageUrl: e.target.value },
-                                        )
-                                    }
-                                />
-                            </div>
+                            <InputImg
+                                className="pt-2"
+                                label={t('medicines.imageUrl')}
+                                placeholder={t('medicines.imageUrlPlaceholder')}
+                                value={data.imageUrl || ''}
+                                setValue={(value) =>
+                                    setData((prev) => prev && { ...prev, imageUrl: value })
+                                }
+                            />
                         </Paper>
                     </div>
 

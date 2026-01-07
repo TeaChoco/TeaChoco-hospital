@@ -3,7 +3,7 @@
 /**
  * @description TechBadge - แสดง technology ที่ใช้
  */
-export function TechBadge({ name, icon: Icon, color }: { name: string; icon: any; color: string }) {
+export default function TechBadge({ name, icon: Icon, color }: { name: string; icon: any; color: string }) {
     return (
         <div className="flex flex-col items-center gap-4 p-6 rounded-[32px] bg-bg-paper-light-100 dark:bg-bg-paper-dark-100 border border-border-light/30 dark:border-border-dark/30 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 group min-w-[140px]">
             <div

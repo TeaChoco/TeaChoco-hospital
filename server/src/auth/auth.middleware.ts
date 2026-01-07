@@ -10,7 +10,13 @@ export class AuthMiddleware implements NestMiddleware {
 
     constructor(private readonly secureService: SecureService) {}
 
-    private readonly publicGets = ['/', '/socket-ui', '/public**', '/user/auth/google/callback'];
+    private readonly publicGets = [
+        '/',
+        '/socket-ui',
+        '/public**',
+        '/api/img/**',
+        '/user/auth/google/callback',
+    ];
 
     use(req: Request, res: Response, next: NextFunction) {
         if (this.secureService.isDev()) return next();

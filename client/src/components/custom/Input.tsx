@@ -5,6 +5,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     label?: string;
     description?: string;
     icon?: React.ReactNode;
+    button?: React.ReactNode;
     labelClassName?: string;
     containerClassName?: string;
 }
@@ -13,6 +14,7 @@ export default function Input({
     id,
     icon,
     label,
+    button,
     required,
     disabled,
     className,
@@ -45,9 +47,14 @@ export default function Input({
                     required={required}
                     disabled={disabled}
                     placeholder={label}
-                    className={`${inputClass} ${className || ''}`}
+                    className={`${inputClass} ${button ? 'pr-12' : ''} ${className || ''}`}
                     {...props}
                 />
+                {button && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors">
+                        {button}
+                    </div>
+                )}
             </div>
             {description && (
                 <div className="text-[11px] leading-tight text-text-muted-light dark:text-text-muted-dark ml-1 opacity-70">

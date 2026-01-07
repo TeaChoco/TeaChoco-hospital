@@ -3,7 +3,7 @@
 /**
  * @description UsageStep - แสดง step การใช้งาน
  */
-export function UsageStep({
+export default function UsageStep({
     title,
     number,
     description,

@@ -7,7 +7,7 @@ import Paper from '../../../components/custom/Paper';
 /**
  * @description FeatureCard - สำหรับแสดง feature พร้อม link ไปหน้านั้น
  */
-export function FeatureCard({
+export default function FeatureCard({
     icon: Icon,
     title,
     path,

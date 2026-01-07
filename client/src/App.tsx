@@ -1,6 +1,6 @@
 //-Path: "TeaChoco-Hospital/client/src/App.tsx"
 import Setup from './layout/Setup';
-import Layout from './layout/Laout';
+import Layout from './layout/Layout';
 import Home from './pages/home/Home';
 import Signin from './pages/auth/Signin';
 import AllowPage from './pages/profile/AllowPage';

@@ -349,5 +349,12 @@
         "meal": "Meal",
         "active": "Active",
         "inactive": "Inactive"
+    },
+    "footer": {
+        "projectDescription": "Personal project for learning and exploration. Not an official product.",
+        "builtWith": "Built with",
+        "madeBy": "Made with",
+        "byDeveloper": "by TeaChoco",
+        "disclaimer": "Personal Learning Project - Not for commercial use"
     }
 }
