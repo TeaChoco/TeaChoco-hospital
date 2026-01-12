@@ -9,14 +9,12 @@
         <title>TeaChoco Hospital</title>
     </head>
     <body>
-           <script>
+        <script>
             (function () {
                 var theme = localStorage.getItem('themeMode');
                 if (
                     theme === 'dark' ||
-                    (!theme &&
-                        window.matchMedia('(prefers-color-scheme: dark)')
-                            .matches)
+                    (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
                 ) {
                     document.documentElement.classList.add('dark');
                 }
