@@ -10,8 +10,8 @@ import {
 } from 'react-icons/fa6';
 import { useMemo } from 'react';
 import { doctorAPI } from '../../services/api';
-import { useTranslation } from 'react-i18next';
 import type { Doctor } from '../../types/doctor';
+import { useTranslation } from 'react-i18next';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
@@ -27,10 +27,10 @@ export default function DoctorEditPage() {
 
     const newData: OutApiData<Doctor> = useMemo(
         () => ({
-            firstName: '',
             lastName: '',
-            hospitalId: '',
+            firstName: '',
             department: '',
+            hospitalId: '',
         }),
         [],
     );
@@ -74,8 +74,14 @@ export default function DoctorEditPage() {
                                     placeholder={t('doctors.firstNamePlaceholder')}
                                     icon={<FaUserTie className="text-primary/60" />}
                                     value={data?.firstName}
-                                    onChange={(e) =>
-                                        setData((p) => p && { ...p, firstName: e.target.value })
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    firstName: event.target.value,
+                                                },
+                                        )
                                     }
                                 />
                                 <Input
@@ -84,8 +90,14 @@ export default function DoctorEditPage() {
                                     placeholder={t('doctors.lastNamePlaceholder')}
                                     icon={<FaUserTie className="text-primary/60" />}
                                     value={data?.lastName}
-                                    onChange={(e) =>
-                                        setData((p) => p && { ...p, lastName: e.target.value })
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    lastName: event.target.value,
+                                                },
+                                        )
                                     }
                                 />
                             </div>
@@ -95,8 +107,14 @@ export default function DoctorEditPage() {
                                     placeholder={t('doctors.nicknamePlaceholder')}
                                     icon={<FaAddressCard className="text-primary/60" />}
                                     value={data?.nickname || ''}
-                                    onChange={(e) =>
-                                        setData((p) => p && { ...p, nickname: e.target.value })
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    nickname: event.target.value,
+                                                },
+                                        )
                                     }
                                 />
                                 <Input
@@ -104,8 +122,14 @@ export default function DoctorEditPage() {
                                     placeholder={t('doctors.profileImagePlaceholder')}
                                     icon={<FaImage className="text-primary/60" />}
                                     value={data?.picture || ''}
-                                    onChange={(e) =>
-                                        setData((p) => p && { ...p, picture: e.target.value })
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    picture: event.target.value,
+                                                },
+                                        )
                                     }
                                 />
                             </div>
@@ -128,31 +152,40 @@ export default function DoctorEditPage() {
                             className="p-6 space-y-6 border-l-4 border-indigo-500/40">
                             <Select
                                 required
+                                options={[
+                                    { value: '', label: t('doctors.selectInstitution') },
+                                    ...(hospitals?.map((h) => ({
+                                        value: h._id,
+                                        label: h.name,
+                                    })) || []),
+                                ]}
                                 label={t('doctors.affiliatedHospital')}
                                 icon={<FaHospital className="text-indigo-500/60" />}
                                 value={data?.hospitalId}
-                                onChange={(e) =>
-                                    setData((p) => p && { ...p, hospitalId: e.target.value })
-                                }>
-                                {(Option) => (
-                                    <>
-                                        <Option value="">{t('doctors.selectInstitution')}</Option>
-                                        {hospitals?.map((h) => (
-                                            <Option key={h._id} value={h._id}>
-                                                {h.name}
-                                            </Option>
-                                        ))}
-                                    </>
-                                )}
-                            </Select>
+                                onChange={(event) =>
+                                    setData(
+                                        (prev) =>
+                                            prev && {
+                                                ...prev,
+                                                hospitalId: event.target.value,
+                                            },
+                                    )
+                                }
+                            />
                             <Input
                                 required
                                 label={t('doctors.medicalDepartment')}
                                 placeholder={t('doctors.departmentPlaceholder')}
                                 icon={<FaBriefcase className="text-indigo-500/60" />}
                                 value={data?.department}
-                                onChange={(e) =>
-                                    setData((p) => p && { ...p, department: e.target.value })
+                                onChange={(event) =>
+                                    setData(
+                                        (prev) =>
+                                            prev && {
+                                                ...prev,
+                                                department: event.target.value,
+                                            },
+                                    )
                                 }
                             />
                         </Paper>
@@ -177,8 +210,14 @@ export default function DoctorEditPage() {
                                 placeholder={t('doctors.contactPlaceholder')}
                                 icon={<FaPhone className="text-emerald-500/60" />}
                                 value={data?.contactNumber || ''}
-                                onChange={(e) =>
-                                    setData((p) => p && { ...p, contactNumber: e.target.value })
+                                onChange={(event) =>
+                                    setData(
+                                        (prev) =>
+                                            prev && {
+                                                ...prev,
+                                                contactNumber: event.target.value,
+                                            },
+                                    )
                                 }
                             />
                         </Paper>

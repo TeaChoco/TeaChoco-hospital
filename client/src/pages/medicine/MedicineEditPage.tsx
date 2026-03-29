@@ -40,9 +40,17 @@ export default function MedicineEditPage() {
     const { medicines, resetMedicines } = useMedicines();
     const { hospitals, resetHospitals } = useHospitals();
 
+    /**
+     * @param {Date | undefined} date
+     * @returns {string}
+     */
     const formatDate = (date: Date | undefined) =>
         date ? new Date(date).toISOString().split('T')[0] : '';
 
+    /**
+     * @param {MedicineType} type
+     * @returns {React.ReactNode}
+     */
     const getMedicineIcon = (type: MedicineType) => {
         if (type === MedicineType.TABLET) return <FaPills />;
         if (type === MedicineType.CAPSULE) return <FaCapsules />;
@@ -52,26 +60,27 @@ export default function MedicineEditPage() {
         return <FaPills />;
     };
 
+    /** @type {OutApiData<Medicine>} */
     const newData: OutApiData<Medicine> = useMemo(
         () => ({
             name: '',
-            genericName: '',
             brand: '',
-            type: MedicineType.TABLET,
             category: '',
+            genericName: '',
             takeInstructions: [],
+            type: MedicineType.TABLET,
             dosage: {
-                unit: MedicineUnit.TABLET,
                 quantity: 1,
                 frequencyPerDay: 1,
+                unit: MedicineUnit.TABLET,
             },
             hospital: {
                 hospitalId: '',
-                prescriptionDate: new Date(),
                 dispenseDate: new Date(),
+                prescriptionDate: new Date(),
             },
-            startDate: new Date(),
             endDate: new Date(),
+            startDate: new Date(),
             expiryDate: new Date(),
             storageConditions: [],
             package: {
@@ -123,8 +132,10 @@ export default function MedicineEditPage() {
                                     label={t('medicines.commercialName')}
                                     placeholder={t('medicines.commercialNamePlaceholder')}
                                     value={data?.name}
-                                    onChange={(e) =>
-                                        setData((prev) => prev && { ...prev, name: e.target.value })
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) => prev && { ...prev, name: event.target.value },
+                                        )
                                     }
                                 />
                                 <Input
@@ -132,10 +143,13 @@ export default function MedicineEditPage() {
                                     label={t('medicines.genericComposition')}
                                     placeholder={t('medicines.genericCompositionPlaceholder')}
                                     value={data?.genericName || ''}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
-                                                prev && { ...prev, genericName: e.target.value },
+                                                prev && {
+                                                    ...prev,
+                                                    genericName: event.target.value,
+                                                },
                                         )
                                     }
                                 />
@@ -145,41 +159,38 @@ export default function MedicineEditPage() {
                                 <Input
                                     label={t('medicines.brand')}
                                     value={data?.brand || ''}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
-                                            (prev) => prev && { ...prev, brand: e.target.value },
+                                            (prev) =>
+                                                prev && { ...prev, brand: event.target.value },
                                         )
                                     }
                                 />
                                 <Select
                                     label={t('medicines.form')}
                                     value={data?.type}
-                                    onChange={(e) =>
+                                    options={Object.values(MedicineType).map((type) => ({
+                                        value: type,
+                                        label: t(`medicines.enums.MedicineType.${type}`),
+                                        icon: getMedicineIcon(type),
+                                    }))}
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
-                                                    type: e.target.value as MedicineType,
+                                                    type: event.target.value as MedicineType,
                                                 },
                                         )
-                                    }>
-                                    {(Option) =>
-                                        Object.values(MedicineType).map((type) => (
-                                            <Option
-                                                key={type}
-                                                value={type}
-                                                icon={getMedicineIcon(type)}>
-                                                {type}
-                                            </Option>
-                                        ))
                                     }
-                                </Select>
+                                />
                                 <Input
                                     label={t('medicines.category')}
                                     value={data.category || ''}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
-                                            (prev) => prev && { ...prev, category: e.target.value },
+                                            (prev) =>
+                                                prev && { ...prev, category: event.target.value },
                                         )
                                     }
                                 />
@@ -217,14 +228,14 @@ export default function MedicineEditPage() {
                                     type="number"
                                     label={t('medicines.quantity')}
                                     value={data.dosage.quantity}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
                                                     dosage: {
                                                         ...prev.dosage,
-                                                        quantity: Number(e.target.value),
+                                                        quantity: Number(event.target.value),
                                                     },
                                                 },
                                         )
@@ -233,38 +244,35 @@ export default function MedicineEditPage() {
                                 <Select
                                     label={t('medicines.unit')}
                                     value={data.dosage.unit}
-                                    onChange={(e) =>
+                                    options={Object.values(MedicineUnit).map((unit) => ({
+                                        value: unit,
+                                        label: t(`medicines.enums.MedicineUnit.${unit}`),
+                                    }))}
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
                                                     dosage: {
                                                         ...prev.dosage,
-                                                        unit: e.target.value as MedicineUnit,
+                                                        unit: event.target.value as MedicineUnit,
                                                     },
                                                 },
                                         )
-                                    }>
-                                    {(Option) =>
-                                        Object.values(MedicineUnit).map((unit) => (
-                                            <Option key={unit} value={unit}>
-                                                {unit}
-                                            </Option>
-                                        ))
                                     }
-                                </Select>
+                                />
                                 <Input
                                     type="number"
                                     label={t('medicines.frequency')}
                                     value={data.dosage.frequencyPerDay}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
                                                     dosage: {
                                                         ...prev.dosage,
-                                                        frequencyPerDay: Number(e.target.value),
+                                                        frequencyPerDay: Number(event.target.value),
                                                     },
                                                 },
                                         )
@@ -298,7 +306,7 @@ export default function MedicineEditPage() {
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    {data.takeInstructions.map((inst, index) => (
+                                    {data.takeInstructions.map((instruction, index) => (
                                         <Paper
                                             key={index}
                                             variant="200"
@@ -312,7 +320,7 @@ export default function MedicineEditPage() {
                                                                 ...prev,
                                                                 takeInstructions:
                                                                     prev.takeInstructions.filter(
-                                                                        (_, i) => i !== index,
+                                                                        (_, idx) => idx !== index,
                                                                     ),
                                                             },
                                                     )
@@ -324,20 +332,24 @@ export default function MedicineEditPage() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <Select
                                                     label={t('medicines.mealReference')}
-                                                    value={inst.mealTime}
-                                                    onChange={(e) =>
+                                                    value={instruction.mealTime}
+                                                    options={Object.values(MealTime).map((mt) => ({
+                                                        value: mt,
+                                                        label: t(`medicines.enums.MealTime.${mt}`),
+                                                    }))}
+                                                    onChange={(event) =>
                                                         setData(
                                                             (prev) =>
                                                                 prev && {
                                                                     ...prev,
                                                                     takeInstructions:
                                                                         prev.takeInstructions.map(
-                                                                            (ti, i) =>
-                                                                                i === index
+                                                                            (ti, idx) =>
+                                                                                idx === index
                                                                                     ? {
                                                                                           ...ti,
                                                                                           mealTime:
-                                                                                              e
+                                                                                              event
                                                                                                   .target
                                                                                                   .value as MealTime,
                                                                                       }
@@ -345,31 +357,31 @@ export default function MedicineEditPage() {
                                                                         ),
                                                                 },
                                                         )
-                                                    }>
-                                                    {(Option) =>
-                                                        Object.values(MealTime).map((mt) => (
-                                                            <Option key={mt} value={mt}>
-                                                                {mt}
-                                                            </Option>
-                                                        ))
                                                     }
-                                                </Select>
+                                                />
                                                 <Select
                                                     label={t('medicines.foodRelation')}
-                                                    value={inst.relation || ''}
-                                                    onChange={(e) =>
+                                                    value={instruction.relation || ''}
+                                                    options={[
+                                                        { value: '', label: t('common.na') },
+                                                        ...Object.values(FoodRelation).map((fr) => ({
+                                                            value: fr,
+                                                            label: t(`medicines.enums.FoodRelation.${fr}`),
+                                                        })),
+                                                    ]}
+                                                    onChange={(event) =>
                                                         setData(
                                                             (prev) =>
                                                                 prev && {
                                                                     ...prev,
                                                                     takeInstructions:
                                                                         prev.takeInstructions.map(
-                                                                            (ti, i) =>
-                                                                                i === index
+                                                                            (ti, idx) =>
+                                                                                idx === index
                                                                                     ? {
                                                                                           ...ti,
                                                                                           relation:
-                                                                                              e
+                                                                                              event
                                                                                                   .target
                                                                                                   .value as FoodRelation,
                                                                                       }
@@ -377,39 +389,27 @@ export default function MedicineEditPage() {
                                                                         ),
                                                                 },
                                                         )
-                                                    }>
-                                                    {(Option) => (
-                                                        <>
-                                                            <Option value="">N/A</Option>
-                                                            {Object.values(FoodRelation).map(
-                                                                (fr) => (
-                                                                    <Option key={fr} value={fr}>
-                                                                        {fr}
-                                                                    </Option>
-                                                                ),
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </Select>
+                                                    }
+                                                />
                                             </div>
                                             <Input
                                                 label={t('medicines.specialInstructions')}
                                                 placeholder={t(
                                                     'medicines.specialInstructionsPlaceholder',
                                                 )}
-                                                value={inst.notes || ''}
-                                                onChange={(e) =>
+                                                value={instruction.notes || ''}
+                                                onChange={(event) =>
                                                     setData(
                                                         (prev) =>
                                                             prev && {
                                                                 ...prev,
                                                                 takeInstructions:
                                                                     prev.takeInstructions.map(
-                                                                        (ti, i) =>
-                                                                            i === index
+                                                                        (ti, idx) =>
+                                                                            idx === index
                                                                                 ? {
                                                                                       ...ti,
-                                                                                      notes: e
+                                                                                      notes: event
                                                                                           .target
                                                                                           .value,
                                                                                   }
@@ -445,12 +445,12 @@ export default function MedicineEditPage() {
                                     type="date"
                                     label={t('medicines.treatmentStart')}
                                     value={formatDate(data.startDate)}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
-                                                    startDate: new Date(e.target.value),
+                                                    startDate: new Date(event.target.value),
                                                 },
                                         )
                                     }
@@ -459,12 +459,12 @@ export default function MedicineEditPage() {
                                     type="date"
                                     label={t('medicines.treatmentEnd')}
                                     value={formatDate(data.endDate)}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
-                                                    endDate: new Date(e.target.value),
+                                                    endDate: new Date(event.target.value),
                                                 },
                                         )
                                     }
@@ -473,12 +473,12 @@ export default function MedicineEditPage() {
                                     type="date"
                                     label={t('medicines.expiry')}
                                     value={formatDate(data.expiryDate)}
-                                    onChange={(e) =>
+                                    onChange={(event) =>
                                         setData(
                                             (prev) =>
                                                 prev && {
                                                     ...prev,
-                                                    expiryDate: new Date(e.target.value),
+                                                    expiryDate: new Date(event.target.value),
                                                 },
                                         )
                                     }
@@ -486,32 +486,30 @@ export default function MedicineEditPage() {
                             </div>
 
                             <Select
+                                options={[
+                                    { value: '', label: t('medicines.unknownProvider') },
+                                    ...(hospitals?.map((hospital) => ({
+                                        label: hospital.name,
+                                        value: hospital._id,
+                                        icon: <FaHospital />,
+                                    })) || []),
+                                ]}
                                 label={t('medicines.prescribingHospital')}
                                 value={data.hospital.hospitalId}
                                 icon={<FaHospital />}
-                                onChange={(e) =>
+                                onChange={(event) =>
                                     setData(
                                         (prev) =>
                                             prev && {
                                                 ...prev,
                                                 hospital: {
                                                     ...prev.hospital,
-                                                    hospitalId: e.target.value,
+                                                    hospitalId: event.target.value,
                                                 },
                                             },
                                     )
-                                }>
-                                {(Option) => (
-                                    <>
-                                        <Option value="">{t('medicines.unknownProvider')}</Option>
-                                        {hospitals?.map((h) => (
-                                            <Option key={h._id} value={h._id} icon={<FaHospital />}>
-                                                {h.name}
-                                            </Option>
-                                        ))}
-                                    </>
-                                )}
-                            </Select>
+                                }
+                            />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
                                 <div className="flex items-center gap-4">
@@ -522,14 +520,16 @@ export default function MedicineEditPage() {
                                         type="number"
                                         label={t('medicines.unitsLeft')}
                                         value={data.package.tabletsPerStrip || 0}
-                                        onChange={(e) =>
+                                        onChange={(event) =>
                                             setData(
                                                 (prev) =>
                                                     prev && {
                                                         ...prev,
                                                         package: {
                                                             ...prev.package,
-                                                            tabletsPerStrip: Number(e.target.value),
+                                                            tabletsPerStrip: Number(
+                                                                event.target.value,
+                                                            ),
                                                         },
                                                     },
                                             )
@@ -544,14 +544,16 @@ export default function MedicineEditPage() {
                                         type="number"
                                         label={t('medicines.unitsPerStrip')}
                                         value={data.package.stripsPerBox || 1}
-                                        onChange={(e) =>
+                                        onChange={(event) =>
                                             setData(
                                                 (prev) =>
                                                     prev && {
                                                         ...prev,
                                                         package: {
                                                             ...prev.package,
-                                                            stripsPerBox: Number(e.target.value),
+                                                            stripsPerBox: Number(
+                                                                event.target.value,
+                                                            ),
                                                         },
                                                     },
                                             )
@@ -577,50 +579,47 @@ export default function MedicineEditPage() {
                             variant="100"
                             className="p-6 space-y-6 border-l-4 border-emerald-500/40">
                             <Select
-                                label={t('medicines.storageProtocol')}
                                 value=""
-                                onChange={(e) => {
-                                    const val = e.target.value as StorageCondition;
-                                    if (val && !data.storageConditions.includes(val))
+                                options={[
+                                    { value: '', label: t('medicines.addCondition') },
+                                    ...Object.values(StorageCondition).map((condition) => ({
+                                        value: condition,
+                                        label: t(`medicines.enums.StorageCondition.${condition}`),
+                                    })),
+                                ]}
+                                label={t('medicines.storageProtocol')}
+                                onChange={(event) => {
+                                    const value = event.target.value as StorageCondition;
+                                    if (value && !data.storageConditions.includes(value))
                                         setData(
-                                            (p) =>
-                                                p && {
-                                                    ...p,
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
                                                     storageConditions: [
-                                                        ...p.storageConditions,
-                                                        val,
+                                                        ...prev.storageConditions,
+                                                        value,
                                                     ],
                                                 },
                                         );
-                                }}>
-                                {(Option) => (
-                                    <>
-                                        <Option value="">{t('medicines.addCondition')}</Option>
-                                        {Object.values(StorageCondition).map((sc) => (
-                                            <Option key={sc} value={sc}>
-                                                {sc.replace('_', ' ')}
-                                            </Option>
-                                        ))}
-                                    </>
-                                )}
-                            </Select>
+                                }}
+                            />
 
                             <div className="flex flex-wrap gap-2">
-                                {data.storageConditions.map((cond) => (
+                                {data.storageConditions.map((condition) => (
                                     <div
-                                        key={cond}
+                                        key={condition}
                                         className="px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 border border-emerald-500/20">
-                                        {cond.replace('_', ' ')}
+                                        {t(`medicines.enums.StorageCondition.${condition}`)}
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 setData(
-                                                    (p) =>
-                                                        p && {
-                                                            ...p,
+                                                    (prev) =>
+                                                        prev && {
+                                                            ...prev,
                                                             storageConditions:
-                                                                p.storageConditions.filter(
-                                                                    (c) => c !== cond,
+                                                                prev.storageConditions.filter(
+                                                                    (item) => item !== condition,
                                                                 ),
                                                         },
                                                 )
@@ -640,11 +639,11 @@ export default function MedicineEditPage() {
                                         type="button"
                                         onClick={() =>
                                             setData(
-                                                (p) =>
-                                                    p && {
-                                                        ...p,
+                                                (prev) =>
+                                                    prev && {
+                                                        ...prev,
                                                         warnings: [
-                                                            ...p.warnings,
+                                                            ...prev.warnings,
                                                             {
                                                                 description: '',
                                                                 severity: 'warning' as any,
@@ -659,24 +658,25 @@ export default function MedicineEditPage() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    {data.warnings.map((w, idx) => (
+                                    {data.warnings.map((warning, idx) => (
                                         <div key={idx} className="flex gap-4 items-end">
                                             <div className="flex-1">
                                                 <Input
                                                     placeholder={t('medicines.warningPlaceholder')}
-                                                    value={w.description}
-                                                    onChange={(e) =>
+                                                    value={warning.description}
+                                                    onChange={(event) =>
                                                         setData(
-                                                            (p) =>
-                                                                p && {
-                                                                    ...p,
-                                                                    warnings: p.warnings.map(
-                                                                        (item, i) =>
-                                                                            i === idx
+                                                            (prev) =>
+                                                                prev && {
+                                                                    ...prev,
+                                                                    warnings: prev.warnings.map(
+                                                                        (item, index) =>
+                                                                            index === idx
                                                                                 ? {
                                                                                       ...item,
                                                                                       description:
-                                                                                          e.target
+                                                                                          event
+                                                                                              .target
                                                                                               .value,
                                                                                   }
                                                                                 : item,
@@ -690,11 +690,11 @@ export default function MedicineEditPage() {
                                                 type="button"
                                                 onClick={() =>
                                                     setData(
-                                                        (p) =>
-                                                            p && {
-                                                                ...p,
-                                                                warnings: p.warnings.filter(
-                                                                    (_, i) => i !== idx,
+                                                        (prev) =>
+                                                            prev && {
+                                                                ...prev,
+                                                                warnings: prev.warnings.filter(
+                                                                    (_, index) => index !== idx,
                                                                 ),
                                                             },
                                                     )
@@ -722,7 +722,9 @@ export default function MedicineEditPage() {
                         </div>
                         <button
                             type="button"
-                            onClick={() => setData((p) => p && { ...p, isActive: !p.isActive })}
+                            onClick={() =>
+                                setData((prev) => prev && { ...prev, isActive: !prev.isActive })
+                            }
                             className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                                 data.isActive
                                     ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
