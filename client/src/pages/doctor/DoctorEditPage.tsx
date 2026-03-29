@@ -10,8 +10,8 @@ import {
 } from 'react-icons/fa6';
 import { useMemo } from 'react';
 import { doctorAPI } from '../../services/api';
-import type { Doctor } from '../../types/doctor';
 import { useTranslation } from 'react-i18next';
+import type { Doctor } from '../../types/doctor';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';

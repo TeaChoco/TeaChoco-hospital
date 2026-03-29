@@ -1,54 +1,3 @@
-<<<<<<< Updated upstream
-#-Path: "TeaChoco-Hospital/docker-compose.yml"
-version: '3.8'
-
-services:
-  # React Vite Client
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    container_name: teachoco-hospital-client
-    ports:
-      - "5173:5173"
-    environment:
-      CHOKIDAR_USEPOLLING: true
-      WATCHPACK_POLLING: true
-      VITE_API_URL: http://127.0.0.1:3000
-    volumes:
-      - ./client:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - server
-    networks:
-      - teachoco-hospital-network
-
-  # Nestjs API Server
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    container_name: teachoco-hospital-server
-    volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - 3000:3000
-    env_file:
-      - ./server/.env
-    environment:
-      SERVER_HOST: 0.0.0.0
-      WATCHPACK_POLLING: "true"
-      CHOKIDAR_USEPOLLING: "true"
-      CHOKIDAR_INTERVAL: 1000
-    networks:
-      - teachoco-hospital-network
-    command: pnpm start:dev
-
-networks:
-  teachoco-hospital-network:
-    driver: bridge
-=======
 #-Path: "TeaChoco-Hospital/docker-compose.yml"
 version: '3.8'
 
@@ -98,4 +47,3 @@ volumes:
 networks:
     teachoco-hospital-network:
         driver: bridge
->>>>>>> Stashed changes
