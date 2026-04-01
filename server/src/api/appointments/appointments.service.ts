@@ -57,7 +57,13 @@ export class AppointmentsService {
 
     async findOne(auth: Auth, id: string): Promise<ResponseAppointmentDto | null> {
         const appointment = await this.appointmentModel.findById(id);
+        if (appointment && auth?.allows.some((allows) => allows.appointments?.read))
+            return this.apiService.response(appointment.toObject());
         return this.apiService.findOne(auth, appointment);
+    }
+
+    async response(appointment: Appointment): Promise<ResponseAppointmentDto> {
+        return this.apiService.response(appointment);
     }
 
     async create(auth: Auth, data: CreateAppointmentDto) {

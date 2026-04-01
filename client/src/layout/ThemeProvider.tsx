@@ -1,10 +1,9 @@
 //-Path: "TeaChoco-Hospital/client/src/layout/ThemeProvider.tsx"
 import { useEffect } from 'react';
-import { useAtomValue } from 'jotai';
-import { darkModeAtom } from '../context/themeAtom';
+import { useTheme } from '../hooks/useTheme';
 
 export default function ThemeModeProvider({ children }: { children: React.ReactNode }) {
-    const isDark = useAtomValue(darkModeAtom);
+    const { isDark } = useTheme();
 
     useEffect(() => {
         const root = document.documentElement;

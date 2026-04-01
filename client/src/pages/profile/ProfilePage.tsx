@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import Paper from '../../components/custom/Paper';
-import { useMedicines } from '../../context/medicinesAtom';
-import { useAppointments } from '../../context/appointmentsAtom';
+import { useMedicines } from '../../store/useMedicineStore';
+import { useAppointments } from '../../store/useAppointmentStore';
 import { FaUser, FaIdCard, FaQrcode, FaEnvelope, FaCalendarCheck } from 'react-icons/fa';
 
 export default function ProfilePage() {

@@ -16,18 +16,6 @@ import {
     FaHourglassHalf,
     FaCircleExclamation,
 } from 'react-icons/fa6';
-import { useMemo, useState } from 'react';
-import Input from '../../components/custom/Input';
-import Paper from '../../components/custom/Paper';
-import Select from '../../components/custom/Select';
-import Switch from '../../components/custom/Switch';
-import { useTranslation } from 'react-i18next';
-import { appointmentAPI } from '../../services/api';
-import { useDoctors } from '../../context/doctorsAtom';
-import { useHospitals } from '../../context/hospitalsAtom';
-import { Title, type OutApiData } from '../../types/types';
-import EditLayout from '../../components/layout/EditLayout';
-import { useAppointments } from '../../context/appointmentsAtom';
 import {
     PatientType,
     UrgencyLevel,
@@ -37,6 +25,18 @@ import {
     AppointmentStatus,
     AppointmentLocation,
 } from '../../types/appointment';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import Input from '../../components/custom/Input';
+import Paper from '../../components/custom/Paper';
+import Select from '../../components/custom/Select';
+import Switch from '../../components/custom/Switch';
+import { appointmentAPI } from '../../services/api';
+import { useDoctors } from '../../store/useDoctorStore';
+import { Title, type OutApiData } from '../../types/types';
+import EditLayout from '../../components/layout/EditLayout';
+import { useHospitals } from '../../store/useHospitalStore';
+import { useAppointments } from '../../store/useAppointmentStore';
 
 export default function AppointmentEditPage() {
     const { t } = useTranslation();

@@ -1,29 +1,26 @@
 //-Path: "TeaChoco-Hospital/client/src/hooks/useAuth.ts"
-import { useAtom } from 'jotai';
 import type { AxiosError } from 'axios';
-import { useEffect, useMemo } from 'react';
 import { authAPI } from '../services/auth';
-import { useDoctors } from '../context/doctorsAtom';
-import { useHospitals } from '../context/hospitalsAtom';
-import { useMedicines } from '../context/medicinesAtom';
-import { useAppointments } from '../context/appointmentsAtom';
-import { userAtom, loadingUserAtom, errorUserAtom } from '../context/userAtom';
+import { useEffect, useMemo, useCallback } from 'react';
+import { useUserStore } from '../store/useUserStore';
+import { useDoctorStore } from '../store/useDoctorStore';
+import { useHospitalStore } from '../store/useHospitalStore';
+import { useMedicineStore } from '../store/useMedicineStore';
+import { useAppointmentStore } from '../store/useAppointmentStore';
 
 export function useAuth() {
-    const { resetDoctors } = useDoctors();
-    const [user, setUser] = useAtom(userAtom);
-    const { resetHospitals } = useHospitals();
-    const { resetMedicines } = useMedicines();
-    const { resetAppointments } = useAppointments();
-    const [error, setError] = useAtom(errorUserAtom);
-    const [loading, setLoading] = useAtom(loadingUserAtom);
+    const { resetDoctors } = useDoctorStore();
+    const { resetHospitals } = useHospitalStore();
+    const { resetMedicines } = useMedicineStore();
+    const { resetAppointments } = useAppointmentStore();
+    const { user, error, loading, setUser, setError, setLoading } = useUserStore();
     const isAuthenticated = user !== null && user !== undefined;
 
-    const fetchAuth = async () => {
+    const fetchAuth = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await authAPI.auth();
-            setUser(res.data);
+            const response = await authAPI.auth();
+            setUser(response.data);
         } catch (error) {
             if ((error as AxiosError).status === 401) setUser(null);
             else {
@@ -33,13 +30,13 @@ export function useAuth() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [setUser, setError, setLoading]);
 
     useEffect(() => {
         if (user === undefined) fetchAuth();
-    }, [user]);
+    }, [user, fetchAuth]);
 
-    const signout = async () => {
+    const signout = useCallback(async () => {
         setLoading(true);
         await authAPI.signout();
         setLoading(false);
@@ -48,7 +45,7 @@ export function useAuth() {
         resetHospitals();
         resetMedicines();
         resetDoctors();
-    };
+    }, [setUser, setLoading, resetDoctors, resetHospitals, resetMedicines, resetAppointments]);
 
     return useMemo(
         () => ({
@@ -60,6 +57,7 @@ export function useAuth() {
             setLoading,
             isAuthenticated,
         }),
-        [user, error, loading, isAuthenticated],
+        [user, error, loading, signout, setError, setLoading, isAuthenticated],
     );
 }
+

@@ -1,9 +1,10 @@
 // -Path: "TeaChoco-Hospital/client/src/services/img.ts"
 import serverRest from './axios';
+import type { ImgApi } from '../types/types';
 
 export const imgAPI = {
     findOne: (id: string) => serverRest.get(`/api/img/${id}`),
-    findAll: () => serverRest.get('/api/img'),
+    findAll: () => serverRest.get<ImgApi[]>('/api/img'),
     create: (file: File) => {
         const formData = new FormData();
         formData.append('file', file);

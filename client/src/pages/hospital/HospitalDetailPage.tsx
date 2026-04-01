@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
 import Activity from '../../components/custom/Activity';
-import { useHospitals } from '../../context/hospitalsAtom';
+import { useHospitals } from '../../store/useHospitalStore';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaPhone, FaGlobe, FaClock, FaHistory, FaHospital, FaMapMarkerAlt } from 'react-icons/fa';
 

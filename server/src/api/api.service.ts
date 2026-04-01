@@ -1,8 +1,14 @@
 //- Path: "TeaChoco-Hospital/server/src/api/api.service.ts"
+import {
+    Scope,
+    Logger,
+    Injectable,
+    BadRequestException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { Document } from 'mongoose';
 import { Auth } from '../types/auth';
 import { ApiMetaDto, ApiMetaSchema, ApiOutMetaSchema } from '../types/dto';
-import { BadRequestException, Injectable, UnauthorizedException, Scope } from '@nestjs/common';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class ApiService<
@@ -12,6 +18,7 @@ export class ApiService<
     DataResponse extends DataCreate,
     DataUpdate extends Partial<ApiMetaDto>,
 > {
+    private readonly logger = new Logger(ApiService.name);
     public response: (data: DataSchema) => Promise<DataResponse> = async (data) =>
         ({ ...data }) as unknown as DataResponse;
     constructor() {}
@@ -81,12 +88,16 @@ export class ApiService<
         getNewData: (data: DataUpdate) => Partial<ApiOutMetaSchema<DataSchema>>,
     ): Promise<DataResponse> {
         if (auth === null) throw new UnauthorizedException('Unauthorized');
-        if (
-            auth.user_id !== data?.user_id ||
-            (update.user_id && auth.user_id !== update.user_id) ||
-            (update.updatedBy && auth.user_id !== update.updatedBy)
-        )
-            throw new BadRequestException('Unauthorized');
+        this.logger.log({
+            user_id: auth.user_id,
+            data,
+            update,
+        });
+        if (auth.user_id !== data?.user_id) throw new BadRequestException('User ID is not match');
+        if (auth.user_id !== update.createdBy)
+            throw new BadRequestException('Created By is not match');
+        if (auth.user_id !== update.updatedBy)
+            throw new BadRequestException('Updated By is not match');
         const newData = getNewData(update);
         const updatedData = {
             updatedBy: auth.user_id,

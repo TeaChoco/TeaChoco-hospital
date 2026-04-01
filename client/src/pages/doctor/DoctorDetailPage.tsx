@@ -3,8 +3,8 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
-import { useDoctors } from '../../context/doctorsAtom';
-import { useHospitals } from '../../context/hospitalsAtom';
+import { useDoctors } from '../../store/useDoctorStore';
+import { useHospitals } from '../../store/useHospitalStore';
 import DetailLayout from '../../components/layout/DetailLayout';
 import { FaPhone, FaClock, FaHistory, FaUserMd, FaHospital, FaChevronRight } from 'react-icons/fa';
 

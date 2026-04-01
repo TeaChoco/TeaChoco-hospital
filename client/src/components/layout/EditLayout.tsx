@@ -1,19 +1,19 @@
 // -Path: "TeaChoco-Hospital/client/src/components/layout/EditLayout.tsx"
-import { useAtom } from 'jotai';
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
 import Loading from '../custom/Loading';
 import { Obj } from '@teachoco-dev/cli';
 import { useAuth } from '../../hooks/useAuth';
 import { useSwal } from '../../hooks/useSwal';
+import type { Allows } from '../../types/auth';
 import { useTranslation } from 'react-i18next';
 import type { ApiData } from '../../types/types';
 import { useEffect, useMemo, useState } from 'react';
 import type { OutApiData, Title } from '../../types/types';
-import { detailLayoutAtom } from '../../context/layoutAtom';
+import { useLayoutStore } from '../../store/useLayoutStore';
 import { FaTrash, FaCode, FaXmark, FaArrowLeft, FaCircleExclamation } from 'react-icons/fa6';
 import { Link, Navigate, useLocation, useNavigate, useParams, useBlocker } from 'react-router-dom';
-import type { Allows } from '../../types/auth';
+import { FiActivity } from 'react-icons/fi';
 
 /**
  * EditLayout component to provide a consistent layout for editing or creating data.
@@ -44,17 +44,17 @@ export default function EditLayout<Data extends ApiData<object>>({
         setData: React.Dispatch<React.SetStateAction<OutApiData<Data> | undefined>>,
     ) => React.ReactNode;
 }) {
-    const { id } = useParams();
     const { fire } = useSwal();
     const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
+    const { id, uid } = useParams();
     const [isSaving, setIsSaving] = useState(false);
     const { user, loading: authLoading } = useAuth();
     const [dataLoading, setDataLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [initialData, setInitialData] = useState<string>('');
-    const [detailLayout, setDetailLayout] = useAtom(detailLayoutAtom);
+    const { detailLayout, setDetailLayout } = useLayoutStore();
 
     const findData = () => {
         if (!id) return;
@@ -93,8 +93,16 @@ export default function EditLayout<Data extends ApiData<object>>({
 
     const toBack = useMemo(() => {
         const base = title.toLowerCase();
-        return id === 'new' ? `/${base}` : `/${base}/${id}`;
-    }, [id, title]);
+        if (location.pathname.startsWith('/admin/data')) return `/admin/data/${uid}/${base}`;
+        return `/${base}${id === 'new' ? '' : `/${id}`}`;
+    }, [id, title, location.pathname]);
+
+    const toDetail = useMemo(() => {
+        const base = title.toLowerCase();
+        if (location.pathname.startsWith('/admin/data'))
+            return `/admin/data/${uid}/${base}${id === 'new' ? '' : `/${id}`}`;
+        return `/${base}${id === 'new' ? '' : `/${id}`}`;
+    }, [id, title, location.pathname]);
 
     if (!canEdit && !authLoading) return <Navigate to={`/${location.pathname.split('/')[1]}`} />;
 
@@ -147,7 +155,11 @@ export default function EditLayout<Data extends ApiData<object>>({
                     const callback = await onRemove(id);
                     if (callback !== false) {
                         setInitialData('');
-                        navigate(`/${title.toLowerCase()}`);
+                        navigate(
+                            location.pathname.startsWith('/admin/data')
+                                ? '/admin/data'
+                                : `/${title.toLowerCase()}`,
+                        );
                     }
                 } catch (error) {
                     console.error(error);
@@ -159,14 +171,14 @@ export default function EditLayout<Data extends ApiData<object>>({
 
     const handleSave = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (id && data) {
+        if (id && data && user) {
             try {
                 const save = {
                     ...data,
                     _id: id,
-                    user_id: user?.user_id,
-                    createdBy: user?.user_id,
-                    updatedBy: user?.user_id,
+                    user_id: user.user_id,
+                    createdBy: user.user_id,
+                    updatedBy: user.user_id,
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                     __v: 0,
@@ -186,14 +198,14 @@ export default function EditLayout<Data extends ApiData<object>>({
                     Array.isArray(serverError)
                         ? serverError.join(', ')
                         : typeof serverError === 'string'
-                        ? serverError
-                        : error instanceof Error
-                        ? error.message
-                        : typeof error === 'string'
-                        ? error
-                        : typeof error === 'object'
-                        ? JSON.stringify(error)
-                        : 'Something went wrong',
+                          ? serverError
+                          : error instanceof Error
+                            ? error.message
+                            : typeof error === 'string'
+                              ? error
+                              : typeof error === 'object'
+                                ? JSON.stringify(error)
+                                : 'Something went wrong',
                 );
             }
         }
@@ -219,12 +231,12 @@ export default function EditLayout<Data extends ApiData<object>>({
                             })}
                         </p>
                     </div>
-                    <button
-                        onClick={() => navigate(-1)}
+                    <Link
+                        to={toBack}
                         className="btn btn-primary w-full flex items-center justify-center gap-2 group">
                         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                         {t('editLayout.goBack')}
-                    </button>
+                    </Link>
                 </Paper>
             </div>
         );
@@ -238,15 +250,18 @@ export default function EditLayout<Data extends ApiData<object>>({
                 <h1 className="text-2xl font-bold text-text-light dark:text-text-dark">
                     {t('editLayout.edit')} {t(`navbar.${title.toLowerCase()}`)}
                 </h1>
-                <button
-                    onClick={() =>
-                        setDetailLayout((prev) => ({ ...prev, editJson: !prev.editJson }))
-                    }
-                    className={`absolute right-0 btn-icon-dark ${
-                        detailLayout.editJson ? 'btn-primary' : ''
-                    }`}>
-                    <FaCode />
-                </button>
+                <div className="absolute right-0 flex items-center gap-2">
+                    <Link to={toDetail} className={`btn-icon-dark`}>
+                        <FiActivity size={15} />
+                    </Link>
+                    <button
+                        onClick={() =>
+                            setDetailLayout({ ...detailLayout, editJson: !detailLayout.editJson })
+                        }
+                        className={`btn-icon-dark ${detailLayout.editJson ? 'btn-primary' : ''}`}>
+                        <FaCode />
+                    </button>
+                </div>
             </div>
             <form onSubmit={handleSave} className="space-y-6">
                 {error && (

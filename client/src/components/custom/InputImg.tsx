@@ -3,8 +3,8 @@ import Modal from './Modal';
 import Input from './Input';
 import env from '../../configs/env';
 import { imgAPI } from '../../services/img';
-import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaImage, FaCloudUploadAlt, FaCheck, FaSpinner, FaTrash } from 'react-icons/fa';
 
 export default function InputImg({
@@ -22,19 +22,23 @@ export default function InputImg({
 }) {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
-    const [dbImages, setDbImages] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
+    const [dbImages, setDbImages] = useState<string[]>([]);
+    const [isLoadingGallery, setIsLoadingGallery] = useState(false);
     const [activeTab, setActiveTab] = useState<'upload' | 'gallery'>('gallery');
 
     useEffect(() => {
         if (isOpen) {
             const fetchImages = async () => {
+                setIsLoadingGallery(true);
                 try {
                     const res = await imgAPI.findAll();
-                    const urls = res.data.map((img: any) => `${env.apiUrl}/api/img/${img._id}`);
+                    const urls = res.data.map((img) => `${env.apiUrl}/api/img/${img._id}`);
                     setDbImages(urls);
                 } catch (error) {
                     console.error('Failed to fetch images:', error);
+                } finally {
+                    setIsLoadingGallery(false);
                 }
             };
             fetchImages();
@@ -200,36 +204,51 @@ export default function InputImg({
                                     </>
                                 )}
                             </div>
+                        ) : isLoadingGallery ? (
+                            <div className="flex flex-col items-center justify-center py-20 gap-4">
+                                <FaSpinner className="text-4xl text-primary animate-spin" />
+                                <p className="font-bold text-text-muted-light dark:text-text-muted-dark">
+                                    {t('common.loadingGallery', 'Loading Gallery...')}
+                                </p>
+                            </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                {dbImages.map((img, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => handleSelectImage(img)}
-                                        className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                                            value === img
-                                                ? 'border-primary ring-2 ring-primary/30'
-                                                : 'border-border-light/10 dark:border-border-dark/10 hover:border-primary/50'
-                                        }`}>
-                                        <img
-                                            src={img}
-                                            alt={`Gallery ${index}`}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
-                                        <div
-                                            className={`absolute inset-0 transition-colors flex items-center justify-center ${
+                                {dbImages.length > 0 ? (
+                                    dbImages.map((img, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleSelectImage(img)}
+                                            className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                                                 value === img
-                                                    ? 'bg-primary/20'
-                                                    : 'bg-black/0 group-hover:bg-black/10'
+                                                    ? 'border-primary ring-2 ring-primary/30'
+                                                    : 'border-border-light/10 dark:border-border-dark/10 hover:border-primary/50'
                                             }`}>
-                                            {value === img && (
-                                                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform scale-100 transition-transform">
-                                                    <FaCheck />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </button>
-                                ))}
+                                            <img
+                                                src={img}
+                                                alt={`Gallery ${index}`}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                            />
+                                            <div
+                                                className={`absolute inset-0 transition-colors flex items-center justify-center ${
+                                                    value === img
+                                                        ? 'bg-primary/20'
+                                                        : 'bg-black/0 group-hover:bg-black/10'
+                                                }`}>
+                                                {value === img && (
+                                                    <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform scale-100 transition-transform">
+                                                        <FaCheck />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <div className="col-span-full py-20 text-center">
+                                        <p className="text-text-muted-light dark:text-text-muted-dark">
+                                            {t('common.noImages', 'No images found')}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

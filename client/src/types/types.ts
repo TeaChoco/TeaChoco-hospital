@@ -22,3 +22,9 @@ export type ApiMeta = {
 export type ApiData<Data extends object> = Data & ApiMeta;
 
 export type OutApiData<DataApi extends ApiData<object>> = Omit<DataApi, keyof ApiMeta>;
+
+export type ImgApi = ApiMeta & {
+    name: string;
+    mimetype: string;
+    data: BufferSource;
+};

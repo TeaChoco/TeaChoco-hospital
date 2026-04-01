@@ -16,10 +16,11 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { Auth } from '../../types/auth';
-import { ImgService } from './img.service';
 import { ApiTags } from '@nestjs/swagger';
+import { ImgService } from './img.service';
 import type { Request, Response } from 'express';
 import { UpdateImgDto } from './dto/update-img.dto';
+import { ResponseImgDto } from './dto/response-img.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserAuthGuard } from '../../user/auth/guard/user-auth.guard';
 
@@ -41,7 +42,7 @@ export class ImgController {
 
     @Get()
     @UseGuards(UserAuthGuard)
-    async findAll(@Req() req: Request) {
+    async findAll(@Req() req: Request): Promise<ResponseImgDto[]> {
         const user = req.user as Auth;
         return this.imgService.findAll(user);
     }

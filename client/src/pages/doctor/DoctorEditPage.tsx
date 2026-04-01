@@ -15,15 +15,15 @@ import type { Doctor } from '../../types/doctor';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
-import { useDoctors } from '../../context/doctorsAtom';
-import { useHospitals } from '../../context/hospitalsAtom';
+import { useDoctors } from '../../store/useDoctorStore';
+import { useHospitals } from '../../store/useHospitalStore';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
 
 export default function DoctorEditPage() {
     const { t } = useTranslation();
-    const { hospitals, resetHospitals } = useHospitals();
     const { doctors, resetDoctors } = useDoctors();
+    const { hospitals, resetHospitals } = useHospitals();
 
     const newData: OutApiData<Doctor> = useMemo(
         () => ({

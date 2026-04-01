@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/medicines.service.ts"
 import { Model } from 'mongoose';
 import { Auth } from '../../types/auth';
-import { ApiService } from '../api.service';
 import { nameDB } from '../../hooks/mongodb';
+import { ApiService } from '../api.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
@@ -34,8 +34,12 @@ export class MedicinesService {
     async findOne(auth: Auth, id: string): Promise<ResponseMedicineDto | null> {
         const medicine = await this.medicineModel.findById(id);
         if (medicine && auth?.allows.some((allows) => allows.medicines?.read))
-            return this.apiService.response(medicine);
+            return this.apiService.response(medicine.toObject());
         return this.apiService.findOne(auth, medicine);
+    }
+
+    async response(medicine: Medicine): Promise<ResponseMedicineDto> {
+        return this.apiService.response(medicine);
     }
 
     async create(auth: Auth, data: CreateMedicineDto) {
@@ -95,6 +99,7 @@ export class MedicinesService {
 
     async update(auth: Auth, id: string, data: UpdateMedicineDto) {
         const medicine = await this.findOne(auth, id);
+        this.logger.log(data);
         const newData = await this.apiService.update(auth, medicine, data, (data) => ({
             name: data.name,
             genericName: data.genericName,

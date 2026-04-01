@@ -1,12 +1,10 @@
 //-Path: "TeaChoco-Hospital/client/src/lib/socket-manager.ts"
 import env from '../configs/env';
-import { getDefaultStore } from 'jotai';
-import { userAtom } from '../context/userAtom';
 import { io, type Socket } from 'socket.io-client';
+import { useUserStore } from '../store/useUserStore';
 
 class SocketManager {
     private URL: string = env.apiUrl || 'http://localhost:3000';
-    private store = getDefaultStore();
     private socket: Socket | null = null;
     private listeners: Map<string, Set<Function>> = new Map();
     private static instance: SocketManager;
@@ -21,7 +19,7 @@ class SocketManager {
     }
 
     private getUserState() {
-        return this.store.get(userAtom);
+        return useUserStore.getState().user;
     }
 
     connect() {
@@ -53,9 +51,9 @@ class SocketManager {
         if (this.socket) {
             this.socket.disconnect();
             this.socket = null;
-            this.listeners.clear();
         }
     }
+
 
     private setupEventForwarding() {
         if (!this.socket) return;
@@ -120,8 +118,8 @@ class SocketManager {
 
     // Reconnect เมื่อ user เปลี่ยน
     subscribeToUserChanges() {
-        return this.store.sub(userAtom, () => {
-            const user = this.getUserState();
+        return useUserStore.subscribe((state) => {
+            const user = state.user;
             if (user !== undefined) {
                 // ถ้ามี socket อยู่แล้วแต่ user เปลี่ยน (เช่น Login/Logout) ให้เลิกเชื่อมต่อแล้วเริ่มใหม่
                 if (this.socket) this.disconnect();

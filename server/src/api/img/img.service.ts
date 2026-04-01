@@ -41,12 +41,12 @@ export class ImgService {
         return await image.save();
     }
 
-    async findAll(auth: Auth) {
+    async findAll(auth: Auth): Promise<ResponseImgDto[]> {
         const images = await this.imageModel.find();
         return this.apiService.findAll(auth, images);
     }
 
-    async findOne(auth: Auth, id: string) {
+    async findOne(auth: Auth, id: string): Promise<ResponseImgDto | null> {
         const image = await this.imageModel.findById(id);
         return this.apiService.findOne(auth, image);
     }

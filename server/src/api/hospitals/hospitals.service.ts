@@ -34,6 +34,8 @@ export class HospitalsService {
 
     async findOne(auth: Auth, id: string): Promise<ResponseHospitalDto | null> {
         const hospital = await this.hospitalModel.findById(id);
+        if (hospital && auth?.allows.some((allows) => allows.hospitals?.read))
+            return this.apiService.response(hospital.toObject());
         return this.apiService.findOne(auth, hospital);
     }
 

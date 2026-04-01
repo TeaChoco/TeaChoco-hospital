@@ -1,5 +1,0 @@
-// -Path: "TeaChoco-Hospital/client/src/context/socketAtom.ts"
-import { atom } from 'jotai';
-import type { Socket } from 'socket.io-client';
-
-export const socketAtom = atom<Socket | undefined>(undefined);

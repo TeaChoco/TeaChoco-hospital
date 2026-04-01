@@ -14,7 +14,7 @@ import {
 import moment from 'moment';
 import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
-import { useMedicines } from '../../context/medicinesAtom';
+import { useMedicines } from '../../store/useMedicineStore';
 import DetailLayout from '../../components/layout/DetailLayout';
 
 export default function MedicineDetailPage() {

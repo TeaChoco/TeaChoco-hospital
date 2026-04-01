@@ -2,7 +2,7 @@
 import { Resource } from '../../types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useDoctors } from '../../context/doctorsAtom';
+import { useDoctors } from '../../store/useDoctorStore';
 import ListLayout from '../../components/layout/ListLayout';
 import { DoctorCard } from '../../components/content/DoctorCard';
 

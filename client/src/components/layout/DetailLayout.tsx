@@ -1,14 +1,13 @@
 //-Path: "TeaChoco-Hospital/client/src/components/layout/DetailLayout.tsx"
-import { useAtom } from 'jotai';
 import { useMemo } from 'react';
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
 import Loading from '../custom/Loading';
-import { useTranslation } from 'react-i18next';
 import type { Title } from '../../types/types';
-import { detailLayoutAtom } from '../../context/layoutAtom';
+import { useTranslation } from 'react-i18next';
+import { useLayoutStore } from '../../store/useLayoutStore';
 import { FaArrowLeft, FaCode, FaPen } from 'react-icons/fa';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export default function DetailLayout<Data extends { _id: string }>({
     title,
@@ -21,8 +20,22 @@ export default function DetailLayout<Data extends { _id: string }>({
 }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>();
-    const [detailLayout, setDetailLayout] = useAtom(detailLayoutAtom);
+    const location = useLocation();
+    const { id, uid } = useParams();
+    const { detailLayout, setDetailLayout } = useLayoutStore();
+
+    const toBack = useMemo(() => {
+        const base = title.toLowerCase();
+        if (location.pathname.startsWith('/admin/data')) return `/admin/data/${uid}/${base}`;
+        return `/${base}${id === 'new' ? '' : `/${id}`}`;
+    }, [id, title, location.pathname]);
+
+    const editTo = useMemo(() => {
+        const base = title.toLowerCase();
+        if (location.pathname.startsWith('/admin/data'))
+            return `/admin/data/${uid}/${base}/edit/${id}`;
+        return `/${base}/edit/${id}`;
+    }, [id, title, location.pathname]);
 
     const data = useMemo(() => datas?.find((data) => data._id === id), [id, datas]);
 
@@ -40,17 +53,17 @@ export default function DetailLayout<Data extends { _id: string }>({
 
     return (
         <div className="relative">
-            <Link
-                to={`/${title.toLocaleLowerCase()}`}
-                className="btn-icon-dark absolute top-2 left-2 z-1">
+            <Link to={toBack} className="btn-icon-dark absolute top-2 left-2 z-1">
                 <FaArrowLeft />
             </Link>
             <div className="absolute top-2 right-2 flex gap-2 z-1">
-                <Link to={`/${title.toLocaleLowerCase()}/edit/${id}`} className="btn-icon-dark">
+                <Link to={editTo} className="btn-icon-dark">
                     <FaPen />
                 </Link>
                 <button
-                    onClick={() => setDetailLayout((prev) => ({ ...prev, isJson: !prev.isJson }))}
+                    onClick={() =>
+                        setDetailLayout({ ...detailLayout, isJson: !detailLayout.isJson })
+                    }
                     className={`btn-icon-dark ${detailLayout.isJson ? 'btn-primary' : ''}`}>
                     <FaCode />
                 </button>

@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/api/medicines/medicines.controller.ts"
+import { Auth } from '../../types/auth';
 import type { Request } from 'express';
 import { MedicinesService } from './medicines.service';
-import { Auth } from '../../types/auth';
 import { UpdateMedicineDto } from './dto/update-medicine.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MedicineResponseDto } from './dto/response-medicine.dto';
@@ -101,7 +101,7 @@ export class MedicinesController {
     })
     async update(@Req() req: Request, @Param('id') id: string, @Body() data: UpdateMedicineDto) {
         const user = req.user as Auth;
-        return this.medicinesService.update(user, id, data);
+        return await this.medicinesService.update(user, id, data);
     }
 
     @Delete(':id')

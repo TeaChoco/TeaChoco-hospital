@@ -29,11 +29,11 @@ import { medicineAPI } from '../../services/api';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
-import { useMedicines } from '../../context/medicinesAtom';
-import { useHospitals } from '../../context/hospitalsAtom';
+import InputImg from '../../components/custom/InputImg';
+import { useMedicines } from '../../store/useMedicineStore';
+import { useHospitals } from '../../store/useHospitalStore';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
-import InputImg from '../../components/custom/InputImg';
 
 export default function MedicineEditPage() {
     const { t } = useTranslation();
@@ -105,6 +105,8 @@ export default function MedicineEditPage() {
                 return true;
             }}
             onSave={async (data, id) => {
+                console.log(data);
+
                 if (id === 'new') await medicineAPI.create(data);
                 else await medicineAPI.update(id, data);
                 resetMedicines();
@@ -364,10 +366,14 @@ export default function MedicineEditPage() {
                                                     value={instruction.relation || ''}
                                                     options={[
                                                         { value: '', label: t('common.na') },
-                                                        ...Object.values(FoodRelation).map((fr) => ({
-                                                            value: fr,
-                                                            label: t(`medicines.enums.FoodRelation.${fr}`),
-                                                        })),
+                                                        ...Object.values(FoodRelation).map(
+                                                            (fr) => ({
+                                                                value: fr,
+                                                                label: t(
+                                                                    `medicines.enums.FoodRelation.${fr}`,
+                                                                ),
+                                                            }),
+                                                        ),
                                                     ]}
                                                     onChange={(event) =>
                                                         setData(

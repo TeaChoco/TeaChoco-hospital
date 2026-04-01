@@ -33,6 +33,8 @@ export class DoctorsService {
 
     async findOne(auth: Auth, id: string) {
         const doctor = await this.doctorModel.findById(id);
+        if (doctor && auth?.allows.some((allows) => allows.doctors?.read))
+            return this.apiService.response(doctor.toObject());
         return this.apiService.findOne(auth, doctor);
     }
 

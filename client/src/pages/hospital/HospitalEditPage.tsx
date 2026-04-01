@@ -7,8 +7,8 @@ import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import type { OutApiData } from '../../types/types';
 import type { Hospital } from '../../types/hospital';
-import { useHospitals } from '../../context/hospitalsAtom';
 import EditLayout from '../../components/layout/EditLayout';
+import { useHospitals } from '../../store/useHospitalStore';
 import { FaGlobe, FaPhone, FaHospital, FaMapLocationDot, FaBuildingShield } from 'react-icons/fa6';
 
 export default function HospitalEditPage() {

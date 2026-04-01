@@ -1,8 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/components/custom/Editor.tsx"
 import { useState } from 'react';
-import { useAtomValue } from 'jotai';
+import { useTheme } from '../../hooks/useTheme';
 import MonacoEditor from '@monaco-editor/react';
-import { darkModeAtom } from '../../context/themeAtom';
 import { FaTriangleExclamation, FaXmark } from 'react-icons/fa6';
 
 export default function Editor<Data>({
@@ -16,7 +15,7 @@ export default function Editor<Data>({
     setData?: (data: Data) => void;
     onError?: (error: Error) => void;
 }) {
-    const darkMode = useAtomValue(darkModeAtom);
+    const { isDark } = useTheme();
     const [syntaxError, setSyntaxError] = useState<string | null>(null);
 
     return (
@@ -24,7 +23,7 @@ export default function Editor<Data>({
             <MonacoEditor
                 height="100%"
                 defaultLanguage="json"
-                theme={darkMode ? 'vs-dark' : 'light'}
+                theme={isDark ? 'vs-dark' : 'light'}
                 value={JSON.stringify(data, null, 4)}
                 onChange={(value) => {
                     try {
@@ -47,7 +46,7 @@ export default function Editor<Data>({
                     padding: { top: 16, bottom: 16 },
                 }}
             />
-
+            // ...
             {/* Premium Syntax Error Indicator */}
             {syntaxError && (
                 <div className="absolute bottom-0 left-0 right-0 animate-in slide-in-from-bottom-full duration-300">

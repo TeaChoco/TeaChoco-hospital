@@ -13,7 +13,7 @@ import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
 import Activity from '../../components/custom/Activity';
 import DetailLayout from '../../components/layout/DetailLayout';
-import { useAppointments } from '../../context/appointmentsAtom';
+import { useAppointments } from '../../store/useAppointmentStore';
 
 export default function AppointmentDetailPage() {
     const { t } = useTranslation();
@@ -44,8 +44,8 @@ export default function AppointmentDetailPage() {
                                             appointment.urgency === 'emergency'
                                                 ? 'bg-red-500/10 text-red-600 border-red-500/20 shadow-red-500/5'
                                                 : appointment.urgency === 'urgent'
-                                                ? 'bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-amber-500/5'
-                                                : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 shadow-emerald-500/5'
+                                                  ? 'bg-amber-500/10 text-amber-600 border-amber-500/20 shadow-amber-500/5'
+                                                  : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 shadow-emerald-500/5'
                                         }`}>
                                         {appointment.urgency}
                                     </div>
@@ -54,8 +54,8 @@ export default function AppointmentDetailPage() {
                                             appointment.status === 'completed'
                                                 ? 'bg-blue-500/10 text-blue-600 border-blue-500/20 shadow-blue-500/5'
                                                 : appointment.status === 'cancelled'
-                                                ? 'bg-slate-500/10 text-slate-600 border-slate-500/20'
-                                                : 'bg-primary/10 text-primary border-primary/20 shadow-primary/5'
+                                                  ? 'bg-slate-500/10 text-slate-600 border-slate-500/20'
+                                                  : 'bg-primary/10 text-primary border-primary/20 shadow-primary/5'
                                         }`}>
                                         {appointment.status}
                                     </div>
@@ -322,8 +322,8 @@ export default function AppointmentDetailPage() {
                                                         symptom.severity === 'severe'
                                                             ? 'bg-red-100 text-red-600'
                                                             : symptom.severity === 'moderate'
-                                                            ? 'bg-amber-100 text-amber-600'
-                                                            : 'bg-blue-100 text-blue-600'
+                                                              ? 'bg-amber-100 text-amber-600'
+                                                              : 'bg-blue-100 text-blue-600'
                                                     }`}>
                                                     {symptom.severity}
                                                 </span>

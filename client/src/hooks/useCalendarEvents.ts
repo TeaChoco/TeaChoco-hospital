@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/hooks/useCalendarEvents.ts"
 import { useMemo } from 'react';
-import { useMedicines } from '../context/medicinesAtom';
-import { useAppointments } from '../context/appointmentsAtom';
+import { useMedicines } from '../store/useMedicineStore';
+import { useAppointments } from '../store/useAppointmentStore';
 import type { CalendarEvent } from '../components/calendar/Calendar';
 
 export type UseCalendarEvents = ReturnType<typeof useCalendarEvents>;

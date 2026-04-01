@@ -3,57 +3,52 @@ import { socketManager } from '../lib/socket-manager';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 export function useSocket() {
-    const [isConnected, setIsConnected] = useState(socketManager.isConnected());
     const socket = socketManager.getSocket();
+    const [isConnected, setIsConnected] = useState(socketManager.isConnected());
 
-    const stableCallbacks = useRef<{
-        [event: string]: Set<(...args: any[]) => void>;
-    }>({});
+    // เก็บ mapping จาก callback จริง -> callback ที่ถูก wrap (stableCallback)
+    const callbackRegistry = useRef<Map<string, Map<Function, Function>>>(new Map());
 
     const on = useCallback(<T>(event: string, callback: (data: T) => void) => {
         const stableCallback = (...args: any[]) => callback(args[0] as T);
 
-        if (!stableCallbacks.current[event]) stableCallbacks.current[event] = new Set();
+        if (!callbackRegistry.current.has(event)) callbackRegistry.current.set(event, new Map());
 
-        stableCallbacks.current[event].add(stableCallback);
-
+        callbackRegistry.current.get(event)!.set(callback, stableCallback);
         socketManager.addListener(event, stableCallback);
     }, []);
 
-    const off = useCallback((event: string, callback?: (...args: any[]) => void) => {
-        if (callback) {
-            socketManager.removeListener(event, callback);
+    const off = useCallback((event: string, callback?: Function) => {
+        const eventMap = callbackRegistry.current.get(event);
+        if (!eventMap) return;
 
-            // ลบออกจาก ref ด้วย
-            if (stableCallbacks.current[event]) stableCallbacks.current[event].delete(callback);
-        } else {
-            // ลบทั้งหมดของ event นี้
-            const callbacks = stableCallbacks.current[event];
-            if (callbacks) {
-                callbacks.forEach((cb) => socketManager.removeListener(event, cb));
-                delete stableCallbacks.current[event];
+        if (callback) {
+            const stableCallback = eventMap.get(callback);
+            if (stableCallback) {
+                socketManager.removeListener(event, stableCallback);
+                eventMap.delete(callback);
             }
+        } else {
+            eventMap.forEach((stableCallback) => socketManager.removeListener(event, stableCallback));
+            callbackRegistry.current.delete(event);
         }
     }, []);
 
-    const useEvent = (
-        event: string,
-        callback: (...args: any[]) => void,
-        deps: React.DependencyList = [],
-    ) => {
-        useEffect(() => {
-            on(event, callback);
-            return () => off(event, callback);
-        }, deps);
-    };
+    const useEvent = useCallback(
+        (event: string, callback: (...args: any[]) => void, deps: React.DependencyList = []) => {
+            useEffect(() => {
+                on(event, callback);
+                return () => off(event, callback);
+            }, [event, ...deps]);
+        },
+        [on, off],
+    );
 
     const emit = useCallback(<T>(event: string, data?: T) => socketManager.emit(event, data), []);
 
-    // Connect socket เมื่อ hook mount
     useEffect(() => {
         socketManager.connect();
 
-        // Subscribe to connection status changes
         const handleConnect = () => setIsConnected(true);
         const handleDisconnect = () => setIsConnected(false);
         const handleConnectError = (error: Error) => {
@@ -65,20 +60,17 @@ export function useSocket() {
         socketManager.addListener('disconnect', handleDisconnect);
         socketManager.addListener('connect_error', handleConnectError);
 
-        // Initial connection status
         setIsConnected(socketManager.isConnected());
 
         return () => {
-            // Cleanup only our listeners, not the socket connection
             socketManager.removeListener('connect', handleConnect);
             socketManager.removeListener('disconnect', handleDisconnect);
             socketManager.removeListener('connect_error', handleConnectError);
 
-            // Cleanup all event listeners ที่ hook นี้เพิ่ม
-            Object.entries(stableCallbacks.current).forEach(([event, callbacks]) =>
-                callbacks.forEach((callback) => socketManager.removeListener(event, callback)),
-            );
-            stableCallbacks.current = {};
+            callbackRegistry.current.forEach((eventMap, event) => {
+                eventMap.forEach((stableCallback) => socketManager.removeListener(event, stableCallback));
+            });
+            callbackRegistry.current.clear();
         };
     }, []);
 
@@ -92,3 +84,4 @@ export function useSocket() {
         id: socket?.id,
     };
 }
+
