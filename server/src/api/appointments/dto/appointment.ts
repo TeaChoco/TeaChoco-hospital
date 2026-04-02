@@ -724,4 +724,14 @@ export class MedicalCertificateDto {
         description: 'Attachment URL',
     })
     attachmentUrl?: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({
+        type: String,
+        required: false,
+        description: 'Image URL',
+        example: 'https://cdn.example.com/certs/123.jpg',
+    })
+    imgUrl?: string;
 }

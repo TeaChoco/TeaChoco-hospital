@@ -28,7 +28,18 @@
         "na": "N/A",
         "tba": "จะแจ้งให้ทราบภายหลัง",
         "add": "เพิ่ม",
-        "addNotePlaceholder": "เพิ่มบันทึก..."
+        "addNotePlaceholder": "เพิ่มบันทึก...",
+        "changeImage": "เปลี่ยนรูปภาพ",
+        "remove": "ลบออก",
+        "uploadOrSelect": "อัปโหลดหรือเลือกรูปภาพ",
+        "selectImage": "เลือกรูปภาพ",
+        "gallery": "คลังภาพ",
+        "uploadNew": "อัปโหลดใหม่",
+        "loadingGallery": "กำลังโหลดคลังภาพ...",
+        "noImages": "ไม่พบรูปภาพ",
+        "uploadingToDb": "กำลังอัปโหลดไปยังฐานข้อมูล...",
+        "clickToUpload": "คลิกเพื่ออัปโหลดหรือลากไฟล์มาวาง",
+        "uploadInfo": "รูปภาพใหม่จะถูกบันทึกลงฐานข้อมูลและถูกเลือกโดยอัตโนมัติ"
     },
     "navbar": {
         "appName": "TeaChoco Hospital",
@@ -272,39 +283,64 @@
         "certificateRecommendations": "คำแนะนำทางการแพทย์",
         "leaveStartDate": "เริ่มหยุดงาน/พักฟื้น",
         "leaveEndDate": "สิ้นสุดหยุดงาน/พักฟื้น",
+        "subTypePlaceholder": "เช่น ตรวจสุขภาพประจำปี",
+        "descriptionPlaceholder": "รายละเอียดเพิ่มเติมเกี่ยวกับการนัดหมาย",
+        "diagnosisPlaceholder": "ผลการวินิจฉัยทางคลินิกเบื้องต้น",
+        "certificateIdPlaceholder": "เช่น CERT-2024-001",
+        "recommendationsPlaceholder": "คำแนะนำในการพักผ่อนและการใช้ยา",
+        "attachmentUrl": "ลิงก์เอกสาร",
+        "attachmentPlaceholder": "URL ของไฟล์ใบรับรอง",
+        "certificateImage": "รูปภาพใบรับรองแพทย์",
+        "certificateImagePlaceholder": "อัปโหลดหรือเลือกรูปภาพใบรับรองแพทย์",
         "typeLabels": {
-            "CONSULTATION": "การให้คำปรึกษา",
-            "PROCEDURE": "หัตถการ",
-            "VACCINATION": "การฉีดวัคซีน",
-            "FOLLOW_UP": "การติดตามผล",
-            "EMERGENCY": "กรณีฉุกเฉิน",
-            "SCREENING": "การคัดกรอง"
+            "consultation": "การให้คำปรึกษา",
+            "follow_up": "การติดตามผล",
+            "specialist": "การตรวจโดยแพทย์เฉพาะทาง",
+            "emergency": "กรณีฉุกเฉิน",
+            "vaccination": "การฉีดวัคซีน",
+            "lab_test": "การตรวจห้องแล็บ",
+            "imaging": "การตรวจทางรังสีวิทยา",
+            "surgery": "การผ่าตัด",
+            "physical_therapy": "กายภาพบำบัด",
+            "dental": "ทันตกรรม",
+            "eye_exam": "การตรวจวัดสายตา",
+            "other": "อื่นๆ"
         },
         "statusLabels": {
-            "PENDING": "รอดำเนินการ",
-            "CONFIRMED": "ยืนยันแล้ว",
-            "IN_PROGRESS": "กำลังดำเนินการ",
-            "COMPLETED": "เสร็จสิ้น",
-            "CANCELLED": "ยกเลิกแล้ว",
-            "NO_SHOW": "ไม่มาตามนัด"
+            "pending": "รอดำเนินการ",
+            "confirmed": "ยืนยันแล้ว",
+            "scheduled": "จัดตารางเวลาแล้ว",
+            "checked_in": "เช็คอินแล้ว",
+            "in_progress": "กำลังดำเนินการ",
+            "completed": "เสร็จสิ้น",
+            "cancelled": "ยกเลิกแล้ว",
+            "no_show": "ไม่มาตามนัด",
+            "rescheduled": "เลื่อนนัดแล้ว"
         },
         "patientTypeLabels": {
-            "NEW": "ผู้ป่วยใหม่",
-            "RETURNING": "ผู้ป่วยเก่า",
-            "EMERGENCY": "ผู้ป่วยฉุกเฉิน"
+            "new": "ผู้ป่วยใหม่",
+            "returning": "ผู้ป่วยเก่า",
+            "referral": "ผู้ป่วยส่งต่อ",
+            "emergency": "ผู้ป่วยฉุกเฉิน"
         },
         "urgencyLevelLabels": {
-            "ROUTINE": "ปกติ",
-            "URGENT": "ด่วน",
-            "EMERGENCY": "ฉุกเฉิน"
+            "routine": "ปกติ",
+            "urgent": "ด่วน",
+            "emergency": "ฉุกเฉิน"
         },
         "locationLabels": {
-            "OPD": "ผู้ป่วยนอก (OPD)",
-            "IPD": "ผู้ป่วยใน (IPD)",
-            "ER": "ห้องฉุกเฉิน (ER)",
-            "LAB": "ห้องแล็บ",
-            "RADIOLOGY": "รังสีวิทยา",
-            "TELEHEALTH": "โทรเวชกรรม (Online)"
+            "opd": "ผู้ป่วยนอก (OPD)",
+            "inpatient": "ผู้ป่วยใน (IPD)",
+            "emergency_room": "ห้องฉุกเฉิน (ER)",
+            "operating_room": "ห้องผ่าตัด (OR)",
+            "laboratory": "ห้องแล็บ",
+            "imaging_room": "ห้องรังสีวิทยา",
+            "pharmacy": "ห้องยา",
+            "pt_room": "ห้องกายภาพบำบัด",
+            "dental_clinic": "คลินิกทันตกรรม",
+            "eye_clinic": "คลินิกตา",
+            "home_visit": "ตรวจที่บ้าน",
+            "telemedicine": "โทรเวชกรรม (Online)"
         }
     },
     "doctors": {

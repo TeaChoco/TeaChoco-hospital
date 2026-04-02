@@ -28,7 +28,18 @@
         "na": "N/A",
         "tba": "TBA",
         "add": "Add",
-        "addNotePlaceholder": "Add a note..."
+        "addNotePlaceholder": "Add a note...",
+        "changeImage": "Change Image",
+        "remove": "Remove",
+        "uploadOrSelect": "Upload or Select Image",
+        "selectImage": "Select Image",
+        "gallery": "Gallery",
+        "uploadNew": "Upload New",
+        "loadingGallery": "Loading Gallery...",
+        "noImages": "No images found",
+        "uploadingToDb": "Uploading to Database...",
+        "clickToUpload": "Click to upload or drag and drop",
+        "uploadInfo": "New images will be saved to the database and selected automatically."
     },
     "navbar": {
         "appName": "TeaChoco Hospital",
@@ -278,39 +289,64 @@
         "certificateRecommendations": "Medical Recommendations",
         "leaveStartDate": "Sick Leave Start",
         "leaveEndDate": "Sick Leave End",
+        "subTypePlaceholder": "e.g. Annual Checkup",
+        "descriptionPlaceholder": "Additional details about the appointment",
+        "diagnosisPlaceholder": "Preliminary clinical finding",
+        "certificateIdPlaceholder": "e.g. CERT-2024-001",
+        "recommendationsPlaceholder": "Rest and medication instructions",
+        "attachmentUrl": "Document Link",
+        "attachmentPlaceholder": "URL to certificate file",
+        "certificateImage": "Medical Certificate Image",
+        "certificateImagePlaceholder": "Upload or select medical certificate image",
         "statusLabels": {
-            "PENDING": "Pending",
-            "CONFIRMED": "Confirmed",
-            "IN_PROGRESS": "In Progress",
-            "COMPLETED": "Completed",
-            "CANCELLED": "Cancelled",
-            "NO_SHOW": "No Show"
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "scheduled": "Scheduled",
+            "checked_in": "Checked In",
+            "in_progress": "In Progress",
+            "completed": "Completed",
+            "cancelled": "Cancelled",
+            "no_show": "No Show",
+            "rescheduled": "Rescheduled"
         },
         "patientTypeLabels": {
-            "NEW": "New Patient",
-            "RETURNING": "Returning Patient",
-            "EMERGENCY": "Emergency Admission"
+            "new": "New Patient",
+            "returning": "Returning Patient",
+            "referral": "Referral",
+            "emergency": "Emergency Admission"
         },
         "urgencyLevelLabels": {
-            "ROUTINE": "Routine",
-            "URGENT": "Urgent",
-            "EMERGENCY": "Emergency"
+            "routine": "Routine",
+            "urgent": "Urgent",
+            "emergency": "Emergency"
         },
         "locationLabels": {
-            "OPD": "Outpatient (OPD)",
-            "IPD": "Inpatient (IPD)",
-            "ER": "Emergency Room (ER)",
-            "LAB": "Laboratory",
-            "RADIOLOGY": "Radiology",
-            "TELEHEALTH": "Telehealth"
+            "opd": "Outpatient (OPD)",
+            "inpatient": "Inpatient (IPD)",
+            "emergency_room": "Emergency Room (ER)",
+            "operating_room": "Operating Room (OR)",
+            "laboratory": "Laboratory",
+            "imaging_room": "Imaging Room",
+            "pharmacy": "Pharmacy",
+            "pt_room": "Physical Therapy Room",
+            "dental_clinic": "Dental Clinic",
+            "eye_clinic": "Eye Clinic",
+            "home_visit": "Home Visit",
+            "telemedicine": "Telemedicine"
         },
         "typeLabels": {
-            "CONSULTATION": "Consultation",
-            "PROCEDURE": "Procedure",
-            "VACCINATION": "Vaccination",
-            "FOLLOW_UP": "Follow-up",
-            "EMERGENCY": "Emergency",
-            "SCREENING": "Screening"
+            "consultation": "Consultation",
+            "follow_up": "Follow-up",
+            "specialist": "Specialist",
+            "emergency": "Emergency",
+            "vaccination": "Vaccination",
+            "lab_test": "Lab Test",
+            "imaging": "Imaging",
+            "surgery": "Surgery",
+            "physical_therapy": "Physical Therapy",
+            "dental": "Dental",
+            "eye_exam": "Eye Exam",
+            "other": "Other"
         }
     },
     "doctors": {

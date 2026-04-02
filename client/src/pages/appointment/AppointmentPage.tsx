@@ -6,6 +6,7 @@ import ListLayout from '../../components/layout/ListLayout';
 import { useAppointments } from '../../store/useAppointmentStore';
 import type { FilterOption } from '../../components/custom/Search';
 import { AppointmentCard } from '../../components/content/AppointmentCard';
+import { AppointmentCardSkeleton } from '../../components/content/AppointmentCardSkeleton';
 
 export default function AppointmentPage() {
     const { t } = useTranslation();
@@ -38,6 +39,7 @@ export default function AppointmentPage() {
         <ListLayout
             resource={Resource.APPOINTMENTS}
             datas={appointments}
+            Skeleton={AppointmentCardSkeleton}
             newData={t('appointments.new')}
             header={t('appointments.header')}
             placeholder={t('appointments.placeholder')}

@@ -1,5 +1,4 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/admin/AdminDataPage.tsx"
-import React from 'react';
 import { TabKey } from '../../../types/admin';
 import {
     DoctorsList,
@@ -7,18 +6,17 @@ import {
     MedicinesList,
     AppointmentsList,
 } from '../../../components/admin/custom/List';
-import type { User } from '../../../types/auth';
 import { useSwal } from '../../../hooks/useSwal';
-import { userAPI } from '../../../services/user';
+import { useMemo, useState, useEffect } from 'react';
 import Search from '../../../components/custom/Search';
 import Select from '../../../components/custom/Select';
 import Loading from '../../../components/custom/Loading';
+import { useAllUsers } from '../../../store/useUserStore';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDoctors } from '../../../store/useDoctorStore';
 import { FaHospital, FaUserDoctor } from 'react-icons/fa6';
 import { useHospitals } from '../../../store/useHospitalStore';
 import { useMedicines } from '../../../store/useMedicineStore';
-import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useAppointments } from '../../../store/useAppointmentStore';
 import { FiUser, FiSearch, FiPackage, FiCalendar } from 'react-icons/fi';
 import { doctorAPI, hospitalAPI, medicineAPI, appointmentAPI } from '../../../services/api';
@@ -40,7 +38,7 @@ const tabs: TabConfig[] = [
 export default function AdminDataPage() {
     const { fire } = useSwal();
     const navigate = useNavigate();
-    const [users, setUsers] = useState<User[]>([]);
+    const { allUsers } = useAllUsers();
     const [searchTerm, setSearchTerm] = useState('');
     const { uid, tab } = useParams<{ uid: string; tab: TabKey }>();
     const [activeTab, setActiveTab] = useState<TabKey>(tab || TabKey.DOCTORS);
@@ -50,19 +48,6 @@ export default function AdminDataPage() {
     const { hospitals, resetHospitals } = useHospitals();
     const { medicines, resetMedicines } = useMedicines();
     const { appointments, resetAppointments } = useAppointments();
-
-    const fetchUsers = useCallback(async () => {
-        try {
-            const response = await userAPI.findAll({ name: true, email: true, picture: true });
-            setUsers(response.data || []);
-        } catch (error) {
-            console.error('Failed to fetch users:', error);
-        }
-    }, []);
-
-    useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers]);
 
     useEffect(() => {
         setSelectedUserId(!uid || uid === 'all' ? '' : uid);
@@ -86,12 +71,12 @@ export default function AdminDataPage() {
     const userOptions = useMemo(
         () => [
             { value: '', label: 'ทั้งหมด (ผู้ใช้ทุกคน)' },
-            ...users.map((user) => ({
+            ...(allUsers || []).map((user) => ({
                 value: user.user_id,
                 label: user.name || user.email || user.user_id,
             })),
         ],
-        [users],
+        [allUsers],
     );
 
     const filteredDoctors = useMemo(() => {
@@ -212,7 +197,7 @@ export default function AdminDataPage() {
     };
 
     const getUserInfo = (userId: string) => {
-        const user = users.find((u) => u.user_id === userId);
+        const user = allUsers?.find((u) => u.user_id === userId);
         return {
             name: user?.name || user?.email || userId?.slice(-8),
             picture: user?.picture,
@@ -236,7 +221,7 @@ export default function AdminDataPage() {
                 ? filteredMedicines
                 : filteredAppointments;
 
-    if (!currentData) return <Loading />;
+    if (!currentData || !allUsers) return <Loading />;
 
     return (
         <div className="flex flex-col gap-6 animate-fadeIn">

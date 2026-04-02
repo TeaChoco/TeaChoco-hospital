@@ -1,19 +1,32 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/appointment/AppointmentEditPage.tsx"
 import {
+    FaEye,
     FaLink,
     FaUser,
     FaVial,
     FaClock,
+    FaTooth,
+    FaPills,
+    FaCheck,
+    FaUserCheck,
     FaHospital,
+    FaBedPulse,
+    FaUserSlash,
     FaRegCircle,
     FaUserDoctor,
+    FaCircleCheck,
     FaStethoscope,
     FaLocationDot,
     FaFileMedical,
     FaCalendarDays,
+    FaCircleXmark,
     FaTruckMedical,
     FaNotesMedical,
+    FaHouseMedical,
+    FaArrowsRotate,
+    FaPersonWalking,
     FaHourglassHalf,
+    FaLaptopMedical,
     FaCircleExclamation,
 } from 'react-icons/fa6';
 import {
@@ -31,12 +44,14 @@ import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
 import Switch from '../../components/custom/Switch';
+import InputImg from '../../components/custom/InputImg';
 import { appointmentAPI } from '../../services/api';
 import { useDoctors } from '../../store/useDoctorStore';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
 import { useHospitals } from '../../store/useHospitalStore';
 import { useAppointments } from '../../store/useAppointmentStore';
+import { FaImage } from 'react-icons/fa';
 
 export default function AppointmentEditPage() {
     const { t } = useTranslation();
@@ -50,11 +65,80 @@ export default function AppointmentEditPage() {
         date ? new Date(date).toTimeString().substring(0, 5) : '';
 
     const getAppointmentTypeIcon = (type: AppointmentType) => {
-        if (type === AppointmentType.CONSULTATION) return <FaStethoscope />;
-        if (type === AppointmentType.EMERGENCY) return <FaTruckMedical />;
-        if (type === AppointmentType.VACCINATION) return <FaVial />;
-        if (type === AppointmentType.FOLLOW_UP) return <FaClock />;
-        return <FaNotesMedical />;
+        switch (type) {
+            case AppointmentType.CONSULTATION:
+                return <FaStethoscope />;
+            case AppointmentType.EMERGENCY:
+                return <FaTruckMedical />;
+            case AppointmentType.VACCINATION:
+                return <FaVial />;
+            case AppointmentType.FOLLOW_UP:
+                return <FaClock />;
+            case AppointmentType.LAB_TEST:
+                return <FaVial className="opacity-70" />;
+            case AppointmentType.IMAGING:
+                return <FaFileMedical />;
+            case AppointmentType.SURGERY:
+                return <FaTruckMedical className="rotate-180" />;
+            default:
+                return <FaNotesMedical />;
+        }
+    };
+
+    const getStatusIcon = (status: AppointmentStatus) => {
+        switch (status) {
+            case AppointmentStatus.PENDING:
+                return <FaHourglassHalf />;
+            case AppointmentStatus.CONFIRMED:
+                return <FaCheck className="text-blue-500" />;
+            case AppointmentStatus.SCHEDULED:
+                return <FaCalendarDays />;
+            case AppointmentStatus.CHECKED_IN:
+                return <FaUserCheck className="text-indigo-500" />;
+            case AppointmentStatus.IN_PROGRESS:
+                return <FaStethoscope className="text-amber-500" />;
+            case AppointmentStatus.COMPLETED:
+                return <FaCircleCheck className="text-emerald-500" />;
+            case AppointmentStatus.CANCELLED:
+                return <FaCircleXmark className="text-red-500" />;
+            case AppointmentStatus.NO_SHOW:
+                return <FaUserSlash className="text-slate-500" />;
+            case AppointmentStatus.RESCHEDULED:
+                return <FaArrowsRotate className="text-purple-500" />;
+            default:
+                return <FaRegCircle />;
+        }
+    };
+
+    const getLocationIcon = (location: AppointmentLocation) => {
+        switch (location) {
+            case AppointmentLocation.OPD:
+                return <FaHospital />;
+            case AppointmentLocation.IPD:
+                return <FaBedPulse />;
+            case AppointmentLocation.ER:
+                return <FaTruckMedical />;
+            case AppointmentLocation.OR:
+                return <FaStethoscope />;
+            case AppointmentLocation.LAB:
+                return <FaVial />;
+            case AppointmentLocation.IMAGING:
+                return <FaFileMedical />;
+            case AppointmentLocation.PHARMACY:
+                return <FaPills />;
+            case AppointmentLocation.PHYSICAL_THERAPY:
+                return <FaPersonWalking />;
+            case AppointmentLocation.DENTAL:
+                return <FaTooth />;
+            case AppointmentLocation.EYE_CLINIC:
+                return <FaEye />;
+            case AppointmentLocation.HOME_VISIT:
+                return <FaHouseMedical />;
+            case AppointmentLocation.TELEMEDICINE:
+                return <FaLaptopMedical />;
+            default:
+                return <FaLocationDot />;
+        }
     };
 
     const getUrgencyIcon = (urgency: UrgencyLevel) => {
@@ -70,9 +154,7 @@ export default function AppointmentEditPage() {
             Object.values(AppointmentType).map((type) => ({
                 value: type,
                 icon: getAppointmentTypeIcon(type),
-                label: t(`appointments.typeLabels.${type}`, {
-                    defaultValue: type.toUpperCase().replace('_', ' '),
-                }),
+                label: t(`appointments.typeLabels.${type}`),
             })),
         [t],
     );
@@ -81,9 +163,8 @@ export default function AppointmentEditPage() {
         () =>
             Object.values(AppointmentStatus).map((status) => ({
                 value: status,
-                label: t(`appointments.statusLabels.${status}`, {
-                    defaultValue: status.charAt(0).toUpperCase() + status.slice(1),
-                }),
+                icon: getStatusIcon(status),
+                label: t(`appointments.statusLabels.${status}`),
             })),
         [t],
     );
@@ -93,9 +174,11 @@ export default function AppointmentEditPage() {
             {
                 value: '',
                 label: t('appointments.assignDoctorLater'),
+                icon: <FaUserDoctor className="opacity-20" />,
             },
             ...(doctors?.map((doc) => ({
                 value: doc._id,
+                icon: <FaUserDoctor />,
                 label: `${doc.firstName} ${doc.lastName}`,
             })) || []),
         ],
@@ -106,9 +189,8 @@ export default function AppointmentEditPage() {
         () =>
             Object.values(PatientType).map((type) => ({
                 value: type,
-                label: t(`appointments.patientTypeLabels.${type}`, {
-                    defaultValue: type.charAt(0).toUpperCase() + type.slice(1),
-                }),
+                icon: <FaUser />,
+                label: t(`appointments.patientTypeLabels.${type}`),
             })),
         [t],
     );
@@ -118,9 +200,7 @@ export default function AppointmentEditPage() {
             Object.values(UrgencyLevel).map((level) => ({
                 value: level,
                 icon: getUrgencyIcon(level),
-                label: t(`appointments.urgencyLevelLabels.${level}`, {
-                    defaultValue: level.charAt(0).toUpperCase() + level.slice(1),
-                }),
+                label: t(`appointments.urgencyLevelLabels.${level}`),
             })),
         [t],
     );
@@ -130,9 +210,11 @@ export default function AppointmentEditPage() {
             {
                 value: '',
                 label: t('appointments.selectFacility'),
+                icon: <FaHospital className="opacity-20" />,
             },
             ...(hospitals?.map((h) => ({
                 value: h._id,
+                icon: <FaHospital />,
                 label: h.name,
             })) || []),
         ],
@@ -143,9 +225,8 @@ export default function AppointmentEditPage() {
         () =>
             Object.values(AppointmentLocation).map((loc) => ({
                 value: loc,
-                label: t(`appointments.locationLabels.${loc}`, {
-                    defaultValue: loc.toUpperCase().replace('_', ' '),
-                }),
+                icon: getLocationIcon(loc),
+                label: t(`appointments.locationLabels.${loc}`),
             })),
         [t],
     );
@@ -212,8 +293,8 @@ export default function AppointmentEditPage() {
         setData: React.Dispatch<React.SetStateAction<OutApiData<Appointment> | undefined>>;
     }) => {
         const inputId = `new-note-${type}`;
-        const [isInternal, setIsInternal] = useState(type !== 'patientNotes');
         const notes = data?.[type] || [];
+        const [isInternal, setIsInternal] = useState(type !== 'patientNotes');
 
         return (
             <div className="space-y-4">
@@ -236,9 +317,7 @@ export default function AppointmentEditPage() {
                                 </p>
                                 {note.isInternal && (
                                     <div className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-[9px] font-black uppercase text-slate-500 tracking-wider">
-                                        {t('appointments.internalBadge', {
-                                            defaultValue: 'Internal',
-                                        })}
+                                        {t('appointments.internalBadge')}
                                     </div>
                                 )}
                             </div>
@@ -269,9 +348,7 @@ export default function AppointmentEditPage() {
                                 id={inputId}
                                 className="flex-1"
                                 containerClassName="w-full"
-                                placeholder={t('common.addNotePlaceholder', {
-                                    defaultValue: 'Add a note...',
-                                })}
+                                placeholder={t('common.addNotePlaceholder')}
                             />
                             <button
                                 type="button"
@@ -304,20 +381,14 @@ export default function AppointmentEditPage() {
                         </div>
                         <div className="flex items-center justify-between px-1">
                             <Switch
-                                label={t('appointments.isInternalNote', {
-                                    defaultValue: 'Internal Note (Staff only)',
-                                })}
+                                label={t('appointments.isInternalNote')}
                                 checked={isInternal}
                                 onCheckedChange={setIsInternal}
                             />
                             <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark font-medium italic">
                                 {isInternal
-                                    ? t('appointments.internalNoteHint', {
-                                          defaultValue: 'Only visible to medical staff',
-                                      })
-                                    : t('appointments.externalNoteHint', {
-                                          defaultValue: 'Visible to patient',
-                                      })}
+                                    ? t('appointments.internalNoteHint')
+                                    : t('appointments.externalNoteHint')}
                             </p>
                         </div>
                     </div>
@@ -376,9 +447,7 @@ export default function AppointmentEditPage() {
                                 />
                                 <Input
                                     label={t('appointments.appointmentSubType')}
-                                    placeholder={t('appointments.subTypePlaceholder', {
-                                        defaultValue: 'e.g. Annual Checkup',
-                                    })}
+                                    placeholder={t('appointments.subTypePlaceholder')}
                                     icon={<FaStethoscope className="text-primary/10" />}
                                     value={data?.subType}
                                     onChange={(e) =>
@@ -390,9 +459,7 @@ export default function AppointmentEditPage() {
                             </div>
                             <Input
                                 label={t('appointments.description')}
-                                placeholder={t('appointments.descriptionPlaceholder', {
-                                    defaultValue: 'Additional details about the appointment',
-                                })}
+                                placeholder={t('appointments.descriptionPlaceholder')}
                                 icon={<FaFileMedical size={16} className="text-primary/60" />}
                                 value={data?.description}
                                 onChange={(e) =>
@@ -679,9 +746,7 @@ export default function AppointmentEditPage() {
                             <div className="pt-2">
                                 <Input
                                     label={t('appointments.initialDiagnosisRef')}
-                                    placeholder={t('appointments.diagnosisPlaceholder', {
-                                        defaultValue: 'Preliminary clinical finding',
-                                    })}
+                                    placeholder={t('appointments.diagnosisPlaceholder')}
                                     icon={<FaStethoscope className="text-amber-500/60" />}
                                     value={data?.preliminaryDiagnosis}
                                     onChange={(e) =>
@@ -757,14 +822,13 @@ export default function AppointmentEditPage() {
                                                           certificateId: '',
                                                           issuedAt: new Date(),
                                                           recommendations: '',
+                                                          imgUrl: '',
                                                       }
                                                     : undefined,
                                             },
                                     )
                                 }
-                                label={t('appointments.hasMedicalCertificate', {
-                                    defaultValue: 'Issue Certificate',
-                                })}
+                                label={t('appointments.hasMedicalCertificate')}
                             />
                         </div>
 
@@ -781,12 +845,7 @@ export default function AppointmentEditPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <Input
                                             label={t('appointments.certificateId')}
-                                            placeholder={t(
-                                                'appointments.certificateIdPlaceholder',
-                                                {
-                                                    defaultValue: 'e.g. CERT-2024-001',
-                                                },
-                                            )}
+                                            placeholder={t('appointments.certificateIdPlaceholder')}
                                             icon={<FaFileMedical className="text-purple-500/60" />}
                                             value={data?.medicalCertificate?.certificateId || ''}
                                             onChange={(e) =>
@@ -883,9 +942,7 @@ export default function AppointmentEditPage() {
                                     </div>
                                     <Input
                                         label={t('appointments.certificateRecommendations')}
-                                        placeholder={t('appointments.recommendationsPlaceholder', {
-                                            defaultValue: 'Rest and medication instructions',
-                                        })}
+                                        placeholder={t('appointments.recommendationsPlaceholder')}
                                         icon={<FaNotesMedical className="text-purple-500/60" />}
                                         value={data?.medicalCertificate?.recommendations || ''}
                                         onChange={(e) =>
@@ -942,13 +999,28 @@ export default function AppointmentEditPage() {
                                             }
                                         />
                                     </div>
+                                    <InputImg
+                                        label={t('appointments.certificateImage')}
+                                        value={data?.medicalCertificate?.imgUrl || ''}
+                                        icon={<FaImage className="text-purple-500/60" />}
+                                        placeholder={t('appointments.certificateImagePlaceholder')}
+                                        setValue={(val) =>
+                                            setData(
+                                                (prev) =>
+                                                    prev && {
+                                                        ...prev,
+                                                        medicalCertificate: {
+                                                            ...(prev.medicalCertificate ||
+                                                                ({} as any)),
+                                                            imgUrl: val || '',
+                                                        },
+                                                    },
+                                            )
+                                        }
+                                    />
                                     <Input
-                                        label={t('appointments.attachmentUrl', {
-                                            defaultValue: 'Document Link',
-                                        })}
-                                        placeholder={t('appointments.attachmentPlaceholder', {
-                                            defaultValue: 'URL to certificate file',
-                                        })}
+                                        label={t('appointments.attachmentUrl')}
+                                        placeholder={t('appointments.attachmentPlaceholder')}
                                         icon={<FaLink className="text-purple-500/60" />}
                                         value={data?.medicalCertificate?.attachmentUrl || ''}
                                         onChange={(e) =>

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import ListLayout from '../../components/layout/ListLayout';
 import { useMedicines } from '../../store/useMedicineStore';
 import { MedicineCard } from '../../components/content/MedicineCard';
+import { MedicineCardSkeleton } from '../../components/content/MedicineCardSkeleton';
 
 export default function MedicinesPage() {
     const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function MedicinesPage() {
         <ListLayout
             resource={Resource.MEDICINES}
             datas={medicines}
+            Skeleton={MedicineCardSkeleton}
             newData={t('medicines.new')}
             header={t('medicines.header')}
             placeholder={t('medicines.placeholder')}

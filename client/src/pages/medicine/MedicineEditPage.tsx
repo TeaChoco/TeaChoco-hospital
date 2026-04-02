@@ -30,10 +30,11 @@ import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
 import InputImg from '../../components/custom/InputImg';
-import { useMedicines } from '../../store/useMedicineStore';
-import { useHospitals } from '../../store/useHospitalStore';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
+import { useMedicines } from '../../store/useMedicineStore';
+import { useHospitals } from '../../store/useHospitalStore';
+import { FaImage } from 'react-icons/fa';
 
 export default function MedicineEditPage() {
     const { t } = useTranslation();
@@ -200,9 +201,10 @@ export default function MedicineEditPage() {
 
                             <InputImg
                                 className="pt-2"
-                                label={t('medicines.imageUrl')}
-                                placeholder={t('medicines.imageUrlPlaceholder')}
                                 value={data.imageUrl || ''}
+                                label={t('medicines.imageUrl')}
+                                icon={<FaImage className="text-primary/60" />}
+                                placeholder={t('medicines.imageUrlPlaceholder')}
                                 setValue={(value) =>
                                     setData((prev) => prev && { ...prev, imageUrl: value })
                                 }

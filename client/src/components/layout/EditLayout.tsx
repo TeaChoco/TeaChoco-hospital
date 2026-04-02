@@ -1,19 +1,19 @@
-// -Path: "TeaChoco-Hospital/client/src/components/layout/EditLayout.tsx"
+//-Path: "TeaChoco-Hospital/client/src/components/layout/EditLayout.tsx"
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
-import Loading from '../custom/Loading';
 import { Obj } from '@teachoco-dev/cli';
 import { useAuth } from '../../hooks/useAuth';
 import { useSwal } from '../../hooks/useSwal';
+import ItemSkeleton from '../custom/ItemSkeleton';
 import type { Allows } from '../../types/auth';
 import { useTranslation } from 'react-i18next';
 import type { ApiData } from '../../types/types';
 import { useEffect, useMemo, useState } from 'react';
 import type { OutApiData, Title } from '../../types/types';
 import { useLayoutStore } from '../../store/useLayoutStore';
+import { FiActivity } from 'react-icons/fi';
 import { FaTrash, FaCode, FaXmark, FaArrowLeft, FaCircleExclamation } from 'react-icons/fa6';
 import { Link, Navigate, useLocation, useNavigate, useParams, useBlocker } from 'react-router-dom';
-import { FiActivity } from 'react-icons/fi';
 
 /**
  * EditLayout component to provide a consistent layout for editing or creating data.
@@ -23,6 +23,7 @@ import { FiActivity } from 'react-icons/fi';
  * @param loading Loading state.
  * @param newData Default data for creating a new record.
  * @param children Children component that renders the form fields.
+ * @param Skeleton Skeleton component to show while loading.
  */
 export default function EditLayout<Data extends ApiData<object>>({
     find,
@@ -32,10 +33,12 @@ export default function EditLayout<Data extends ApiData<object>>({
     newData,
     onRemove,
     children,
+    Skeleton = ItemSkeleton,
 }: {
     title: Title;
     loading?: boolean;
     newData: OutApiData<Data>;
+    Skeleton?: () => React.JSX.Element;
     find: (id: string) => Data | undefined;
     onRemove: (id: string) => Promise<void | boolean>;
     onSave: (data: Data, id: string) => Promise<void | boolean>;
@@ -94,7 +97,7 @@ export default function EditLayout<Data extends ApiData<object>>({
     const toBack = useMemo(() => {
         const base = title.toLowerCase();
         if (location.pathname.startsWith('/admin/data')) return `/admin/data/${uid}/${base}`;
-        return `/${base}${id === 'new' ? '' : `/${id}`}`;
+        return `/${base}`;
     }, [id, title, location.pathname]);
 
     const toDetail = useMemo(() => {
@@ -211,7 +214,7 @@ export default function EditLayout<Data extends ApiData<object>>({
         }
     };
 
-    if (loading || authLoading || dataLoading) return <Loading />;
+    if (loading || authLoading || dataLoading) return <Skeleton />;
     if (!data)
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] p-6">

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useDoctors } from '../../store/useDoctorStore';
 import ListLayout from '../../components/layout/ListLayout';
 import { DoctorCard } from '../../components/content/DoctorCard';
+import { DoctorCardSkeleton } from '../../components/content/DoctorCardSkeleton';
 
 export default function DoctorsPage() {
     const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function DoctorsPage() {
         <ListLayout
             resource={Resource.DOCTORS}
             datas={doctors}
+            Skeleton={DoctorCardSkeleton}
             newData={t('doctors.new')}
             header={t('doctors.header')}
             placeholder={t('doctors.placeholder')}

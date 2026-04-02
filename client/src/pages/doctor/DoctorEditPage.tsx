@@ -1,7 +1,6 @@
 // -Path: "TeaChoco-Hospital/client/src/pages/doctor/DoctorEditPage.tsx"
 import {
     FaPhone,
-    FaImage,
     FaUserTie,
     FaHospital,
     FaBriefcase,
@@ -15,6 +14,7 @@ import type { Doctor } from '../../types/doctor';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
+import InputImg from '../../components/custom/InputImg';
 import { useDoctors } from '../../store/useDoctorStore';
 import { useHospitals } from '../../store/useHospitalStore';
 import { Title, type OutApiData } from '../../types/types';
@@ -24,6 +24,21 @@ export default function DoctorEditPage() {
     const { t } = useTranslation();
     const { doctors, resetDoctors } = useDoctors();
     const { hospitals, resetHospitals } = useHospitals();
+
+    const hospitalOptions = useMemo(
+        () => [
+            {
+                value: '',
+                label: t('doctors.selectInstitution'),
+            },
+            ...(hospitals?.map((hospital) => ({
+                value: hospital._id,
+                label: hospital.name,
+                icon: <FaHospital />,
+            })) || []),
+        ],
+        [hospitals, t],
+    );
 
     const newData: OutApiData<Doctor> = useMemo(
         () => ({
@@ -117,22 +132,17 @@ export default function DoctorEditPage() {
                                         )
                                     }
                                 />
-                                <Input
-                                    label={t('doctors.profileImage')}
-                                    placeholder={t('doctors.profileImagePlaceholder')}
-                                    icon={<FaImage className="text-primary/60" />}
-                                    value={data?.picture || ''}
-                                    onChange={(event) =>
-                                        setData(
-                                            (prev) =>
-                                                prev && {
-                                                    ...prev,
-                                                    picture: event.target.value,
-                                                },
-                                        )
-                                    }
-                                />
+                                <div />
                             </div>
+                            <InputImg
+                                value={data?.picture || ''}
+                                label={t('doctors.profileImage')}
+                                icon={<FaUserTie className="text-primary/60" />}
+                                placeholder={t('doctors.profileImagePlaceholder')}
+                                setValue={(val) =>
+                                    setData((prev) => prev && { ...prev, picture: val || '' })
+                                }
+                            />
                         </Paper>
                     </div>
 
@@ -152,13 +162,7 @@ export default function DoctorEditPage() {
                             className="p-6 space-y-6 border-l-4 border-indigo-500/40">
                             <Select
                                 required
-                                options={[
-                                    { value: '', label: t('doctors.selectInstitution') },
-                                    ...(hospitals?.map((h) => ({
-                                        value: h._id,
-                                        label: h.name,
-                                    })) || []),
-                                ]}
+                                options={hospitalOptions}
                                 label={t('doctors.affiliatedHospital')}
                                 icon={<FaHospital className="text-indigo-500/60" />}
                                 value={data?.hospitalId}
@@ -170,8 +174,11 @@ export default function DoctorEditPage() {
                                                 hospitalId: event.target.value,
                                             },
                                     )
+                                }>
+                                {(Option, options) =>
+                                    options.map((opt) => <Option key={opt.value} {...opt} />)
                                 }
-                            />
+                            </Select>
                             <Input
                                 required
                                 label={t('doctors.medicalDepartment')}

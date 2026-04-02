@@ -1,10 +1,11 @@
 //-Path: "TeaChoco-Hospital/client/src/pages/hospital/HospitalsPage.tsx"
-import { Resource } from '../../types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ListLayout from '../../components/layout/ListLayout';
-import { useHospitals } from '../../store/useHospitalStore';
+import { Resource } from '../../types/auth';
 import { HospitalCard } from '../../components/content/HospitalCard';
+import { HospitalCardSkeleton } from '../../components/content/HospitalCardSkeleton';
+import { useHospitals } from '../../store/useHospitalStore';
 
 export default function HospitalsPage() {
     const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function HospitalsPage() {
         <ListLayout
             resource={Resource.HOSPITALS}
             datas={hospitals}
+            Skeleton={HospitalCardSkeleton}
             newData={t('hospitals.new')}
             header={t('hospitals.header')}
             placeholder={t('hospitals.placeholder')}

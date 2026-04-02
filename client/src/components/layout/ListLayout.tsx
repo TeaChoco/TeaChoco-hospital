@@ -1,7 +1,6 @@
 // -Path: "TeaChoco-Hospital/client/src/components/layout/ListLayout.tsx"
 import Header from '../custom/Header';
 import Search from '../custom/Search';
-import Loading from '../custom/Loading';
 import Activity from '../custom/Activity';
 import { useMemo, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
@@ -36,23 +35,29 @@ export default function ListLayout<Data>({
     newData,
     resource,
     children,
+    Skeleton,
     description,
     placeholder,
+    isGrid = true,
     filterOptions,
+    skeletonCount = 8,
 }: {
     datas?: Data[];
     header: string;
+    isGrid?: boolean;
     newData?: string;
     resource: Resource;
     description: string;
     placeholder?: string;
+    skeletonCount?: number;
+    Skeleton: () => React.JSX.Element;
     filterOptions?: FilterOption[];
     buttons?: (Button: typeof NewButton) => React.ReactNode;
     children?: ((filteredDatas: Data[]) => React.ReactNode) | React.ReactNode;
     filter?: (data: Data, search: string, filters: Record<string, string[]>) => boolean | undefined;
 }) {
-    const { t } = useTranslation();
     const { user } = useAuth();
+    const { t } = useTranslation();
     const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
@@ -74,11 +79,13 @@ export default function ListLayout<Data>({
 
     const canAdd = user?.allows?.some((allow) => allow[resource as Resource]?.edit);
 
-    if (!datas) return <Loading />;
+    const skeletons = Array.from({ length: skeletonCount }).map((_, index) => (
+        <Skeleton key={index} />
+    ));
 
     return (
         <>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300">
                 <Header header={header} description={description} />
                 <div className="flex gap-2 flex-wrap">
                     <NewButton
@@ -100,25 +107,39 @@ export default function ListLayout<Data>({
                     onFilterChange={handleFilterChange}
                 />
             )}
-            {typeof children !== 'function' ? (
-                children
+
+            {!datas ? (
+                <div
+                    className={
+                        isGrid
+                            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                            : ''
+                    }>
+                    {skeletons}
+                </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {children(filteredDatas)}
-                    </div>
-                    {filteredDatas.length === 0 && (
-                        <div className="text-center py-12">
-                            <div className="bg-slate-50 dark:bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <FaSearch className="text-slate-300 dark:text-slate-600 text-xl" />
+                    {typeof children !== 'function' ? (
+                        children
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {children(filteredDatas)}
                             </div>
-                            <h3 className="text-text-light dark:text-text-dark font-medium mb-1">
-                                {t('listLayout.noResultsFound', { searchTerm })}
-                            </h3>
-                            <p className="text-text-muted-light dark:text-text-muted-dark text-sm">
-                                {t('listLayout.tryAdjustingSearch')}
-                            </p>
-                        </div>
+                            {filteredDatas.length === 0 && (
+                                <div className="text-center py-12">
+                                    <div className="bg-slate-50 dark:bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <FaSearch className="text-slate-300 dark:text-slate-600 text-xl" />
+                                    </div>
+                                    <h3 className="text-text-light dark:text-text-dark font-medium mb-1">
+                                        {t('listLayout.noResultsFound', { searchTerm })}
+                                    </h3>
+                                    <p className="text-text-muted-light dark:text-text-muted-dark text-sm">
+                                        {t('listLayout.tryAdjustingSearch')}
+                                    </p>
+                                </div>
+                            )}
+                        </>
                     )}
                 </>
             )}

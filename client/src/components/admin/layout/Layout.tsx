@@ -28,7 +28,12 @@ export default function AdminLayout() {
         setSidebarOpen(false);
     }, [location.pathname]);
 
-    if (loading) return <Loading />;
+    if (loading)
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loading />
+            </div>
+        );
     if (!user || user.role !== Role.ADMIN) return <Navigate to="/" replace />;
 
     const isActive = (path: string, exact?: boolean) =>
@@ -142,7 +147,7 @@ export default function AdminLayout() {
                     </div>
                 </header>
 
-                <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">
+                <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto min-h-screen">
                     <Outlet />
                 </main>
             </div>

@@ -211,6 +211,7 @@ export interface MedicalCertificate {
     endDate?: Date; // วันที่สิ้นสุดพัก (ถ้ามี)
     startDate?: Date; // วันที่เริ่มต้นพัก (ถ้ามี)
     attachmentUrl?: string; // ลิงค์ไฟล์
+    imgUrl?: string; // ลิงค์รูปภาพ
 }
 
 // Interface หลักสำหรับการนัดหมาย

@@ -231,19 +231,19 @@
     }
 
     .animate-fadeIn {
-        animation: fadeIn 0.8s ease-out forwards;
+        animation: fadeIn 0.4s ease-out forwards;
     }
     .animate-float {
-        animation: float 6s ease-in-out infinite;
+        animation: float 3s ease-in-out infinite;
     }
     .animate-orbit {
-        animation: orbit 20s linear infinite;
+        animation: orbit 10s linear infinite;
     }
     .animate-pulse-slow {
         animation: pulse-slow 8s ease-in-out infinite;
     }
     .animate-slideDown {
-        animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 }
 

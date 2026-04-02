@@ -3,24 +3,34 @@ import Modal from './Modal';
 import Input from './Input';
 import env from '../../configs/env';
 import { imgAPI } from '../../services/img';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaImage, FaCloudUploadAlt, FaCheck, FaSpinner, FaTrash } from 'react-icons/fa';
 
 export default function InputImg({
+    id,
+    icon,
     label,
     value,
     setValue,
+    required,
     className,
     placeholder,
+    labelClassName,
 }: {
+    id?: string;
     label: string;
     value: string;
+    required?: boolean;
     className?: string;
     placeholder: string;
+    icon?: React.ReactNode;
+    labelClassName?: string;
     setValue: (value?: string) => void;
 }) {
     const { t } = useTranslation();
+    const generatedId = useId();
+    const inputId = id || generatedId;
     const [isOpen, setIsOpen] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [dbImages, setDbImages] = useState<string[]>([]);
@@ -79,7 +89,13 @@ export default function InputImg({
 
     return (
         <div className={`flex flex-col ${className}`}>
-            {label && <label className={labelClass}>{label}</label>}
+            {label && (
+                <label htmlFor={inputId} className={`${labelClass} ${labelClassName || ''}`}>
+                    {icon}
+                    {label}
+                    {required && <span className="text-red-500">*</span>}
+                </label>
+            )}
 
             <div className="flex flex-col gap-3">
                 {hasValidValue ? (
@@ -93,11 +109,11 @@ export default function InputImg({
                                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                             />
                         </div>
-                        <div className="flex w-full flex-col justify-center h-40 gap-2">
+                            <div className="flex w-full flex-col justify-center h-40 gap-2">
                             <Input
                                 value={value}
                                 className="w-full"
-                                placeholder={t('common.changeImage', 'Change Image')}
+                                placeholder={t('common.changeImage')}
                                 onChange={(event) => setValue(event.target.value)}
                             />
                             <button
@@ -105,14 +121,14 @@ export default function InputImg({
                                 onClick={() => setIsOpen(true)}
                                 className="px-4 py-2 w-full text-sm font-bold rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-2">
                                 <FaImage />
-                                {t('common.changeImage', 'Change Image')}
+                                {t('common.changeImage')}
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setValue(undefined)}
                                 className="px-4 py-1.5 w-full text-sm font-semibold rounded-lg text-red-500 hover:bg-red-500/10 transition-colors flex items-center gap-2">
                                 <FaTrash />
-                                {t('common.remove', 'Remove')}
+                                {t('common.remove')}
                             </button>
                         </div>
                     </div>
@@ -121,7 +137,7 @@ export default function InputImg({
                         <Input
                             value={value}
                             className="w-full"
-                            placeholder={t('common.changeImage', 'Change Image')}
+                            placeholder={t('common.changeImage')}
                             onChange={(event) => setValue(event.target.value)}
                         />
                         <button
@@ -132,8 +148,7 @@ export default function InputImg({
                                 <FaCloudUploadAlt className="text-xl text-primary" />
                             </div>
                             <span className="font-semibold text-sm">
-                                {placeholder ||
-                                    t('common.uploadOrSelect', 'Upload or Select Image')}
+                                {placeholder || t('common.uploadOrSelect')}
                             </span>
                         </button>
                     </div>
@@ -143,7 +158,7 @@ export default function InputImg({
             <Modal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                title={t('common.selectImage', 'Select Image')}
+                title={t('common.selectImage')}
                 className="max-w-3xl">
                 <div className="space-y-6">
                     {/* Tabs */}
@@ -156,7 +171,7 @@ export default function InputImg({
                                     : 'border-transparent text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
                             }`}>
                             <FaImage className="text-lg" />
-                            {t('common.gallery', 'Gallery')}
+                            {t('common.gallery')}
                         </button>
                         <button
                             onClick={() => setActiveTab('upload')}
@@ -166,7 +181,7 @@ export default function InputImg({
                                     : 'border-transparent text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
                             }`}>
                             <FaCloudUploadAlt className="text-lg" />
-                            {t('common.uploadNew', 'Upload New')}
+                            {t('common.uploadNew')}
                         </button>
                     </div>
 
@@ -178,7 +193,7 @@ export default function InputImg({
                                     <div className="flex flex-col items-center gap-4 animate-pulse">
                                         <FaSpinner className="text-4xl text-primary animate-spin" />
                                         <p className="font-bold text-text-light dark:text-text-dark">
-                                            Uploading to Database...
+                                            {t('common.uploadingToDb')}
                                         </p>
                                     </div>
                                 ) : (
@@ -194,11 +209,10 @@ export default function InputImg({
                                         </div>
                                         <div className="space-y-2">
                                             <p className="font-bold text-lg text-text-light dark:text-text-dark">
-                                                Click to upload or drag and drop
+                                                {t('common.clickToUpload')}
                                             </p>
                                             <p className="text-sm text-text-muted-light dark:text-text-muted-dark max-w-xs mx-auto">
-                                                New images will be saved to the database and
-                                                selected automatically.
+                                                {t('common.uploadInfo')}
                                             </p>
                                         </div>
                                     </>
@@ -208,7 +222,7 @@ export default function InputImg({
                             <div className="flex flex-col items-center justify-center py-20 gap-4">
                                 <FaSpinner className="text-4xl text-primary animate-spin" />
                                 <p className="font-bold text-text-muted-light dark:text-text-muted-dark">
-                                    {t('common.loadingGallery', 'Loading Gallery...')}
+                                    {t('common.loadingGallery')}
                                 </p>
                             </div>
                         ) : (
@@ -245,7 +259,7 @@ export default function InputImg({
                                 ) : (
                                     <div className="col-span-full py-20 text-center">
                                         <p className="text-text-muted-light dark:text-text-muted-dark">
-                                            {t('common.noImages', 'No images found')}
+                                            {t('common.noImages')}
                                         </p>
                                     </div>
                                 )}

@@ -3,9 +3,9 @@ import { Resource } from '../../types/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Loading from '../../components/custom/Loading';
 import ListLayout from '../../components/layout/ListLayout';
 import { useCalendarEvents } from '../../hooks/useCalendarEvents';
+import { CalendarSkeleton } from '../../components/calendar/CalendarSkeleton';
 import Calendar, { type CalendarEvent } from '../../components/calendar/Calendar';
 
 export default function CalendarPage() {
@@ -14,16 +14,18 @@ export default function CalendarPage() {
     const navigate = useNavigate();
     const { appointmentEvents, medicineEvents } = useCalendarEvents();
 
-    if (!appointmentEvents || !medicineEvents) return <Loading />;
-
-    const events: CalendarEvent[] = [...appointmentEvents, ...medicineEvents];
+    const events: CalendarEvent[] | undefined =
+        appointmentEvents && medicineEvents ? [...appointmentEvents, ...medicineEvents] : undefined;
 
     const canEdit = user?.allows?.some((allow) => allow.calendars?.edit);
 
     return (
         <ListLayout
             datas={events}
+            isGrid={false}
+            skeletonCount={1}
             resource={Resource.CALENDARS}
+            Skeleton={CalendarSkeleton}
             header={t('calendarPage.header')}
             buttons={(NewButton) => (
                 <>
@@ -38,7 +40,7 @@ export default function CalendarPage() {
             description={t('calendarPage.description')}>
             <div className="h-200 bg-bg-card-light dark:bg-bg-card-dark p-4 rounded-xl shadow-sm border border-border-light dark:border-border-dark text-text-light dark:text-text-dark transition-all duration-200">
                 <Calendar
-                    events={events}
+                    events={events || []}
                     onSelectSlot={(slotInfo) => {
                         console.log('onSelectSlot', slotInfo);
                     }}
