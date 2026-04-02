@@ -30,24 +30,26 @@ export class AuthService {
     async signinQr(
         data: SiginQrDto,
     ): Promise<{ access_token: string; user: ResponseUserDto | null; maxAge: number } | undefined> {
-        if (!data.request || !data.response) return;
-        const save = await this.cacheManager.get<SiginQrDto>(`signin-qr_${data.request.socketId}`);
         this.logger.log(data);
+        if (!data.request) throw new BadRequestException('Invalid request data');
+        if (!data.response) throw new BadRequestException('Invalid response data');
+        const save = await this.cacheManager.get<SiginQrDto>(`signin-qr_${data.request.socketId}`);
         if (!save) throw new NotFoundException('Save not found');
-        if (
-            save.request &&
-            save.response &&
-            data.request.token === save.request.token &&
-            data.response.token === save.response.token &&
-            data.request.socketId === save.request.socketId &&
-            data.response.socketId === save.response.socketId
-        ) {
-            this.logger.log('signin-qr', save);
-            this.cacheManager.del(`signin-qr_${data.request.socketId}`);
-            const result = await this.signin(save.response.user);
-            const maxAge = new Date(save.response.user.expiresAt).getTime() - Date.now();
-            return { ...result, maxAge };
-        }
+        if (!save.request) throw new BadRequestException('Invalid request save');
+        if (!save.response) throw new BadRequestException('Invalid response save');
+        if (data.request.token !== save.request.token)
+            throw new BadRequestException('Invalid request token');
+        if (data.response.token !== save.response.token)
+            throw new BadRequestException('Invalid response token');
+        if (data.request.socketId !== save.request.socketId)
+            throw new BadRequestException('Invalid request socketId');
+        if (data.response.socketId !== save.response.socketId)
+            throw new BadRequestException('Invalid response socketId');
+        this.logger.log('signin-qr', save);
+        this.cacheManager.del(`signin-qr_${data.request.socketId}`);
+        const result = await this.signin(save.response.user);
+        const maxAge = new Date(save.response.user.expiresAt).getTime() - Date.now();
+        return { ...result, maxAge };
     }
 
     async login(user: ReqUserDto) {

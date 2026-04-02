@@ -23,7 +23,7 @@ export class SocketService {
     }
 
     async signinQr(client: Socket, data: SiginQrDto) {
-        this.logger.log(`Client ${client.id} sent signin-qr: ${JSON.stringify(data)}`);
+        this.logger.log(`Client ${client.id} sent signin-qr: `, data);
 
         if (data.response && data.request) {
             // Case 1: Standard Scan - Phone sends credentials to Desktop (Requester)
@@ -42,7 +42,7 @@ export class SocketService {
             // Case 3: Request Only (e.g. Desktop requesting access from Granter)
             this.logger.log('Request Only', data);
             // Append sender's socket ID so Granter knows where to reply
-            const forwardData = { ...data, senderSocketId: client.id };
+            const forwardData: SiginQrDto = { ...data, senderSocketId: client.id };
             // Send to Granter (Target)
             this.server.to(data.request.socketId).emit('signin-qr', forwardData);
         }

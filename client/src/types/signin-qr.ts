@@ -30,8 +30,20 @@ export class SiginQrData {
         this.senderSocketId = data.senderSocketId;
     }
     static getData(qr_data: string | object) {
-        const result = typeof qr_data === 'string' ? JSON.parse(qr_data) : qr_data;
         try {
+            if (typeof qr_data === 'string' && qr_data.startsWith('http')) {
+                console.log(qr_data);
+                const url = new URL(qr_data);
+                const socketId = url.searchParams.get('socketId');
+                const token = url.searchParams.get('token');
+                return new SiginQrData({
+                    request: {
+                        socketId,
+                        token,
+                    },
+                });
+            }
+            const result = typeof qr_data === 'string' ? JSON.parse(qr_data) : qr_data;
             return new SiginQrData({
                 request: result.request,
                 response: result.response,

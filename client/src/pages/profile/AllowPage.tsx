@@ -7,10 +7,10 @@ import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
 import Switch from '../../components/custom/Switch';
-import { useEffect, useMemo, useState } from 'react';
 import QRScanner from '../../components/code/QRScanner';
 import { FaArrowLeft, FaShieldAlt } from 'react-icons/fa';
 import QRGenerator from '../../components/code/QRGenerator';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ResponseData, SiginQrData } from '../../types/signin-qr';
 import { type Allow, type Allows, Resource } from '../../types/auth';
 
@@ -50,6 +50,7 @@ export default function AllowPage() {
     const { t } = useTranslation();
     const expiresMax = 5 * 60 * 1000;
     const { id, emit, useEvent } = useSocket();
+    const activeTokenRef = useRef<string>(crypto.randomUUID());
     const [isScanner, setIsScanner] = useState(true);
     const [isExpiresAt, setIsExpiresAt] = useState(false);
     const [expiresAt, setExpiresAt] = useState<Date>(new Date());
@@ -67,7 +68,7 @@ export default function AllowPage() {
     const updatePermission = (resource: Resource, value: Allow) =>
         setPermissions((prev) => ({ ...prev, [resource]: value }));
 
-    const getValue = () => {
+    const getValue = useCallback(() => {
         if (!id || !user) return;
         setQrExpiresAt(new Date(Date.now() + expiresMax));
         const allowsData: Allows = {
@@ -78,17 +79,17 @@ export default function AllowPage() {
         const data: SiginQrData = {
             response: {
                 socketId: id,
-                token: crypto.randomUUID(),
+                token: activeTokenRef.current,
                 expiresAt: qrExpiresAt,
                 user: { ...user, allows: [allowsData] },
-            } as any,
+            } as ResponseData,
         };
         setResponseData(data);
-    };
+    }, [id, user, permissions, expiresAt, isExpiresAt]);
 
     useEffect(() => {
         getValue();
-    }, [id, permissions, expiresAt, isExpiresAt]);
+    }, [getValue]);
 
     const value = useMemo(() => {
         const url = env.clientUrl;
@@ -98,23 +99,33 @@ export default function AllowPage() {
     }, [responseData]);
 
     // Handle incoming Remote Access Requests
-    useEvent('signin-qr', (incomingData: SiginQrData) => {
-        if (
-            incomingData.request &&
-            responseData?.response &&
-            incomingData.request.token === responseData.response.token &&
-            incomingData.senderSocketId
-        ) {
+    useEvent(
+        'signin-qr',
+        (incomingData: SiginQrData) => {
+            console.log({ incomingData, responseData });
+            if (!incomingData.request) return console.error('No incoming request');
+            if (!responseData?.response) return console.error('No response data');
+            if (!incomingData.request.token) return console.error('No incoming token');
+            if (!responseData.response.token) return console.error('No response token');
+            if (incomingData.request.token !== responseData.response.token)
+                return console.error('Token mismatch');
+            if (!incomingData.senderSocketId) return console.error('No sender socket id');
+
             // Found a matching request! Send the response back to the requester.
             const responseToSend: SiginQrData = {
+                request: incomingData.request, // <--- ต้องส่ง Request กลับไปด้วย เพื่อให้สอดคล้องกับโครงสร้างข้อมูลใน cache ของ requester
                 response: {
                     ...responseData.response,
                     socketId: incomingData.senderSocketId, // Reply to SENDER
-                } as any,
+                },
+                senderSocketId: responseData.senderSocketId,
             };
+            console.log('responseToSend: ', responseToSend);
+
             emit('signin-qr', responseToSend);
-        }
-    });
+        },
+        [responseData],
+    );
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-0">
@@ -232,6 +243,8 @@ export default function AllowPage() {
                                             ],
                                         },
                                     });
+                                    console.log(data);
+
                                     emit('signin-qr', data);
                                 }
                             }}

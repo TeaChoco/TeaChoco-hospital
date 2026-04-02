@@ -1,16 +1,27 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.controller.ts"
+import {
+    Get,
+    Res,
+    Req,
+    Post,
+    Body,
+    Logger,
+    Redirect,
+    UseGuards,
+    Controller,
+    BadRequestException,
+} from '@nestjs/common';
 import { Auth } from '../../types/auth';
 import { AuthService } from './auth.service';
+import { SiginQrDto } from './dto/signin-qr.dto';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
-import { SiginQrDto } from './dto/signin-qr.dto';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { ReqUserDto, UserLoginDto } from '../dto/user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { Get, Res, Req, Logger, UseGuards, Controller, Redirect, Post, Body } from '@nestjs/common';
 
 @ApiTags('User Auth')
 @Controller('user/auth')
@@ -51,9 +62,7 @@ export class AuthController {
                 message: 'Signin QR successful',
             };
         }
-        return {
-            message: 'Signin QR failed',
-        };
+        throw new BadRequestException({ message: 'Signin QR failed' });
     }
 
     @Post('login')
