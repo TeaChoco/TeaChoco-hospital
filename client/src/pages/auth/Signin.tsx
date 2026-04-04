@@ -50,15 +50,15 @@ export default function Signin() {
     useEvent('signin-qr', async (data: SiginQrData) => {
         console.log('useEvent signin-qr: ', data);
         const qrData = SiginQrData.getData(data);
-        if (qrData && qrData instanceof SiginQrData && qrData.request && qrData.response) {
-            try {
+        try {
+            if (qrData && qrData instanceof SiginQrData && qrData.request && qrData.response) {
                 const response = await authAPI.signinQr(qrData);
                 console.log('response: ', response);
-                // if (response) window.location.href = '/';
-            } catch (error: any) {
-                setQueryError(error.message);
-                console.log(error);
-            }
+                if (response) window.location.href = '/';
+            } else throw new Error('Invalid QR data');
+        } catch (error: any) {
+            setQueryError(error.message);
+            console.log(error);
         }
     });
 
