@@ -12,6 +12,7 @@ import { User, UserDocument } from '../schemas/user.schema';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { logSiginQr, SiginQrDto } from './dto/signin-qr.dto';
 import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,23 @@ export class AuthService {
         @InjectModel(User.name, nameDB)
         private readonly userModel: Model<UserDocument>,
     ) {}
+
+    setCookie(res: Response, token: string, maxAge: number) {
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            maxAge,
+            secure: !this.secureService.isDev(),
+            sameSite: this.secureService.isDev() ? 'lax' : 'none',
+        });
+    }
+
+    clearCookie(res: Response) {
+        res.clearCookie('access_token', {
+            httpOnly: true,
+            secure: !this.secureService.isDev(),
+            sameSite: this.secureService.isDev() ? 'lax' : 'none',
+        });
+    }
 
     async signinQr(
         data: SiginQrDto,
