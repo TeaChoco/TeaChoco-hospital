@@ -16,12 +16,8 @@ export default function QRScannerPage() {
                     try {
                         const data = SiginQrData.getData(result);
                         console.log('Scanned data:', data);
-                        if (data && data instanceof SiginQrData) {
-                            emit('signin-qr', data);
-                        } else {
-                            console.log('Invalid QR data format for Signin:', data);
-                            // Optional: Show error toast/message to user
-                        }
+                        if (data instanceof SiginQrData) emit('signin-qr', data);
+                        else console.error('Invalid QR data format for Signin:', data);
                     } catch (error) {
                         console.error('Error parsing QR code:', error);
                     }

@@ -4,7 +4,7 @@ import Paper from '../custom/Paper';
 import { useEffect, useMemo } from 'react';
 import QRGenerator from '../code/QRGenerator';
 import { useSocket } from '../../hooks/useSocket';
-import type { SiginQrData } from '../../types/signin-qr';
+import { SiginQrType, SiginQrData } from '../../types/signin-qr';
 
 export default function QRGeneratorPage() {
     const { id } = useSocket();
@@ -13,7 +13,10 @@ export default function QRGeneratorPage() {
     const getValue = () => {
         if (!id) return;
         const token = crypto.randomUUID();
-        const data: SiginQrData = { request: { socketId: id, token } };
+        const data = SiginQrData.getData({
+            type: SiginQrType.AuthScanUnauth,
+            request: { socketId: id, token },
+        });
         setRequestData(data);
     };
 

@@ -8,11 +8,12 @@ import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
 import Switch from '../../components/custom/Switch';
 import QRScanner from '../../components/code/QRScanner';
+import { type Allow, Resource } from '../../types/auth';
 import { FaArrowLeft, FaShieldAlt } from 'react-icons/fa';
 import QRGenerator from '../../components/code/QRGenerator';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ResponseData, SiginQrData } from '../../types/signin-qr';
-import { type Allow, type Allows, Resource } from '../../types/auth';
+import { useSigninQrStore } from '../../store/useSigninQrStore';
+import { ResponseData, SiginQrData, SiginQrType } from '../../types/signin-qr';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
  * @description Permission Matrix row component
@@ -45,18 +46,17 @@ function PermissionRow({
     );
 }
 
+export type PermissionMatrix = Record<Resource, Allow>;
+
 export default function AllowPage() {
     const { user } = useAuth();
     const { t } = useTranslation();
     const expiresMax = 5 * 60 * 1000;
     const { id, emit, useEvent } = useSocket();
-    const activeTokenRef = useRef<string>(crypto.randomUUID());
     const [isScanner, setIsScanner] = useState(true);
     const [isExpiresAt, setIsExpiresAt] = useState(false);
     const [expiresAt, setExpiresAt] = useState<Date>(new Date());
-    const [qrExpiresAt, setQrExpiresAt] = useState<Date>(new Date());
-    const [responseData, setResponseData] = useState<SiginQrData | undefined>(undefined);
-    const [permissions, setPermissions] = useState<Record<Resource, Allow>>({
+    const [permissions, setPermissions] = useState<PermissionMatrix>({
         [Resource.AUTH]: { edit: true, read: true },
         [Resource.DOCTORS]: { edit: true, read: true },
         [Resource.HOSPITALS]: { edit: true, read: true },
@@ -64,68 +64,58 @@ export default function AllowPage() {
         [Resource.CALENDARS]: { edit: true, read: true },
         [Resource.APPOINTMENTS]: { edit: true, read: true },
     });
+    const { responseData, qrExpiresAt, newResponseData } = useSigninQrStore();
 
     const updatePermission = (resource: Resource, value: Allow) =>
         setPermissions((prev) => ({ ...prev, [resource]: value }));
 
-    const getValue = useCallback(() => {
-        if (!id || !user) return;
-        setQrExpiresAt(new Date(Date.now() + expiresMax));
-        const allowsData: Allows = {
-            ...permissions,
-            user_id: user.user_id,
-            expiresAt: isExpiresAt ? expiresAt : undefined,
-        };
-        const data: SiginQrData = {
-            response: {
-                socketId: id,
-                token: activeTokenRef.current,
-                expiresAt: qrExpiresAt,
-                user: { ...user, allows: [allowsData] },
-            } as ResponseData,
-        };
-        setResponseData(data);
+    const newValue = useCallback(() => {
+        newResponseData({ id, user, expiresAt, expiresMax, isExpiresAt, permissions });
     }, [id, user, permissions, expiresAt, isExpiresAt]);
 
     useEffect(() => {
-        getValue();
-    }, [getValue]);
+        newValue();
+    }, [newValue]);
 
     const value = useMemo(() => {
         const url = env.clientUrl;
         if (!responseData?.response) return '';
-        const { socketId, token } = responseData.response as any;
+        const { socketId, token } = responseData.response;
         return `${url}/signin?socketId=${socketId}&token=${token}`;
     }, [responseData]);
 
-    // Handle incoming Remote Access Requests
-    useEvent(
-        'signin-qr',
+    const handleSigninQr = useCallback(
         (incomingData: SiginQrData) => {
-            console.log({ incomingData, responseData });
-            if (!incomingData.request) return console.error('No incoming request');
-            if (!responseData?.response) return console.error('No response data');
-            if (!incomingData.request.token) return console.error('No incoming token');
-            if (!responseData.response.token) return console.error('No response token');
-            if (incomingData.request.token !== responseData.response.token)
-                return console.error('Token mismatch');
-            if (!incomingData.senderSocketId) return console.error('No sender socket id');
+            try {
+                console.log({ incomingData, responseData });
+                if (!incomingData.request) throw new Error('No incoming request');
+                if (!responseData?.response) throw new Error('No response data');
+                if (!incomingData.request.token) throw new Error('No incoming token');
+                if (!responseData.response.token) throw new Error('No response token');
+                if (!incomingData.senderSocketId) throw new Error('No sender socket id');
+                if (incomingData.request.token !== responseData.response.token)
+                    throw new Error('Token mismatch');
 
-            // Found a matching request! Send the response back to the requester.
-            const responseToSend: SiginQrData = {
-                request: incomingData.request, // <--- ต้องส่ง Request กลับไปด้วย เพื่อให้สอดคล้องกับโครงสร้างข้อมูลใน cache ของ requester
-                response: {
-                    ...responseData.response,
-                    socketId: incomingData.senderSocketId, // Reply to SENDER
-                },
-                senderSocketId: responseData.senderSocketId,
-            };
-            console.log('responseToSend: ', responseToSend);
-
-            emit('signin-qr', responseToSend);
+                // Found a matching request! Send the response back to the requester.
+                const responseToSend = SiginQrData.getData({
+                    type: SiginQrType.AuthScanUnauth,
+                    request: incomingData.request,
+                    response: responseData.response,
+                    senderSocketId: incomingData.senderSocketId,
+                });
+                if (!(responseToSend instanceof SiginQrData))
+                    throw new Error('Response data is not SiginQrData');
+                console.log('responseToSend: ', responseToSend);
+                emit('signin-qr', responseToSend);
+            } catch (error) {
+                console.error(error);
+            }
         },
         [responseData],
     );
+
+    // Handle incoming Remote Access Requests
+    useEvent('signin-qr', (data: SiginQrData) => handleSigninQr(data), [handleSigninQr]);
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-0">
@@ -253,7 +243,7 @@ export default function AllowPage() {
                         <QRGenerator
                             isDev
                             value={value}
-                            refresh={getValue}
+                            refresh={newValue}
                             expiresAt={qrExpiresAt}
                             expiresMax={expiresMax}
                             header={t('accessControl.remoteAccessQR')}

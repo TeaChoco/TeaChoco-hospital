@@ -5,65 +5,54 @@ import { authAPI } from '../../services/auth';
 import { useTranslation } from 'react-i18next';
 import Background from '../../layout/Background';
 import { useSocket } from '../../hooks/useSocket';
-import { SiginQrData } from '../../types/signin-qr';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import Activity from '../../components/custom/Activity';
+import { useEffect, useMemo, useState } from 'react';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
+import Activity from '../../components/custom/Activity';
 import SelectLang from '../../components/navbar/SelectLang';
 import QRScannerPage from '../../components/auth/QRScanner';
 import ThemeToggle from '../../components/navbar/ThemeToggle';
 import QRGeneratorPage from '../../components/auth/QRGenerator';
+import { SiginQrData, SiginQrType } from '../../types/signin-qr';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 type TabType = 'google' | 'scan' | 'generate';
 
 export default function Signin() {
-    const { t } = useTranslation();
     const navigate = useNavigate();
-    const { emit, useEvent } = useSocket();
-    const [searchParams] = useSearchParams();
+    const { t } = useTranslation();
     const { tab } = useParams<{ tab: TabType }>();
+    const [searchParams] = useSearchParams();
     const activeTab: TabType = tab || 'google';
+    const { emit, isConnected, useEvent } = useSocket();
     const { isAuthenticated, loading, error } = useAuth();
     const [queryError, setQueryError] = useState<string | null>(null);
     const [querySource, setQuerySource] = useState<string | null>(null);
 
     const { socketId, token } = useMemo(() => {
-        const params = new URLSearchParams(window.location.search);
-        const socketId = params.get('socketId');
-        const token = params.get('token');
+        const socketId = searchParams.get('socketId');
+        const token = searchParams.get('token');
         return { socketId, token };
-    }, [window.location.search]);
+    }, [searchParams]);
 
-    const signinQr = useCallback(
-        (socketId: string, token: string) => {
-            const data: SiginQrData = { request: { socketId, token } };
-            console.log('signinQr: ', data);
-            if (
-                typeof data === 'object' &&
-                data.request &&
-                typeof data.request.token === 'string' &&
-                typeof data.request.socketId === 'string'
-            )
-                emit('signin-qr', data);
-            else console.log(data, 'is not RequestSocketData');
-        },
-        [emit],
-    );
+    const signinQr = (socketId: string, token: string) => {
+        const data = SiginQrData.getData({
+            type: SiginQrType.UnauthScanAuth,
+            request: { socketId, token },
+        });
+        if (data instanceof SiginQrData) emit('signin-qr', data);
+        else console.log(data, 'is not RequestSocketData');
+    };
 
     useEffect(() => {
-        if (socketId && token) signinQr(socketId, token);
-    }, [socketId, token]);
+        if (socketId && token && isConnected) signinQr(socketId, token);
+    }, [socketId, token, isConnected]);
 
     useEvent('signin-qr', async (data: SiginQrData) => {
         console.log('useEvent signin-qr: ', data);
         const qrData = SiginQrData.getData(data);
         if (qrData && qrData instanceof SiginQrData && qrData.request && qrData.response) {
-            // if (!qrData.request && id && qrData.response)
-            //     qrData.request = { socketId: id, token: qrData.response.token };
             try {
                 const response = await authAPI.signinQr(qrData);
-                console.log(response);
                 if (response) window.location.href = '/';
             } catch (error: any) {
                 setQueryError(error.message);

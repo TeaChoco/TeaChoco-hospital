@@ -1,0 +1,103 @@
+/*-Path: "TeaChoco-Hospital/client/src/pages/Calendar.css" */
+
+.rbc-calendar,
+.rbc-off-range-bg,
+.rbc-month-row,
+.rbc-week-row,
+.rbc-time-content,
+.rbc-time-header-content,
+.rbc-day-bg,
+.rbc-toolbar,
+.rbc-toolbar button,
+.rbc-button-link.rbc-show-more {
+    transition: 0.2s;
+}
+
+.dark .rbc-calendar {
+    color: var(--color-text-dark);
+}
+
+.dark .rbc-off-range-bg {
+    background-color: var(--color-bg-card-hover-dark);
+}
+
+.dark .rbc-today {
+    background-color: rgba(34, 197, 94, 0.1); /* Primary color low opacity */
+}
+
+.dark .rbc-header,
+.dark .rbc-month-view,
+.dark .rbc-time-view,
+.dark .rbc-agenda-view,
+.dark .rbc-month-row,
+.dark .rbc-week-row,
+.dark .rbc-time-content,
+.dark .rbc-time-header-content,
+.dark .rbc-day-bg,
+.dark .rbc-agenda-view table.rbc-agenda-table {
+    border: 1px solid var(--color-border-dark);
+}
+
+.dark .rbc-timeslot-group,
+.dark .rbc-agenda-view table.rbc-agenda-table tbody > tr > td + td {
+    border-left: 1px solid var(--color-border-dark);
+}
+
+.dark .rbc-timeslot-group,
+.dark .rbc-agenda-view table.rbc-agenda-table thead > tr > th {
+    border-bottom: 1px solid var(--color-border-dark);
+}
+
+.dark .rbc-time-slot,
+.dark .rbc-agenda-view table.rbc-agenda-table tbody > tr + tr {
+    border-top: 1px solid var(--color-border-dark);
+}
+
+.rbc-agenda-date-cell {
+    color: var(--color-text-light);
+    background-color: var(--color-bg-card-light);
+}
+
+.dark .rbc-agenda-date-cell {
+    color: var(--color-text-dark);
+    background-color: var(--color-bg-card-dark);
+}
+
+.dark .rbc-button-link.rbc-show-more {
+    background-color: var(--color-bg-card-hover-dark);
+}
+
+.dark .rbc-toolbar button {
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-dark);
+}
+
+.dark .rbc-toolbar button:hover {
+    color: var(--color-text-dark);
+    background-color: var(--color-bg-card-hover-dark);
+}
+
+.dark .rbc-toolbar button:focus {
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-dark);
+    background-color: var(--color-bg-card-hover-dark);
+}
+
+.rbc-toolbar button.rbc-active,
+.rbc-toolbar button.rbc-active:focus {
+    color: white;
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary);
+}
+
+.rbc-toolbar button.rbc-active:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.rbc-agenda-view .rbc-agenda-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

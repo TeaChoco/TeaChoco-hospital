@@ -6,11 +6,11 @@ import { nameDB } from '../../hooks/mongodb';
 import { ReqUserDto } from '../dto/user.dto';
 import { UserService } from '../user.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { SiginQrDto } from './dto/signin-qr.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { logSiginQr, SiginQrDto } from './dto/signin-qr.dto';
 import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class AuthService {
     async signinQr(
         data: SiginQrDto,
     ): Promise<{ access_token: string; user: ResponseUserDto | null; maxAge: number } | undefined> {
-        this.logger.log(data);
+        // this.logger.log(logSiginQr(data));
         if (!data.request) throw new BadRequestException('Invalid request data');
         if (!data.response) throw new BadRequestException('Invalid response data');
         const save = await this.cacheManager.get<SiginQrDto>(`signin-qr_${data.request.socketId}`);
@@ -45,7 +45,7 @@ export class AuthService {
             throw new BadRequestException('Invalid request socketId');
         if (data.response.socketId !== save.response.socketId)
             throw new BadRequestException('Invalid response socketId');
-        this.logger.log('signin-qr', save);
+        // this.logger.log('signin-qr', logSiginQr(save));
         this.cacheManager.del(`signin-qr_${data.request.socketId}`);
         const result = await this.signin(save.response.user);
         const maxAge = new Date(save.response.user.expiresAt).getTime() - Date.now();
