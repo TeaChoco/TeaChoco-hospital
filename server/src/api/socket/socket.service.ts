@@ -25,23 +25,23 @@ export class SocketService {
     async signinQr(client: Socket, data: SiginQrDto): Promise<void> {
         this.logger.log(`Client ${client.id} sent signin-qr: `, logSiginQr(data));
         if (data.response && data.request && data.senderSocketId) {
-            // this.logger.log('Response & Request & SenderSocketId Match', logSiginQr(data));
+            this.logger.log('Response & Request & SenderSocketId Match', logSiginQr(data));
             await this.cacheManager.set(`signin-qr_${data.request.socketId}`, data);
             // Forward to Requester
             this.server.to(data.senderSocketId).emit('signin-qr', data);
         } else if (data.response && data.request) {
             // Case 1: Standard Scan - Phone sends credentials to Desktop (Requester)
-            // this.logger.log('Request & Response Match', logSiginQr(data));
+            this.logger.log('Request & Response Match', logSiginQr(data));
             await this.cacheManager.set(`signin-qr_${data.request.socketId}`, data);
             // Forward to Requester
             this.server.to(data.request.socketId).emit('signin-qr', data);
         } else if (data.response) {
             // Case 2: Response Only (e.g. Granter replying to a Request)
-            // this.logger.log('Response Only', logSiginQr(data));
+            this.logger.log('Response Only', logSiginQr(data));
             this.server.to(data.response.socketId).emit('signin-qr', data);
         } else if (data.request) {
             // Case 3: Request Only (e.g. Desktop requesting access from Granter)
-            // this.logger.log('Request Only', logSiginQr(data));
+            this.logger.log('Request Only', logSiginQr(data));
             // Append sender's socket ID so Granter knows where to reply
             const forwardData: SiginQrDto = { ...data, senderSocketId: client.id };
             // Send to Granter (Target)

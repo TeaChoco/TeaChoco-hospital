@@ -53,7 +53,8 @@ export default function Signin() {
         if (qrData && qrData instanceof SiginQrData && qrData.request && qrData.response) {
             try {
                 const response = await authAPI.signinQr(qrData);
-                if (response) window.location.href = '/';
+                console.log('response: ', response);
+                // if (response) window.location.href = '/';
             } catch (error: any) {
                 setQueryError(error.message);
                 console.log(error);
