@@ -18,6 +18,7 @@ async function bootstrap() {
     const authMiddleware = new AuthMiddleware(secureService);
     const { SERVER_HOST, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
+    app.set('trust proxy', true);
     app.useWebSocketAdapter(new SocketIoAdapter(app, secureService));
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
     app.use(urlencoded({ extended: true, limit: '50mb' }));
