@@ -1,5 +1,7 @@
 //-Path: "TeaChoco-Hospital/client/src/types/types.ts"
 
+export type DateISO = string | Date;
+
 export enum Title {
     MEDICINES = 'Medicines',
     HOSPITALS = 'Hospitals',

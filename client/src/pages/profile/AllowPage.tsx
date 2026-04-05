@@ -3,75 +3,55 @@ import env from '../../configs/env';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { PermissionRow } from './PermissionRow';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import { useSocket } from '../../hooks/useSocket';
 import Switch from '../../components/custom/Switch';
-import QRScanner from '../../components/code/QRScanner';
 import { type Allow, Resource } from '../../types/auth';
-import { FaArrowLeft, FaShieldAlt } from 'react-icons/fa';
-import QRGenerator from '../../components/code/QRGenerator';
+import QRScanner from '../../components/auth/code/QRScanner';
 import { useSigninQrStore } from '../../store/useSigninQrStore';
-import { ResponseData, SiginQrData, SiginQrType } from '../../types/signin-qr';
+import QRGenerator from '../../components/auth/code/QRGenerator';
+import { SiginQrData, SiginQrType } from '../../types/signin-qr';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
-/**
- * @description Permission Matrix row component
- */
-function PermissionRow({
-    label,
-    value,
-    onChange,
-}: {
-    label: string;
-    value: Allow;
-    onChange: (newValue: Allow) => void;
-}) {
-    return (
-        <tr className="border-b border-border-light/50 dark:border-border-dark/50 last:border-0">
-            <td className="py-4 font-medium text-text-light dark:text-text-dark">{label}</td>
-            <td className="py-4 text-center">
-                <Switch
-                    checked={value.read}
-                    onCheckedChange={(checked) => onChange({ ...value, read: checked })}
-                />
-            </td>
-            <td className="py-4 text-center">
-                <Switch
-                    checked={value.edit}
-                    onCheckedChange={(checked) => onChange({ ...value, edit: checked })}
-                />
-            </td>
-        </tr>
-    );
-}
+import { usePermissionsStore } from '../../store/usePermissionsStore';
+import { FaArrowLeft, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
 
 export type PermissionMatrix = Record<Resource, Allow>;
 
 export default function AllowPage() {
+    const {
+        expiresAt,
+        isExpiresAt,
+        qrExpiresAt,
+        responseData,
+        resetToken,
+        setExpiresAt,
+        setIsExpiresAt,
+        newRequestData,
+        newResponseData,
+        checkAuthScanUnauth,
+    } = useSigninQrStore();
     const { user } = useAuth();
     const { t } = useTranslation();
-    const expiresMax = 5 * 60 * 1000;
     const { id, emit, useEvent } = useSocket();
     const [isScanner, setIsScanner] = useState(true);
-    const [isExpiresAt, setIsExpiresAt] = useState(false);
-    const [expiresAt, setExpiresAt] = useState<Date>(new Date());
-    const [permissions, setPermissions] = useState<PermissionMatrix>({
-        [Resource.AUTH]: { edit: true, read: true },
-        [Resource.DOCTORS]: { edit: true, read: true },
-        [Resource.HOSPITALS]: { edit: true, read: true },
-        [Resource.MEDICINES]: { edit: true, read: true },
-        [Resource.CALENDARS]: { edit: true, read: true },
-        [Resource.APPOINTMENTS]: { edit: true, read: true },
-    });
-    const { responseData, qrExpiresAt, newResponseData } = useSigninQrStore();
+    const [error, setError] = useState<string | null>(null);
+    const { permissions, updatePermission } = usePermissionsStore();
 
-    const updatePermission = (resource: Resource, value: Allow) =>
-        setPermissions((prev) => ({ ...prev, [resource]: value }));
+    useEffect(() => {
+        if (error) {
+            console.error(error);
+            const timer = setTimeout(() => setError(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const newValue = useCallback(() => {
-        newResponseData({ id, user, expiresAt, expiresMax, isExpiresAt, permissions });
-    }, [id, user, permissions, expiresAt, isExpiresAt]);
+        resetToken();
+        newRequestData({ id });
+        newResponseData({ id, user, permissions });
+    }, [id, user, permissions, resetToken, newRequestData, newResponseData]);
 
     useEffect(() => {
         newValue();
@@ -79,28 +59,20 @@ export default function AllowPage() {
 
     const value = useMemo(() => {
         const url = env.clientUrl;
-        if (!responseData?.response) return '';
-        const { socketId, token } = responseData.response;
-        return `${url}/signin?socketId=${socketId}&token=${token}`;
+        if (!responseData) return '';
+        const { socketId, token } = responseData;
+        return `${url}/signin?socketId=${socketId}&token=${token}&expiresAt=${qrExpiresAt.toISOString()}`;
     }, [responseData]);
 
     const handleSigninQr = useCallback(
-        (incomingData: SiginQrData) => {
+        (data: SiginQrData) => {
+            const incomingData = SiginQrData.getData(data);
             try {
-                console.log({ incomingData, responseData });
-                if (!incomingData.request) throw new Error('No incoming request');
-                if (!responseData?.response) throw new Error('No response data');
-                if (!incomingData.request.token) throw new Error('No incoming token');
-                if (!responseData.response.token) throw new Error('No response token');
-                if (!incomingData.senderSocketId) throw new Error('No sender socket id');
-                if (incomingData.request.token !== responseData.response.token)
-                    throw new Error('Token mismatch');
-
                 // Found a matching request! Send the response back to the requester.
                 const responseToSend = SiginQrData.getData({
                     type: SiginQrType.AuthScanUnauth,
                     request: incomingData.request,
-                    response: responseData.response,
+                    response: responseData,
                     senderSocketId: incomingData.senderSocketId,
                 });
                 if (!(responseToSend instanceof SiginQrData))
@@ -109,6 +81,7 @@ export default function AllowPage() {
                 emit('signin-qr', responseToSend);
             } catch (error) {
                 console.error(error);
+                setError(error instanceof Error ? error.message : 'Authentication failed');
             }
         },
         [responseData],
@@ -163,13 +136,19 @@ export default function AllowPage() {
                         </Paper>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="text-text-light/40 dark:text-text-dark/40 uppercase text-[10px] font-black tracking-widest border-b border-border-light/50">
-                                    <th className="pb-4">{t('accessControl.resource')}</th>
-                                    <th className="pb-4 px-4">{t('accessControl.read')}</th>
-                                    <th className="pb-4 px-4">{t('accessControl.edit')}</th>
+                    <div className="overflow-x-auto rounded-3xl border border-border-light/50 dark:border-border-dark/50">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="bg-background-light2/80 dark:bg-background-dark2/80 backdrop-blur-sm">
+                                <tr className="text-text-light/50 dark:text-text-dark/50 uppercase text-[11px] font-black tracking-widest border-b border-border-light/50">
+                                    <th className="py-3 px-6 font-black">
+                                        {t('accessControl.resource')}
+                                    </th>
+                                    <th className="py-3 text-center font-black">
+                                        {t('accessControl.read')}
+                                    </th>
+                                    <th className="py-3 text-center font-black">
+                                        {t('accessControl.edit')}
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -204,6 +183,17 @@ export default function AllowPage() {
                 <Paper
                     variant="200"
                     className="p-6 min-h-[450px] flex flex-col justify-center border border-border-light/50 relative">
+                    {/* Dynamic Error notification */}
+                    {error && (
+                        <div className="absolute top-8 left-8 right-8 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
+                            <div className="bg-red-500 text-white p-4 rounded-2xl flex items-center gap-4 shadow-xl shadow-red-500/30 border border-white/20">
+                                <div className="bg-white/20 p-2 rounded-xl">
+                                    <FaExclamationTriangle className="text-white" />
+                                </div>
+                                <p className="text-sm font-bold truncate">{error}</p>
+                            </div>
+                        </div>
+                    )}
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                         <FaShieldAlt className="text-8xl" />
                     </div>
@@ -213,29 +203,16 @@ export default function AllowPage() {
                             header={t('accessControl.scanHeader')}
                             onScan={(result) => {
                                 const data = SiginQrData.getData(result);
-                                if (data instanceof SiginQrData && user) {
-                                    // Standard Scan Mode:
-                                    // QR contains { request: { socketId: 'RequesterID', token: '...' } }
-                                    // We send back { request: ..., response: ... }
-                                    // Server forwards to data.request.socketId
-                                    data.response = new ResponseData({
-                                        socketId: id,
-                                        token: crypto.randomUUID(),
-                                        expiresAt: qrExpiresAt,
-                                        user: {
-                                            ...user,
-                                            allows: [
-                                                {
-                                                    ...permissions,
-                                                    user_id: user.user_id,
-                                                    expiresAt: isExpiresAt ? expiresAt : undefined,
-                                                },
-                                            ],
-                                        },
-                                    });
-                                    console.log(data);
-
+                                try {
+                                    checkAuthScanUnauth(data);
+                                    console.log('onScan: ', { data, responseData });
+                                    data.response = responseData;
+                                    console.log('after onScan: ', data);
                                     emit('signin-qr', data);
+                                } catch (error) {
+                                    return setError(
+                                        error instanceof Error ? error.message : 'Unknown error',
+                                    );
                                 }
                             }}
                         />
@@ -243,9 +220,7 @@ export default function AllowPage() {
                         <QRGenerator
                             isDev
                             value={value}
-                            refresh={newValue}
-                            expiresAt={qrExpiresAt}
-                            expiresMax={expiresMax}
+                            newValue={newValue}
                             header={t('accessControl.remoteAccessQR')}
                         />
                     )}

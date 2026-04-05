@@ -60,7 +60,7 @@ export class AuthService {
 
     async signinQr(
         data: SiginQrDto,
-    ): Promise<{ access_token: string; user: ResponseUserDto | null; maxAge: number } | undefined> {
+    ): Promise<{ access_token: string; user: ResponseUserDto | null; maxAge: number }> {
         // this.logger.log(logSiginQr(data));
         if (!data.request) throw new BadRequestException('Invalid request data');
         if (!data.response) throw new BadRequestException('Invalid response data');
@@ -68,18 +68,34 @@ export class AuthService {
         if (!save) throw new NotFoundException('Save not found');
         if (!save.request) throw new BadRequestException('Invalid request save');
         if (!save.response) throw new BadRequestException('Invalid response save');
-        if (data.request.token !== save.request.token)
+        if (save.request.token !== data.request.token)
             throw new BadRequestException('Invalid request token');
-        if (data.response.token !== save.response.token)
+        if (save.response.token !== data.response.token)
             throw new BadRequestException('Invalid response token');
-        if (data.request.socketId !== save.request.socketId)
+        if (save.request.socketId !== data.request.socketId)
             throw new BadRequestException('Invalid request socketId');
-        if (data.response.socketId !== save.response.socketId)
+        if (save.response.socketId !== data.response.socketId)
             throw new BadRequestException('Invalid response socketId');
-        // this.logger.log('signin-qr', logSiginQr(save));
+        if (save.request.expiresAt !== data.request.expiresAt)
+            throw new BadRequestException('Invalid request expiresAt');
+        if (save.response.expiresAt !== data.response.expiresAt)
+            throw new BadRequestException('Invalid response expiresAt');
+        const now = Date.now();
+        const requestAt = new Date(data.request.expiresAt).getTime();
+        const responseAt = new Date(data.response.expiresAt).getTime();
+        this.logger.log({
+            now,
+            requestAt,
+            responseAt,
+            requestExpiresAt: requestAt < now,
+            responseExpiresAt: responseAt < now,
+            requestExpiresAtNotEqualResponseExpiresAt: requestAt !== responseAt,
+        });
+        if (requestAt < now) throw new BadRequestException('request expiresAt is expired');
+        if (responseAt < now) throw new BadRequestException('response expiresAt is expired');
         this.cacheManager.del(`signin-qr_${data.request.socketId}`);
         const result = await this.signin(save.response.user);
-        const maxAge = new Date(save.response.user.expiresAt).getTime() - Date.now();
+        const maxAge = new Date(save.response.user.expiresAt).getTime() - now;
         return { ...result, maxAge };
     }
 

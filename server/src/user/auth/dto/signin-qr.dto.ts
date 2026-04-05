@@ -1,8 +1,8 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/dto/signin-qr.dto.ts"
-import { IsDate, IsObject, IsString } from 'class-validator';
-import { ReqUserDto } from '../../dto/user.dto';
-import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { ReqUserDto } from '../../dto/user.dto';
+import { IsDate, IsNumber, IsObject, IsString } from 'class-validator';
 
 export enum SiginQrType {
     AuthScanUnauth = 'auth-scan-unauth',
@@ -14,19 +14,29 @@ export class RequestDto {
     @ApiProperty({
         type: String,
         required: true,
-        example: 'socketId',
-        description: 'Socket ID',
+        example: 'token',
+        description: 'Token',
     })
-    socketId: string;
+    token: string;
 
     @IsString()
     @ApiProperty({
         type: String,
         required: true,
-        example: 'token',
-        description: 'Token',
+        example: 'socketId',
+        description: 'Socket ID',
     })
-    token: string;
+    socketId: string;
+
+    @Type(() => Date)
+    @IsDate()
+    @ApiProperty({
+        type: Date,
+        required: true,
+        example: 'expiresAt',
+        description: 'Expires at',
+    })
+    expiresAt: Date;
 }
 
 export class ResponseDto {
@@ -39,6 +49,15 @@ export class ResponseDto {
     })
     token: string;
 
+    @IsString()
+    @ApiProperty({
+        type: String,
+        required: true,
+        example: 'socketId',
+        description: 'Socket ID',
+    })
+    socketId: string;
+
     @Type(() => Date)
     @IsDate()
     @ApiProperty({
@@ -48,15 +67,6 @@ export class ResponseDto {
         description: 'Expires at',
     })
     expiresAt: Date;
-
-    @IsString()
-    @ApiProperty({
-        type: String,
-        required: true,
-        example: 'socketId',
-        description: 'Socket ID',
-    })
-    socketId: string;
 
     @IsObject()
     @ApiProperty({

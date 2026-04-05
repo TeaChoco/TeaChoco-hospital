@@ -21,7 +21,7 @@ export class SecureService {
 
     getAllowedUrls(): string[] {
         const env = this.getEnvConfig();
-        const allowedUrls = [env.CLIENT_URL ?? 'http://localhost:3000'];
+        const allowedUrls = [env.CLIENT_URL ?? 'http://127.0.0.1:3000'];
         allowedUrls.push('http://192.168.1.123:5173');
         return allowedUrls;
     }

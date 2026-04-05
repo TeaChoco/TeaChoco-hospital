@@ -46,18 +46,21 @@ export class AuthController {
         type: SiginQrDto,
     })
     async signinQr(@Res({ passthrough: true }) res: Response, @Body() body: SiginQrDto) {
-        this.logger.log('body: ', body);
-        const result = await this.authService.signinQr(body);
-        this.logger.log('result: ', result);
-        if (result) {
+        // this.logger.log('body: ', body);
+        try {
+            const result = await this.authService.signinQr(body);
+            this.logger.log('result: ', result);
+
             const { access_token, maxAge } = result;
             this.authService.setCookie(res, access_token, maxAge);
             return {
                 result,
                 message: 'Signin QR successful',
             };
+        } catch (error) {
+            this.logger.error('Error in signinQr:', error);
+            throw new BadRequestException({ message: 'Signin QR failed', error });
         }
-        throw new BadRequestException({ message: 'Signin QR failed' });
     }
 
     @Post('login')

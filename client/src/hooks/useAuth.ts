@@ -60,4 +60,3 @@ export function useAuth() {
         [user, error, loading, signout, setError, setLoading, isAuthenticated],
     );
 }
-

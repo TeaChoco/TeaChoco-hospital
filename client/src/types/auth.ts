@@ -1,5 +1,5 @@
 //-Path: "TeaChoco-Hospital/client/src/types/auth.ts"
-import type { QueryOptions } from './types';
+import type { DateISO, QueryOptions } from './types';
 
 export enum Role {
     ADMIN = 'admin',
@@ -23,7 +23,7 @@ export interface Allow {
 
 export interface Allows extends Record<Resource, Allow> {
     user_id: string;
-    expiresAt?: Date;
+    expiresAt?: DateISO;
 }
 
 export interface User {
@@ -36,9 +36,9 @@ export interface User {
     picture?: string;
     allows?: Allows[];
     role?: Role;
-    createdAt?: Date;
-    updatedAt?: Date;
-    lastLoginAt?: Date;
+    createdAt?: DateISO;
+    updatedAt?: DateISO;
+    lastLoginAt?: DateISO;
 }
 
 export interface QRLoginData {

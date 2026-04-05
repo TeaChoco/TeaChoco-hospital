@@ -1,18 +1,19 @@
 // -Path: "TeaChoco-Hospital/client/src/pages/auth/Signin.tsx"
 import SigninGoogle from './SigninGoogle';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { authAPI } from '../../services/auth';
 import { useTranslation } from 'react-i18next';
 import Background from '../../layout/Background';
 import { useSocket } from '../../hooks/useSocket';
-import { useEffect, useMemo, useState } from 'react';
+import { SiginQrData } from '../../types/signin-qr';
 import { IoCloseCircle, IoHome } from 'react-icons/io5';
 import Activity from '../../components/custom/Activity';
+import { useUrlSigninQr } from '../../hooks/useUrlSigninQr';
 import SelectLang from '../../components/navbar/SelectLang';
-import QRScannerPage from '../../components/auth/QRScanner';
 import ThemeToggle from '../../components/navbar/ThemeToggle';
-import QRGeneratorPage from '../../components/auth/QRGenerator';
-import { SiginQrData, SiginQrType } from '../../types/signin-qr';
+import QRScannerPage from '../../components/auth/page/QRScanner';
+import QRGeneratorPage from '../../components/auth/page/QRGenerator';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
 type TabType = 'google' | 'scan' | 'generate';
@@ -20,51 +21,53 @@ type TabType = 'google' | 'scan' | 'generate';
 export default function Signin() {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const urlSigninQr = useUrlSigninQr();
     const { tab } = useParams<{ tab: TabType }>();
     const [searchParams] = useSearchParams();
     const activeTab: TabType = tab || 'google';
-    const { emit, isConnected, useEvent } = useSocket();
+    const { isConnected, useEvent } = useSocket();
     const { isAuthenticated, loading, error } = useAuth();
     const [queryError, setQueryError] = useState<string | null>(null);
     const [querySource, setQuerySource] = useState<string | null>(null);
 
-    const { socketId, token } = useMemo(() => {
-        const socketId = searchParams.get('socketId');
-        const token = searchParams.get('token');
-        return { socketId, token };
-    }, [searchParams]);
+    // const { token, socketId, expiresAt } = useMemo(() => {
+    //     const token = searchParams.get('token');
+    //     const socketId = searchParams.get('socketId');
+    //     const expiresAt = searchParams.get('expiresAt');
+    //     return { socketId, token, expiresAt };
+    // }, [searchParams]);
 
-    const signinQr = (socketId: string, token: string) => {
-        const data = SiginQrData.getData({
-            type: SiginQrType.UnauthScanAuth,
-            request: { socketId, token },
-        });
-        if (data instanceof SiginQrData) emit('signin-qr', data);
-        else console.log(data, 'is not RequestSocketData');
-    };
+    // const signinQr = (socketId: string, token: string, expiresAt: string) => {
+    //     const data = SiginQrData.getData({
+    //         type: SiginQrType.UnauthScanAuth,
+    //         request: { token, socketId, expiresAt: new Date(expiresAt) },
+    //     });
+    //     console.log(data);
+    //     if (data instanceof SiginQrData) emit('signin-qr', data);
+    //     else console.log(data, 'is not RequestSocketData');
+    // };
 
-    useEffect(() => {
-        if (socketId && token && isConnected) signinQr(socketId, token);
-    }, [socketId, token, isConnected]);
+    // useEffect(() => {
+    //     if (isConnected && token && socketId && expiresAt) signinQr(token, socketId, expiresAt);
+    // }, [isConnected, token, socketId, expiresAt]);
 
     useEvent('signin-qr', async (data: SiginQrData) => {
         console.log('useEvent signin-qr: ', data);
         const qrData = SiginQrData.getData(data);
         try {
-            if (qrData && qrData instanceof SiginQrData && qrData.request && qrData.response) {
-                const response = await authAPI.signinQr(qrData);
-                console.log('response: ', response);
-                if (response) window.location.href = '/';
-            } else throw new Error('Invalid QR data');
+            const response = await authAPI.signinQr(qrData);
+            console.log('response: ', response);
+            if (response) window.location.href = '/';
         } catch (error: any) {
             setQueryError(error.message);
-            console.log(error);
+            console.error(error);
         }
     });
 
     useEffect(() => {
-        if (isAuthenticated && !(socketId && token)) navigate('/');
-    }, [isAuthenticated, socketId, token, navigate]);
+        if (isAuthenticated) navigate('/');
+        else if (isConnected) urlSigninQr(window.location.href);
+    }, [isConnected, isAuthenticated, navigate]);
 
     useEffect(() => {
         const errorParam = searchParams.get('error');
