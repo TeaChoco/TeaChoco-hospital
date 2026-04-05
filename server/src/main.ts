@@ -4,7 +4,6 @@ import { json, urlencoded } from 'express';
 import { NestFactory } from '@nestjs/core';
 import cookieParserSDK from 'cookie-parser';
 import { SecureService } from './secure/secure.service';
-import { AuthMiddleware } from './auth/auth.middleware';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SocketIoAdapter } from './api/socket/socket.adapter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -15,7 +14,6 @@ async function bootstrap() {
     const time = Date.now();
     const app = (await NestFactory.create(AppModule)) as NestExpressApplication;
     const secureService = app.get(SecureService);
-    const authMiddleware = new AuthMiddleware(secureService);
     const { SERVER_HOST, SERVER_PORT, CLIENT_URL, MONGODB_URI } = secureService.getEnvConfig();
 
     app.set('trust proxy', true);
@@ -29,7 +27,6 @@ async function bootstrap() {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         credentials: true,
     });
-    app.use(authMiddleware.use.bind(authMiddleware));
 
     if (secureService.isDev()) {
         const theme = new SwaggerTheme();

@@ -12,6 +12,6 @@ import { SocketModule } from './api/socket/socket.module';
 @Module({
     providers: [AppService],
     controllers: [AppController],
-    imports: [ApiModule, UserModule, AuthModule, SocketModule, SecureModule, importCache('global')],
+    imports: [AuthModule, ApiModule, UserModule, SocketModule, SecureModule, importCache('global')],
 })
 export class AppModule {}

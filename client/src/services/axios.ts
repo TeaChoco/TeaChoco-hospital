@@ -16,7 +16,7 @@ const serverRest = axios.create({
 serverRest.interceptors.request.use(
     (config) => {
         const token = env.apiTokenKey;
-        config.headers.apporization = `Bearer ${token}`;
+        config.headers.authorization = `Bearer ${token}`;
         return config;
     },
     (error) => Promise.reject(error),

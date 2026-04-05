@@ -6,8 +6,8 @@ import { SecureService } from './secure/secure.service';
 export class AppService {
     constructor(private readonly secureService: SecureService) {}
 
-    getHello(): string {
-        return 'Hello World!';
+    getHello(): object {
+        return { isDev: this.secureService.isDev() };
     }
 
     getAllEnv(): Record<string, string> {
