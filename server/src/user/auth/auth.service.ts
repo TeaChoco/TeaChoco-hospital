@@ -1,18 +1,18 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.service.ts"
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
+import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { nameDB } from '../../hooks/mongodb';
 import { ReqUserDto } from '../dto/user.dto';
 import { UserService } from '../user.service';
 import { InjectModel } from '@nestjs/mongoose';
+import { SiginQrDto } from './dto/signin-qr.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { User, UserDocument } from '../schemas/user.schema';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { logSiginQr, SiginQrDto } from './dto/signin-qr.dto';
 import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -28,20 +28,33 @@ export class AuthService {
         private readonly userModel: Model<UserDocument>,
     ) {}
 
+    get cookieOption(): {
+        secure: boolean;
+        partitioned: boolean;
+        sameSite: 'lax' | 'none';
+    } {
+        const isDev = this.secureService.isDev();
+        return {
+            // ในเครื่องตัวเองสลับไปใช้ lax และปิด secure เพื่อให้ทดสอบผ่าน http ได้
+            secure: !isDev,
+            partitioned: !isDev,
+            sameSite: isDev ? 'lax' : 'none',
+        };
+    }
+
     setCookie(res: Response, token: string, maxAge: number) {
+        if (maxAge < 0) throw new BadRequestException('Invalid maxAge: ' + maxAge); // ป้องกันค่าติดลบ
         res.cookie('access_token', token, {
-            httpOnly: true,
             maxAge,
-            secure: !this.secureService.isDev(),
-            sameSite: this.secureService.isDev() ? 'lax' : 'none',
+            httpOnly: true,
+            ...this.cookieOption,
         });
     }
 
     clearCookie(res: Response) {
         res.clearCookie('access_token', {
             httpOnly: true,
-            secure: !this.secureService.isDev(),
-            sameSite: this.secureService.isDev() ? 'lax' : 'none',
+            ...this.cookieOption,
         });
     }
 

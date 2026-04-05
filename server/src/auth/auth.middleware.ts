@@ -29,7 +29,7 @@ export class AuthMiddleware implements NestMiddleware {
                 (path.endsWith('**') && req.path.startsWith(path.slice(0, -2))),
         );
 
-        let callback: unknown = null;
+        let callback: Response | null = null;
         if (method === 'GET') {
             if (publicPaths) return next();
             callback = this.checkUrl(res, clientOrigin);
@@ -42,13 +42,13 @@ export class AuthMiddleware implements NestMiddleware {
         return callback;
     }
 
-    checkUrl(res: Response, origin: string) {
+    checkUrl(res: Response, origin: string): Response | null {
         const allowedUrls = this.secureService.getAllowedUrls();
         if (allowedUrls.find((allowedUrl) => origin.startsWith(allowedUrl))) return null;
         return res.status(400).json({ message: 'Bad Request: Invalid Origin' });
     }
 
-    checkToken(res: Response, headers: IncomingHttpHeaders) {
+    checkToken(res: Response, headers: IncomingHttpHeaders): Response | null {
         const authHeader = headers.authorization;
         if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
             const token = authHeader.split(' ')[1];
