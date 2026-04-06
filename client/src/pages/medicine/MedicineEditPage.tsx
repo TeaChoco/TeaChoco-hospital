@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/pages/medicine/MedicineEditPage.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/medicine/MedicineEditPage copy.tsx"
 import {
     FaBox,
     FaPlus,
@@ -19,34 +19,28 @@ import {
     MealTime,
     MedicineType,
     MedicineUnit,
-    FoodRelation,
     type Medicine,
     StorageCondition,
 } from '../../types/medicine';
 import { useMemo } from 'react';
+import { FaImage } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { medicineAPI } from '../../services/api';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
 import InputImg from '../../components/custom/InputImg';
+import InputDate from '../../components/custom/InputDate';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
 import { useMedicines } from '../../store/useMedicineStore';
 import { useHospitals } from '../../store/useHospitalStore';
-import { FaImage } from 'react-icons/fa';
+import TakeInstruction from './components/TakeInstruction';
 
 export default function MedicineEditPage() {
     const { t } = useTranslation();
     const { medicines, resetMedicines } = useMedicines();
     const { hospitals, resetHospitals } = useHospitals();
-
-    /**
-     * @param {Date | undefined} date
-     * @returns {string}
-     */
-    const formatDate = (date: Date | undefined) =>
-        date ? new Date(date).toISOString().split('T')[0] : '';
 
     /**
      * @param {MedicineType} type
@@ -311,123 +305,12 @@ export default function MedicineEditPage() {
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     {data.takeInstructions.map((instruction, index) => (
-                                        <Paper
+                                        <TakeInstruction
                                             key={index}
-                                            variant="200"
-                                            className="p-5 flex flex-col gap-4 relative group">
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setData(
-                                                        (prev) =>
-                                                            prev && {
-                                                                ...prev,
-                                                                takeInstructions:
-                                                                    prev.takeInstructions.filter(
-                                                                        (_, idx) => idx !== index,
-                                                                    ),
-                                                            },
-                                                    )
-                                                }
-                                                className="absolute top-4 right-4 p-2 text-red-500/50 hover:text-red-500 transition-colors">
-                                                <FaTrash size={14} />
-                                            </button>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <Select
-                                                    label={t('medicines.mealReference')}
-                                                    value={instruction.mealTime}
-                                                    options={Object.values(MealTime).map((mt) => ({
-                                                        value: mt,
-                                                        label: t(`medicines.enums.MealTime.${mt}`),
-                                                    }))}
-                                                    onChange={(event) =>
-                                                        setData(
-                                                            (prev) =>
-                                                                prev && {
-                                                                    ...prev,
-                                                                    takeInstructions:
-                                                                        prev.takeInstructions.map(
-                                                                            (ti, idx) =>
-                                                                                idx === index
-                                                                                    ? {
-                                                                                          ...ti,
-                                                                                          mealTime:
-                                                                                              event
-                                                                                                  .target
-                                                                                                  .value as MealTime,
-                                                                                      }
-                                                                                    : ti,
-                                                                        ),
-                                                                },
-                                                        )
-                                                    }
-                                                />
-                                                <Select
-                                                    label={t('medicines.foodRelation')}
-                                                    value={instruction.relation || ''}
-                                                    options={[
-                                                        { value: '', label: t('common.na') },
-                                                        ...Object.values(FoodRelation).map(
-                                                            (fr) => ({
-                                                                value: fr,
-                                                                label: t(
-                                                                    `medicines.enums.FoodRelation.${fr}`,
-                                                                ),
-                                                            }),
-                                                        ),
-                                                    ]}
-                                                    onChange={(event) =>
-                                                        setData(
-                                                            (prev) =>
-                                                                prev && {
-                                                                    ...prev,
-                                                                    takeInstructions:
-                                                                        prev.takeInstructions.map(
-                                                                            (ti, idx) =>
-                                                                                idx === index
-                                                                                    ? {
-                                                                                          ...ti,
-                                                                                          relation:
-                                                                                              event
-                                                                                                  .target
-                                                                                                  .value as FoodRelation,
-                                                                                      }
-                                                                                    : ti,
-                                                                        ),
-                                                                },
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <Input
-                                                label={t('medicines.specialInstructions')}
-                                                placeholder={t(
-                                                    'medicines.specialInstructionsPlaceholder',
-                                                )}
-                                                value={instruction.notes || ''}
-                                                onChange={(event) =>
-                                                    setData(
-                                                        (prev) =>
-                                                            prev && {
-                                                                ...prev,
-                                                                takeInstructions:
-                                                                    prev.takeInstructions.map(
-                                                                        (ti, idx) =>
-                                                                            idx === index
-                                                                                ? {
-                                                                                      ...ti,
-                                                                                      notes: event
-                                                                                          .target
-                                                                                          .value,
-                                                                                  }
-                                                                                : ti,
-                                                                    ),
-                                                            },
-                                                    )
-                                                }
-                                            />
-                                        </Paper>
+                                            index={index}
+                                            setData={setData}
+                                            instruction={instruction}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -449,46 +332,25 @@ export default function MedicineEditPage() {
                             variant="100"
                             className="p-6 space-y-8 border-l-4 border-indigo-500/40">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <Input
-                                    type="date"
+                                <InputDate
                                     label={t('medicines.treatmentStart')}
-                                    value={formatDate(data.startDate)}
-                                    onChange={(event) =>
-                                        setData(
-                                            (prev) =>
-                                                prev && {
-                                                    ...prev,
-                                                    startDate: new Date(event.target.value),
-                                                },
-                                        )
+                                    value={data.startDate}
+                                    setValue={(value) =>
+                                        setData((prev) => prev && { ...prev, startDate: value })
                                     }
                                 />
-                                <Input
-                                    type="date"
+                                <InputDate
                                     label={t('medicines.treatmentEnd')}
-                                    value={formatDate(data.endDate)}
-                                    onChange={(event) =>
-                                        setData(
-                                            (prev) =>
-                                                prev && {
-                                                    ...prev,
-                                                    endDate: new Date(event.target.value),
-                                                },
-                                        )
+                                    value={data.endDate}
+                                    setValue={(value) =>
+                                        setData((prev) => prev && { ...prev, endDate: value })
                                     }
                                 />
-                                <Input
-                                    type="date"
+                                <InputDate
                                     label={t('medicines.expiry')}
-                                    value={formatDate(data.expiryDate)}
-                                    onChange={(event) =>
-                                        setData(
-                                            (prev) =>
-                                                prev && {
-                                                    ...prev,
-                                                    expiryDate: new Date(event.target.value),
-                                                },
-                                        )
+                                    value={data.expiryDate}
+                                    setValue={(value) =>
+                                        setData((prev) => prev && { ...prev, expiryDate: value })
                                     }
                                 />
                             </div>

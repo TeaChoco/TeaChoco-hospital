@@ -1,11 +1,19 @@
-//-Path: "TeaChoco-Hospital/client/src/components/custom/InputImg.tsx"
+// -Path: "TeaChoco-Hospital/client/src/components/custom/InputImg.tsx"
+import {
+    FaSync,
+    FaCheck,
+    FaImage,
+    FaTrash,
+    FaCamera,
+    FaSpinner,
+    FaCloudUploadAlt,
+} from 'react-icons/fa';
 import Modal from './Modal';
 import Input from './Input';
-import env from '../../configs/env';
-import { imgAPI } from '../../services/img';
-import { useState, useEffect, useId } from 'react';
+import Select from './Select';
 import { useTranslation } from 'react-i18next';
-import { FaImage, FaCloudUploadAlt, FaCheck, FaSpinner, FaTrash } from 'react-icons/fa';
+import { useImgStore } from '../../store/useImgStore';
+import { useState, useEffect, useId, useRef } from 'react';
 
 export default function InputImg({
     id,
@@ -28,58 +36,124 @@ export default function InputImg({
     labelClassName?: string;
     setValue: (value?: string) => void;
 }) {
-    const { t } = useTranslation();
     const generatedId = useId();
     const inputId = id || generatedId;
     const [isOpen, setIsOpen] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const [isUploading, setIsUploading] = useState(false);
-    const [dbImages, setDbImages] = useState<string[]>([]);
-    const [isLoadingGallery, setIsLoadingGallery] = useState(false);
-    const [activeTab, setActiveTab] = useState<'upload' | 'gallery'>('gallery');
+    const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+    const [selectedDeviceId, setSelectedDeviceId] = useState<string>('');
+    const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+    const { images, isLoading, deleteImage, fetchImages, uploadImage } = useImgStore();
+    const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+    const [activeTab, setActiveTab] = useState<'upload' | 'gallery' | 'camera'>('gallery');
 
-    useEffect(() => {
-        if (isOpen) {
-            const fetchImages = async () => {
-                setIsLoadingGallery(true);
-                try {
-                    const res = await imgAPI.findAll();
-                    const urls = res.data.map((img) => `${env.apiUrl}/api/img/${img._id}`);
-                    setDbImages(urls);
-                } catch (error) {
-                    console.error('Failed to fetch images:', error);
-                } finally {
-                    setIsLoadingGallery(false);
-                }
-            };
-            fetchImages();
+    const { t } = useTranslation();
+
+    const getDevices = async () => {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+            setDevices(videoDevices);
+            if (videoDevices.length > 0 && !selectedDeviceId) {
+                const backCamera = videoDevices.find(
+                    (device) =>
+                        device.label.toLowerCase().includes('back') ||
+                        device.label.toLowerCase().includes('environment') ||
+                        device.label.toLowerCase().includes('rear'),
+                );
+                setSelectedDeviceId(backCamera?.deviceId || videoDevices[0].deviceId);
+            }
+        } catch (err) {
+            console.error('Error getting devices:', err);
         }
-    }, [isOpen]);
-
-    const handleSelectImage = (url: string) => {
-        setValue(url);
-        setIsOpen(false);
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+    useEffect(() => {
+        if (isOpen && activeTab === 'camera') getDevices();
+    }, [isOpen, activeTab]);
 
-        setIsUploading(true);
+    useEffect(() => {
+        if (isOpen) fetchImages();
+    }, [isOpen]);
 
-        try {
-            const res = await imgAPI.create(file);
-            const imageId = res.data?._id;
-
-            if (imageId) {
-                const imageUrl = `${env.apiUrl}/api/img/${imageId}`;
-                setDbImages([imageUrl, ...dbImages]);
-                handleSelectImage(imageUrl);
+    useEffect(() => {
+        const stopCamera = () => {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach((track) => track.stop());
+                setCameraStream(null);
             }
+        };
+
+        const startCamera = async () => {
+            try {
+                const constraints: MediaStreamConstraints = {
+                    video: selectedDeviceId
+                        ? { deviceId: { exact: selectedDeviceId } }
+                        : { facingMode },
+                    audio: false,
+                };
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                setCameraStream(stream);
+                if (videoRef.current) videoRef.current.srcObject = stream;
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+            }
+        };
+
+        if (isOpen && activeTab === 'camera') startCamera();
+        else stopCamera();
+
+        return () => stopCamera();
+    }, [activeTab, isOpen, facingMode, selectedDeviceId]);
+
+    const handleCameraCapture = async () => {
+        if (!videoRef.current) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.drawImage(videoRef.current, 0, 0);
+            canvas.toBlob(async (blob) => {
+                if (blob) {
+                    const file = new File([blob], `capture-${Date.now()}.jpg`, {
+                        type: 'image/jpeg',
+                    });
+                    const imageUrl = await uploadImage(file);
+                    if (imageUrl) handleSelectImage(imageUrl);
+                }
+            }, 'image/jpeg');
+        }
+    };
+
+    const handleDeleteGalleryImage = async (event: React.MouseEvent, url: string) => {
+        event.stopPropagation();
+        if (confirm(t('common.confirmDelete', 'Are you sure you want to delete this image?'))) {
+            try {
+                await deleteImage(url);
+                if (value === url) setValue(undefined);
+            } catch (error) {
+                console.error('Delete flow failed:', error);
+            }
+        }
+    };
+
+    const uploadAndSelect = async (file: File) => {
+        setIsUploading(true);
+        try {
+            const imageUrl = await uploadImage(file);
+            if (imageUrl) handleSelectImage(imageUrl);
         } catch (error) {
             console.error('Upload failed:', error);
         } finally {
             setIsUploading(false);
         }
+    };
+
+    const handleSelectImage = (url: string) => {
+        setValue(url);
+        setIsOpen(false);
     };
 
     // Styles matching Input.tsx for consistency
@@ -109,7 +183,7 @@ export default function InputImg({
                                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                             />
                         </div>
-                            <div className="flex w-full flex-col justify-center h-40 gap-2">
+                        <div className="flex w-full flex-col justify-center h-40 gap-2">
                             <Input
                                 value={value}
                                 className="w-full"
@@ -183,6 +257,16 @@ export default function InputImg({
                             <FaCloudUploadAlt className="text-lg" />
                             {t('common.uploadNew')}
                         </button>
+                        <button
+                            onClick={() => setActiveTab('camera')}
+                            className={`flex items-center gap-2 px-6 py-3 font-bold text-sm transition-colors border-b-2 ${
+                                activeTab === 'camera'
+                                    ? 'border-primary text-primary'
+                                    : 'border-transparent text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark'
+                            }`}>
+                            <FaCamera className="text-lg" />
+                            {t('common.camera', 'Camera')}
+                        </button>
                     </div>
 
                     {/* Content */}
@@ -202,7 +286,10 @@ export default function InputImg({
                                             type="file"
                                             accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                            onChange={handleFileUpload}
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) uploadAndSelect(file);
+                                            }}
                                         />
                                         <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20">
                                             <FaCloudUploadAlt className="text-4xl" />
@@ -218,7 +305,60 @@ export default function InputImg({
                                     </>
                                 )}
                             </div>
-                        ) : isLoadingGallery ? (
+                        ) : activeTab === 'camera' ? (
+                            <div className="flex flex-col items-center gap-6 p-4">
+                                <div className="w-full flex flex-col gap-4">
+                                    <Select
+                                        label={t('common.selectCamera', 'Select Camera')}
+                                        value={selectedDeviceId}
+                                        onChange={(e) => setSelectedDeviceId(e.target.value)}
+                                        options={devices.map((device) => ({
+                                            label:
+                                                device.label ||
+                                                `Camera ${device.deviceId.slice(0, 5)}`,
+                                            value: device.deviceId,
+                                        }))}>
+                                        {(Option, options) =>
+                                            options?.map((option) => (
+                                                <Option key={option.value} {...option} />
+                                            ))
+                                        }
+                                    </Select>
+                                </div>
+                                <div className="relative w-full max-w-lg aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl border-4 border-border-light/20 dark:border-border-dark/20">
+                                    <video
+                                        ref={videoRef}
+                                        autoPlay
+                                        playsInline
+                                        className="w-full h-full object-cover mirror"
+                                    />
+                                    {(isUploading || isLoading) && (
+                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
+                                            <FaSpinner className="text-4xl text-primary animate-spin" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setFacingMode((prev) =>
+                                                prev === 'user' ? 'environment' : 'user',
+                                            )
+                                        }
+                                        className="w-14 h-14 rounded-full bg-secondary/10 text-secondary hover:bg-secondary/20 transition-all flex items-center justify-center shadow-lg">
+                                        <FaSync className="text-xl" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleCameraCapture}
+                                        disabled={isUploading || isLoading}
+                                        className="w-14 h-14 rounded-full bg-primary text-white hover:scale-110 active:scale-95 transition-all flex items-center justify-center shadow-xl shadow-primary/30 disabled:opacity-50">
+                                        <div className="w-6 h-6 rounded-full border-2 border-white" />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : isLoading ? (
                             <div className="flex flex-col items-center justify-center py-20 gap-4">
                                 <FaSpinner className="text-4xl text-primary animate-spin" />
                                 <p className="font-bold text-text-muted-light dark:text-text-muted-dark">
@@ -227,10 +367,11 @@ export default function InputImg({
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                {dbImages.length > 0 ? (
-                                    dbImages.map((img, index) => (
+                                {images.length > 0 ? (
+                                    images.map((img, index) => (
                                         <button
                                             key={index}
+                                            type="button"
                                             onClick={() => handleSelectImage(img)}
                                             className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                                                 value === img
@@ -254,6 +395,12 @@ export default function InputImg({
                                                     </div>
                                                 )}
                                             </div>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => handleDeleteGalleryImage(e, img)}
+                                                className="absolute top-2 right-2 w-8 h-8 rounded-lg bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shadow-lg transform scale-0 group-hover:scale-100 transition-all duration-200 hover:scale-110 z-30">
+                                                <FaTrash className="text-xs" />
+                                            </button>
                                         </button>
                                     ))
                                 ) : (

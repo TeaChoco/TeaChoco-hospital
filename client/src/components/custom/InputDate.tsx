@@ -1,0 +1,34 @@
+// -Path: "TeaChoco-Hospital/client/src/components/custom/InputDate.tsx"
+import Input, { type InputProps } from './Input';
+
+export type InputDateProps = Omit<InputProps, 'type' | 'value'> & {
+    value?: Date;
+    setValue?: (value: Date) => void;
+};
+
+export default function InputDate(props: InputDateProps) {
+    const { value, setValue, onChange, ...rest } = props;
+
+    /**
+     * @param {Date | undefined} date
+     * @returns {string}
+     */
+    const formatDate = (date: Date | undefined) => {
+        if (!date) return '';
+        const d = new Date(date);
+        return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
+    };
+
+    return (
+        <Input
+            type="date"
+            value={formatDate(value)}
+            onChange={(event) => {
+                const date = new Date(event.target.value);
+                onChange?.(event);
+                setValue?.(date);
+            }}
+            {...rest}
+        />
+    );
+}
