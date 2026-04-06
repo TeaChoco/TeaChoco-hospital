@@ -6,6 +6,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "prestart": "cross-env VERSION=$npm_package_version",
+    "prestart:dev": "cross-env VERSION=$npm_package_version",
+    "prebuild": "cross-env VERSION=$npm_package_version",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",

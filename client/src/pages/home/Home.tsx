@@ -84,7 +84,9 @@ export default function Home() {
                 <div className="max-w-6xl mx-auto text-center space-y-12 relative z-10 animate-fadeIn">
                     <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-black tracking-widest uppercase shadow-lg shadow-primary/5">
                         <HiSparkles className="text-xl animate-spin-slow" />
-                        <span>Personal Health Evolution</span>
+                        <span>
+                            Personal Health Evolution version: {import.meta.env.VITE_VERSION}
+                        </span>
                     </div>
 
                     <div className="space-y-6">
