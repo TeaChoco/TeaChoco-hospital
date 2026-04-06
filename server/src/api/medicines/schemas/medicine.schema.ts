@@ -10,7 +10,7 @@ import {
 import { Document } from 'mongoose';
 import { ApiMetaSchema } from '../../../types/dto';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { MedicineType, StorageCondition } from '../../../types/medicine';
+import { MedicineType, StorageCondition, DayOfWeek } from '../../../types/medicine';
 
 export type MedicineDocument = Medicine & Document;
 
@@ -28,8 +28,8 @@ export class Medicine extends ApiMetaSchema {
     @Prop({ type: String })
     qrCode?: string;
 
-    @Prop({ type: String })
-    imageUrl?: string;
+    @Prop({ type: [String] })
+    imageUrl?: string[];
 
     @Prop({ type: String })
     category?: string;
@@ -49,14 +49,14 @@ export class Medicine extends ApiMetaSchema {
     @Prop({ type: String, enum: MedicineType, required: true })
     type: MedicineType;
 
-    @Prop({ type: Date, required: true })
-    endDate: Date;
+    @Prop({ type: Date })
+    startDate?: Date;
 
-    @Prop({ type: Date, required: true })
-    startDate: Date;
+    @Prop({ type: Date })
+    endDate?: Date;
 
-    @Prop({ type: Date, required: true })
-    expiryDate: Date;
+    @Prop({ type: Date })
+    expiryDate?: Date;
 
     @Prop({ type: Object })
     dosage: MedicineDosageDto;
@@ -78,6 +78,9 @@ export class Medicine extends ApiMetaSchema {
 
     @Prop({ type: [String], enum: StorageCondition })
     storageConditions: StorageCondition[];
+
+    @Prop({ type: [String], enum: DayOfWeek })
+    frequencyDays: DayOfWeek[];
 }
 
 export const MedicineSchema = SchemaFactory.createForClass(Medicine);

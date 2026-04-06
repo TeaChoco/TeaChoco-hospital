@@ -9,6 +9,7 @@ import { CreateMedicineDto } from './dto/create-medicine.dto';
 import { UpdateMedicineDto } from './dto/update-medicine.dto';
 import { ResponseMedicineDto } from './dto/response-medicine.dto';
 import { Medicine, MedicineDocument } from './schemas/medicine.schema';
+import { ApiMetaSchema, ApiOutMetaSchema } from 'src/types/dto';
 
 @Injectable()
 export class MedicinesService {
@@ -25,6 +26,33 @@ export class MedicinesService {
         @InjectModel(Medicine.name, nameDB)
         private readonly medicineModel: Model<Medicine>,
     ) {}
+
+    getNewData(data: CreateMedicineDto): ApiOutMetaSchema<Medicine> {
+        return {
+            name: data.name,
+            genericName: data.genericName,
+            brand: data.brand,
+            type: data.type,
+            category: data.category,
+            takeInstructions: data.takeInstructions,
+            dosage: data.dosage,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            expiryDate: data.expiryDate,
+            storageConditions: data.storageConditions,
+            storageNotes: data.storageNotes,
+            frequencyDays: data.frequencyDays,
+            package: data.package,
+            hospital: data.hospital,
+            sideEffects: data.sideEffects,
+            warnings: data.warnings,
+            imageUrl: data.imageUrl,
+            qrCode: data.qrCode,
+            barcode: data.barcode,
+            isActive: data.isActive,
+            isCompleted: data.isCompleted,
+        };
+    }
 
     async findAll(auth: Auth) {
         const medicines = await this.medicineModel.find();
@@ -43,86 +71,20 @@ export class MedicinesService {
     }
 
     async create(auth: Auth, data: CreateMedicineDto) {
-        const newData = await this.apiService.create(auth, data, (data) => ({
-            name: data.name,
-            genericName: data.genericName,
-            brand: data.brand,
-            type: data.type,
-            category: data.category,
-            takeInstructions: data.takeInstructions,
-            dosage: data.dosage,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            expiryDate: data.expiryDate,
-            storageConditions: data.storageConditions,
-            storageNotes: data.storageNotes,
-            package: data.package,
-            hospital: data.hospital,
-            sideEffects: data.sideEffects,
-            warnings: data.warnings,
-            imageUrl: data.imageUrl,
-            qrCode: data.qrCode,
-            barcode: data.barcode,
-            isActive: data.isActive,
-            isCompleted: data.isCompleted,
-        }));
+        const newData = await this.apiService.create(auth, data, this.getNewData);
         const medicine = new this.medicineModel(newData);
         return await medicine.save();
     }
 
     async createMany(auth: Auth, data: CreateMedicineDto[]) {
-        const newData = await this.apiService.createMany(auth, data, (data) => ({
-            name: data.name,
-            genericName: data.genericName,
-            brand: data.brand,
-            type: data.type,
-            category: data.category,
-            takeInstructions: data.takeInstructions,
-            dosage: data.dosage,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            expiryDate: data.expiryDate,
-            storageConditions: data.storageConditions,
-            storageNotes: data.storageNotes,
-            package: data.package,
-            hospital: data.hospital,
-            sideEffects: data.sideEffects,
-            warnings: data.warnings,
-            imageUrl: data.imageUrl,
-            qrCode: data.qrCode,
-            barcode: data.barcode,
-            isActive: data.isActive,
-            isCompleted: data.isCompleted,
-        }));
+        const newData = await this.apiService.createMany(auth, data, this.getNewData);
         return await this.medicineModel.insertMany(newData);
     }
 
     async update(auth: Auth, id: string, data: UpdateMedicineDto) {
         const medicine = await this.findOne(auth, id);
         this.logger.log(data);
-        const newData = await this.apiService.update(auth, medicine, data, (data) => ({
-            name: data.name,
-            genericName: data.genericName,
-            brand: data.brand,
-            type: data.type,
-            category: data.category,
-            takeInstructions: data.takeInstructions,
-            dosage: data.dosage,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            expiryDate: data.expiryDate,
-            storageConditions: data.storageConditions,
-            storageNotes: data.storageNotes,
-            package: data.package,
-            hospital: data.hospital,
-            sideEffects: data.sideEffects,
-            warnings: data.warnings,
-            imageUrl: data.imageUrl,
-            qrCode: data.qrCode,
-            barcode: data.barcode,
-            isActive: data.isActive,
-            isCompleted: data.isCompleted,
-        }));
+        const newData = await this.apiService.update(auth, medicine, data, this.getNewData);
         return await this.medicineModel.findByIdAndUpdate(id, newData, { new: true });
     }
 

@@ -255,11 +255,17 @@
     }
     .no-arrow {
         -moz-appearance: textfield;
+        appearance: textfield;
     }
 
     /* Date and Time Input Styles */
     input[type='date']::-webkit-calendar-picker-indicator,
     input[type='time']::-webkit-calendar-picker-indicator {
         @apply cursor-pointer opacity-60 hover:opacity-100 transition-opacity p-1 rounded-md;
+    }
+
+    .no-clear::-webkit-clear-button {
+        display: none;
+        -webkit-appearance: none;
     }
 }

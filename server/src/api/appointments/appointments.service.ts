@@ -4,6 +4,7 @@ import { Auth } from '../../types/auth';
 import { ApiService } from '../api.service';
 import { nameDB } from '../../hooks/mongodb';
 import { InjectModel } from '@nestjs/mongoose';
+import { ApiOutMetaSchema } from 'src/types/dto';
 import { Injectable, Logger } from '@nestjs/common';
 import { Doctor } from '../doctors/schemas/doctor.schema';
 import { DoctorsService } from '../doctors/doctors.service';
@@ -50,6 +51,57 @@ export class AppointmentsService {
         };
     }
 
+    getNewData(data: CreateAppointmentDto): ApiOutMetaSchema<Appointment> {
+        return {
+            appointmentNumber: data.appointmentNumber,
+            patientType: data.patientType,
+            hospitalId: data.hospitalId,
+            doctor_id: data.doctor_id,
+            department: data.department,
+            type: data.type,
+            subType: data.subType,
+            purpose: data.purpose,
+            description: data.description,
+            scheduledDate: data.scheduledDate,
+            scheduledTime: data.scheduledTime,
+            expectedDuration: data.expectedDuration,
+            actualStartTime: data.actualStartTime,
+            actualEndTime: data.actualEndTime,
+            checkInTime: data.checkInTime,
+            checkOutTime: data.checkOutTime,
+            location: data.location,
+            roomNumber: data.roomNumber,
+            floor: data.floor,
+            status: data.status,
+            statusHistory: data.statusHistory,
+            urgency: data.urgency,
+            priority: data.priority,
+            preparation: data.preparation,
+            remindersSent: data.remindersSent,
+            symptoms: data.symptoms,
+            preliminaryDiagnosis: data.preliminaryDiagnosis,
+            payment: data.payment,
+            insurance: data.insurance,
+            prescribedMedicines: data.prescribedMedicines,
+            treatmentPlan: data.treatmentPlan,
+            vitalSigns: data.vitalSigns,
+            labResults: data.labResults,
+            imagingResults: data.imagingResults,
+            followUp: data.followUp,
+            nextAppointmentId: data.nextAppointmentId,
+            doctorNotes: data.doctorNotes,
+            nurseNotes: data.nurseNotes,
+            patientNotes: data.patientNotes,
+            referralFrom: data.referralFrom,
+            referralTo: data.referralTo,
+            previousAppointmentId: data.previousAppointmentId,
+            cancelledBy: data.cancelledBy,
+            cancellationReason: data.cancellationReason,
+            noShowReason: data.noShowReason,
+            escorts: data.escorts,
+        };
+    }
+
     async findAll(auth: Auth) {
         const appointments = await this.appointmentModel.find();
         return this.apiService.findAll(auth, appointments);
@@ -67,108 +119,14 @@ export class AppointmentsService {
     }
 
     async create(auth: Auth, data: CreateAppointmentDto) {
-        const newData = await this.apiService.create(auth, data, (data) => ({
-            appointmentNumber: data.appointmentNumber,
-            patientType: data.patientType,
-            hospitalId: data.hospitalId,
-            doctor_id: data.doctor_id,
-            department: data.department,
-            type: data.type,
-            subType: data.subType,
-            purpose: data.purpose,
-            description: data.description,
-            scheduledDate: data.scheduledDate,
-            scheduledTime: data.scheduledTime,
-            expectedDuration: data.expectedDuration,
-            actualStartTime: data.actualStartTime,
-            actualEndTime: data.actualEndTime,
-            checkInTime: data.checkInTime,
-            checkOutTime: data.checkOutTime,
-            location: data.location,
-            roomNumber: data.roomNumber,
-            floor: data.floor,
-            status: data.status,
-            statusHistory: data.statusHistory,
-            urgency: data.urgency,
-            priority: data.priority,
-            preparation: data.preparation,
-            remindersSent: data.remindersSent,
-            symptoms: data.symptoms,
-            preliminaryDiagnosis: data.preliminaryDiagnosis,
-            payment: data.payment,
-            insurance: data.insurance,
-            prescribedMedicines: data.prescribedMedicines,
-            treatmentPlan: data.treatmentPlan,
-            vitalSigns: data.vitalSigns,
-            labResults: data.labResults,
-            imagingResults: data.imagingResults,
-            followUp: data.followUp,
-            nextAppointmentId: data.nextAppointmentId,
-            doctorNotes: data.doctorNotes,
-            nurseNotes: data.nurseNotes,
-            patientNotes: data.patientNotes,
-            referralFrom: data.referralFrom,
-            referralTo: data.referralTo,
-            previousAppointmentId: data.previousAppointmentId,
-            cancelledBy: data.cancelledBy,
-            cancellationReason: data.cancellationReason,
-            noShowReason: data.noShowReason,
-            escorts: data.escorts,
-        }));
+        const newData = await this.apiService.create(auth, data, this.getNewData);
         const appointment = new this.appointmentModel(newData);
         return await appointment.save();
     }
 
     async update(auth: Auth, id: string, data: UpdateAppointmentDto) {
         const appointment = await this.findOne(auth, id);
-        const newData = await this.apiService.update(auth, appointment, data, (data) => ({
-            appointmentNumber: data.appointmentNumber,
-            patientType: data.patientType,
-            hospitalId: data.hospitalId,
-            doctor_id: data.doctor_id,
-            department: data.department,
-            type: data.type,
-            subType: data.subType,
-            purpose: data.purpose,
-            description: data.description,
-            scheduledDate: data.scheduledDate,
-            scheduledTime: data.scheduledTime,
-            expectedDuration: data.expectedDuration,
-            actualStartTime: data.actualStartTime,
-            actualEndTime: data.actualEndTime,
-            checkInTime: data.checkInTime,
-            checkOutTime: data.checkOutTime,
-            location: data.location,
-            roomNumber: data.roomNumber,
-            floor: data.floor,
-            status: data.status,
-            statusHistory: data.statusHistory,
-            urgency: data.urgency,
-            priority: data.priority,
-            preparation: data.preparation,
-            remindersSent: data.remindersSent,
-            symptoms: data.symptoms,
-            preliminaryDiagnosis: data.preliminaryDiagnosis,
-            payment: data.payment,
-            insurance: data.insurance,
-            prescribedMedicines: data.prescribedMedicines,
-            treatmentPlan: data.treatmentPlan,
-            vitalSigns: data.vitalSigns,
-            labResults: data.labResults,
-            imagingResults: data.imagingResults,
-            followUp: data.followUp,
-            nextAppointmentId: data.nextAppointmentId,
-            doctorNotes: data.doctorNotes,
-            nurseNotes: data.nurseNotes,
-            patientNotes: data.patientNotes,
-            referralFrom: data.referralFrom,
-            referralTo: data.referralTo,
-            previousAppointmentId: data.previousAppointmentId,
-            cancelledBy: data.cancelledBy,
-            cancellationReason: data.cancellationReason,
-            noShowReason: data.noShowReason,
-            escorts: data.escorts,
-        }));
+        const newData = await this.apiService.update(auth, appointment, data, this.getNewData);
         return await this.appointmentModel.findByIdAndUpdate(id, newData, { new: true });
     }
 

@@ -6,12 +6,21 @@ interface SelectOptionProps {
     value: any;
     label?: string;
     selected?: boolean;
+    className?: string;
     onClick?: () => void;
     icon?: React.ReactNode;
     children?: React.ReactNode;
 }
 
-function SelectOption({ icon, label, value, onClick, selected, children }: SelectOptionProps) {
+function SelectOption({
+    icon,
+    label,
+    value,
+    onClick,
+    selected,
+    children,
+    className,
+}: SelectOptionProps) {
     const content = children || label || value;
 
     return (
@@ -22,7 +31,7 @@ function SelectOption({ icon, label, value, onClick, selected, children }: Selec
                 selected
                     ? 'bg-primary/10 text-primary font-black'
                     : 'text-text-light dark:text-text-dark hover:pl-6'
-            }`}>
+            } ${className}`}>
             {icon && (
                 <span
                     className={`transition-transform duration-300 group-hover:scale-110 ${

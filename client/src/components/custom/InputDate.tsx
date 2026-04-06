@@ -7,7 +7,7 @@ export type InputDateProps = Omit<InputProps, 'type' | 'value'> & {
 };
 
 export default function InputDate(props: InputDateProps) {
-    const { value, setValue, onChange, ...rest } = props;
+    const { value, setValue, onChange, className, ...rest } = props;
 
     /**
      * @param {Date | undefined} date
@@ -23,6 +23,7 @@ export default function InputDate(props: InputDateProps) {
         <Input
             type="date"
             value={formatDate(value)}
+            className={`no-clear ${className || ''}`}
             onChange={(event) => {
                 const date = new Date(event.target.value);
                 onChange?.(event);

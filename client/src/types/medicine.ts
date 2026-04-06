@@ -11,6 +11,16 @@ export enum MealTime {
     AS_NEEDED = 'as_needed',
 }
 
+export enum DayOfWeek {
+    MONDAY = 'monday',
+    TUESDAY = 'tuesday',
+    WEDNESDAY = 'wednesday',
+    THURSDAY = 'thursday',
+    FRIDAY = 'friday',
+    SATURDAY = 'saturday',
+    SUNDAY = 'sunday',
+}
+
 export enum FoodRelation {
     BEFORE = 'before', // ก่อนอาหาร
     AFTER = 'after', // หลังอาหาร
@@ -129,11 +139,12 @@ export type Medicine = ApiData<{
     // Usage Information
     takeInstructions: TakeInstruction[]; // คำแนะนำเกี่ยวกับการรับประทาน
     dosage: MedicineDosage; // ขนาดและวิธีใช้
+    frequencyDays: DayOfWeek[]; // วันที่ต้องรับประทานยา (ว่างคือทุกวัน)
 
     // Timing Information
-    startDate: Date; // วันที่เริ่มรับประทาน
-    endDate: Date; // วันที่สิ้นสุดการรับประทาน (หรือวันที่ยาหมดอายุ)
-    expiryDate: Date; // วันหมดอายุของยา
+    startDate?: Date; // วันที่เริ่มรับประทาน
+    endDate?: Date; // วันที่สิ้นสุดการรับประทาน (หรือวันที่ยาหมดอายุ)
+    expiryDate?: Date; // วันหมดอายุของยา
 
     // Storage Information
     storageConditions: StorageCondition[]; // วิธีการเก็บรักษา
@@ -150,7 +161,7 @@ export type Medicine = ApiData<{
     warnings: Warning[]; // คำเตือนพิเศษ
 
     // Images and Documents
-    imageUrl?: string; // รูปภาพยา
+    imageUrl?: string[]; // รูปภาพยา
     qrCode?: string; // QR Code สำหรับยา
     barcode?: string; // บาร์โค้ด
 

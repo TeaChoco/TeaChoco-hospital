@@ -16,10 +16,17 @@ import { Title } from '../../types/types';
 import { useTranslation } from 'react-i18next';
 import { useMedicines } from '../../store/useMedicineStore';
 import DetailLayout from '../../components/layout/DetailLayout';
+import { useState, useEffect } from 'react';
 
 export default function MedicineDetailPage() {
     const { t } = useTranslation();
     const { medicines } = useMedicines();
+    const [activeImgIndex, setActiveImgIndex] = useState(0);
+
+    // Reset index when medicines change or component remounts
+    useEffect(() => {
+        setActiveImgIndex(0);
+    }, [medicines]);
 
     return (
         <DetailLayout datas={medicines} title={Title.MEDICINES}>
@@ -117,26 +124,60 @@ export default function MedicineDetailPage() {
                                     {t('medicines.productVisualization')}
                                 </h3>
 
-                                <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800/40 border border-border-light dark:border-border-dark group shadow-sm">
-                                    {medicine.imageUrl ? (
-                                        <img
-                                            src={medicine.imageUrl}
-                                            alt={medicine.name}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-slate-200 dark:text-slate-700">
-                                            <FaPills size={100} className="animate-pulse" />
+                                <div className="space-y-4">
+                                    <div className="relative aspect-square rounded-3xl overflow-hidden bg-slate-50 dark:bg-slate-800/40 border-2 border-border-light dark:border-border-dark group shadow-xl transition-all duration-500 hover:shadow-primary/20">
+                                        {medicine.imageUrl && medicine.imageUrl.length > 0 ? (
+                                            <img
+                                                src={
+                                                    medicine.imageUrl[activeImgIndex] ||
+                                                    medicine.imageUrl[0]
+                                                }
+                                                alt={medicine.name}
+                                                className="w-full h-full object-contain transition-transform duration-1000 group-hover:scale-105"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-200 dark:text-slate-700 bg-linear-to-br from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-900">
+                                                <FaPills size={80} className="animate-pulse opacity-40 mb-2" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-text-muted-light">No Image Available</span>
+                                            </div>
+                                        )}
+
+                                        {/* Dynamic Badge Overlays */}
+                                        <div className="absolute top-4 left-4 p-3 bg-white/60 dark:bg-black/40 backdrop-blur-md rounded-2xl border border-white/50 dark:border-white/10 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                            <FaPills className="text-primary" size={14} />
+                                        </div>
+
+                                        <div className="absolute bottom-4 right-4 p-4 bg-white/80 dark:bg-black/60 backdrop-blur-xl rounded-2xl border border-white/50 dark:border-white/10 shadow-lg transform translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                            <p className="text-[9px] font-black text-text-muted-light uppercase mb-0.5 tracking-tighter">
+                                                {t('medicines.expiryDate')}
+                                            </p>
+                                            <p className="text-xs font-bold text-text-light dark:text-text-dark">
+                                                {moment(medicine.expiryDate).format('DD MMM YYYY')}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Thumbnail Navigation */}
+                                    {medicine.imageUrl && medicine.imageUrl.length > 1 && (
+                                        <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar snap-x">
+                                            {medicine.imageUrl.map((url, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => setActiveImgIndex(idx)}
+                                                    className={`relative shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all duration-300 snap-start ${
+                                                        activeImgIndex === idx
+                                                            ? 'border-primary scale-105 shadow-md ring-4 ring-primary/10'
+                                                            : 'border-white/10 opacity-60 hover:opacity-100 hover:border-primary/40'
+                                                    }`}>
+                                                    <img
+                                                        src={url}
+                                                        alt={`${medicine.name} ${idx + 1}`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </button>
+                                            ))}
                                         </div>
                                     )}
-                                    <div className="absolute bottom-4 right-4 p-4 bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-2xl border border-white/50 dark:border-white/10 shadow-lg">
-                                        <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase mb-1">
-                                            {t('medicines.expiryDate')}
-                                        </p>
-                                        <p className="text-sm font-bold text-text-light dark:text-text-dark">
-                                            {moment(medicine.expiryDate).format('DD MMM YYYY')}
-                                        </p>
-                                    </div>
                                 </div>
 
                                 <div className="p-5 rounded-2xl bg-secondary/5 border border-secondary/10 flex items-center justify-between shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]">

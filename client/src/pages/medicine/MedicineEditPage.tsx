@@ -1,4 +1,4 @@
-// -Path: "TeaChoco-Hospital/client/src/pages/medicine/MedicineEditPage copy.tsx"
+// -Path: "TeaChoco-Hospital/client/src/pages/medicine/MedicineEditPage.tsx"
 import {
     FaBox,
     FaPlus,
@@ -13,6 +13,7 @@ import {
     FaShieldCat,
     FaNotesMedical,
     FaPrescription,
+    FaCalendarDays,
     FaPrescriptionBottle,
 } from 'react-icons/fa6';
 import {
@@ -20,6 +21,7 @@ import {
     MedicineType,
     MedicineUnit,
     type Medicine,
+    DayOfWeek,
     StorageCondition,
 } from '../../types/medicine';
 import { useMemo } from 'react';
@@ -29,13 +31,13 @@ import { medicineAPI } from '../../services/api';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
-import InputImg from '../../components/custom/InputImg';
 import InputDate from '../../components/custom/InputDate';
 import { Title, type OutApiData } from '../../types/types';
 import EditLayout from '../../components/layout/EditLayout';
 import { useMedicines } from '../../store/useMedicineStore';
 import { useHospitals } from '../../store/useHospitalStore';
 import TakeInstruction from './components/TakeInstruction';
+import InputMultiImg from '../../components/custom/InputMultiImg';
 
 export default function MedicineEditPage() {
     const { t } = useTranslation();
@@ -78,6 +80,7 @@ export default function MedicineEditPage() {
             startDate: new Date(),
             expiryDate: new Date(),
             storageConditions: [],
+            frequencyDays: [],
             package: {
                 tabletsPerStrip: 0,
             },
@@ -193,9 +196,9 @@ export default function MedicineEditPage() {
                                 />
                             </div>
 
-                            <InputImg
+                            <InputMultiImg
                                 className="pt-2"
-                                value={data.imageUrl || ''}
+                                value={data.imageUrl || []}
                                 label={t('medicines.imageUrl')}
                                 icon={<FaImage className="text-primary/60" />}
                                 placeholder={t('medicines.imageUrlPlaceholder')}
@@ -276,6 +279,77 @@ export default function MedicineEditPage() {
                                         )
                                     }
                                 />
+                            </div>
+
+                            {/* Frequency Days Selection */}
+                            <div className="space-y-4 p-6 bg-slate-500/5 rounded-2xl border border-border-light dark:border-border-dark">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
+                                            <FaCalendarDays size={16} />
+                                        </div>
+                                        <p className="text-sm font-black text-text-light dark:text-text-dark uppercase tracking-widest">
+                                            {t('medicines.medicationDays')}
+                                        </p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const allDays = Object.values(DayOfWeek);
+                                            const isAllSelected = data.frequencyDays?.length === 7;
+                                            setData(
+                                                (prev) =>
+                                                    prev && {
+                                                        ...prev,
+                                                        frequencyDays: isAllSelected ? [] : allDays,
+                                                    },
+                                            );
+                                        }}
+                                        className="text-[10px] font-black text-primary hover:underline uppercase tracking-tight">
+                                        {data.frequencyDays?.length === 7
+                                            ? t('common.clearAll')
+                                            : t('medicines.everyDay')}
+                                    </button>
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {Object.values(DayOfWeek).map((day) => {
+                                        const isSelected = data.frequencyDays?.includes(day);
+                                        return (
+                                            <button
+                                                key={day}
+                                                type="button"
+                                                onClick={() => {
+                                                    setData((prev) => {
+                                                        if (!prev) return prev;
+                                                        const exists =
+                                                            prev.frequencyDays.includes(day);
+                                                        return {
+                                                            ...prev,
+                                                            frequencyDays: exists
+                                                                ? prev.frequencyDays.filter(
+                                                                      (d) => d !== day,
+                                                                  )
+                                                                : [...prev.frequencyDays, day],
+                                                        };
+                                                    });
+                                                }}
+                                                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 border ${
+                                                    isSelected
+                                                        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
+                                                        : 'bg-white dark:bg-slate-800 text-text-muted-light dark:text-text-muted-dark border-border-light dark:border-border-dark hover:border-primary/40'
+                                                }`}>
+                                                {t(`common.daysAbbr.${day}`)}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                <p className="text-[10px] italic text-text-muted-light opacity-60">
+                                    *{' '}
+                                    {data.frequencyDays?.length === 0
+                                        ? t('medicines.everyDayDefault')
+                                        : t('medicines.selectedDaysOnly')}
+                                </p>
                             </div>
 
                             {/* Take Instructions List */}

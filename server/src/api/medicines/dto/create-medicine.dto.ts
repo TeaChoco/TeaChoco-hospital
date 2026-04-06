@@ -21,6 +21,7 @@ import {
     EffectServeriry,
     StorageCondition,
     EffectProbability,
+    DayOfWeek,
 } from '../../../types/medicine';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
@@ -104,35 +105,34 @@ export class CreateMedicineDto extends ApiMetaDto {
     @Type(() => Date)
     @ApiProperty({
         type: Date,
-        required: true,
         example: '2022-01-01',
         description: 'Start date',
     })
-    startDate: Date;
+    startDate?: Date;
 
     @IsDate()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
-        required: true,
         example: '2022-01-01',
         description: 'End date',
     })
-    endDate: Date;
+    endDate?: Date;
 
     @IsDate()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
-        required: true,
         example: '2022-01-01',
         description: 'Expiry date',
     })
-    expiryDate: Date;
+    expiryDate?: Date;
 
     @IsArray()
+    @IsEnum(StorageCondition, { each: true })
     @ApiProperty({
         type: [String],
+        enum: StorageCondition,
         required: true,
         example: ['room_temp'],
         description: 'Storage conditions',
@@ -148,6 +148,17 @@ export class CreateMedicineDto extends ApiMetaDto {
         description: 'Storage notes',
     })
     storageNotes?: string;
+
+    @IsArray()
+    @IsEnum(DayOfWeek, { each: true })
+    @ApiProperty({
+        type: [String],
+        enum: DayOfWeek,
+        required: true,
+        example: [DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY],
+        description: 'Medication frequency days',
+    })
+    frequencyDays: DayOfWeek[];
 
     @IsObject()
     @ApiProperty({
@@ -199,15 +210,15 @@ export class CreateMedicineDto extends ApiMetaDto {
     })
     warnings: WarningDto[];
 
-    @IsString()
+    @IsArray()
     @IsOptional()
     @ApiProperty({
-        type: String,
+        type: [String],
         required: false,
-        example: 'https://example.com/image.jpg',
+        example: ['https://example.com/image.jpg'],
         description: 'Image URL',
     })
-    imageUrl?: string;
+    imageUrl?: string[];
 
     @IsString()
     @IsOptional()
@@ -277,6 +288,7 @@ export class CreateMedicineManyDto {
                 expiryDate: new Date(),
                 storageConditions: [StorageCondition.ROOM_TEMP],
                 storageNotes: 'Paracetamol',
+                frequencyDays: [DayOfWeek.MONDAY],
                 package: {
                     name: 'Paracetamol',
                     quantity: 1,

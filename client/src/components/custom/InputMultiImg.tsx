@@ -1,6 +1,8 @@
-// -Path: "TeaChoco-Hospital/client/src/components/custom/InputImg.tsx"
+// -Path: "TeaChoco-Hospital/client/src/components/custom/InputMultiImg.tsx"
 import {
     FaSync,
+    FaLink,
+    FaPlus,
     FaCheck,
     FaImage,
     FaTrash,
@@ -15,11 +17,11 @@ import { useTranslation } from 'react-i18next';
 import { useImgStore } from '../../store/useImgStore';
 import { useState, useEffect, useId, useRef } from 'react';
 
-export default function InputImg({
+export default function InputMultiImg({
     id,
     icon,
     label,
-    value,
+    value = [],
     setValue,
     required,
     className,
@@ -28,13 +30,13 @@ export default function InputImg({
 }: {
     id?: string;
     label: string;
-    value: string;
+    value: string[];
     required?: boolean;
     className?: string;
     placeholder: string;
     icon?: React.ReactNode;
     labelClassName?: string;
-    setValue: (value?: string) => void;
+    setValue: (value: string[]) => void;
 }) {
     const generatedId = useId();
     const { t } = useTranslation();
@@ -128,17 +130,17 @@ export default function InputImg({
 
     const handleDeleteGalleryImage = async (event: React.MouseEvent, url: string) => {
         event.stopPropagation();
-        if (confirm(t('common.confirmDelete', 'Are you sure you want to delete this image?'))) {
+        if (confirm(t('common.confirmDelete'))) {
             try {
                 await deleteImage(url);
-                if (value === url) setValue(undefined);
+                setValue(value.filter((img) => img !== url));
             } catch (error) {
                 console.error('Delete flow failed:', error);
             }
         }
     };
 
-    const uploadAndSelect = async (file: File) => {
+    const uploadAndAdd = async (file: File) => {
         setIsUploading(true);
         try {
             const imageUrl = await uploadImage(file);
@@ -151,14 +153,21 @@ export default function InputImg({
     };
 
     const handleSelectImage = (url: string) => {
-        setValue(url);
+        if (!value.includes(url)) {
+            setValue([...value, url]);
+        }
         setIsOpen(false);
     };
 
-    // Styles matching Input.tsx for consistency
-    const labelClass = `flex gap-2 text-sm font-bold tracking-tight text-text-light dark:text-text-dark mb-2 ml-1`;
+    const handleRemoveImage = (index: number) => {
+        setValue(value.filter((_, idx) => idx !== index));
+    };
 
-    const hasValidValue = value && value !== 'undefined' && !value.endsWith('/undefined');
+    const handleEditUrl = (index: number, newUrl: string) => {
+        setValue(value.map((url, idx) => (idx === index ? newUrl : url)));
+    };
+
+    const labelClass = `flex gap-2 text-sm font-bold tracking-tight text-text-light dark:text-text-dark mb-2 ml-1`;
 
     return (
         <div className={`flex flex-col ${className}`}>
@@ -170,62 +179,73 @@ export default function InputImg({
                 </label>
             )}
 
-            <div className="flex flex-col gap-3">
-                {hasValidValue ? (
-                    <div className="flex items-start gap-4 p-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark">
+            <div className="space-y-4">
+                {/* List of Image Cards */}
+                <div className="grid grid-cols-1 gap-4">
+                    {value.map((img, index) => (
                         <div
-                            className="w-40 h-40 rounded-lg overflow-hidden shrink-0 border border-border-light/50 dark:border-border-dark/50 cursor-pointer bg-bg-light dark:bg-bg-dark"
-                            onClick={() => setIsOpen(true)}>
-                            <img
-                                src={value}
-                                alt="Selected"
-                                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                            />
-                        </div>
-                        <div className="flex w-full flex-col justify-center h-40 gap-2">
-                            <Input
-                                value={value}
-                                className="w-full"
-                                placeholder={t('common.changeImage')}
-                                onChange={(event) => setValue(event.target.value)}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setIsOpen(true)}
-                                className="px-4 py-2 w-full text-sm font-bold rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-2">
-                                <FaImage />
-                                {t('common.changeImage')}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setValue(undefined)}
-                                className="px-4 py-1.5 w-full text-sm font-semibold rounded-lg text-red-500 hover:bg-red-500/10 transition-colors flex items-center gap-2">
-                                <FaTrash />
-                                {t('common.remove')}
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex flex-col gap-3">
-                        <Input
-                            value={value}
-                            className="w-full"
-                            placeholder={t('common.changeImage')}
-                            onChange={(event) => setValue(event.target.value)}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setIsOpen(true)}
-                            className="w-full h-24 rounded-xl border-2 border-dashed border-border-light/40 dark:border-border-dark/40 hover:border-primary/60 dark:hover:border-primary/60 hover:bg-primary/5 transition-all flex items-center justify-center gap-3 text-text-muted-light dark:text-text-muted-dark group">
-                            <div className="w-10 h-10 rounded-full bg-bg-light dark:bg-bg-dark flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                <FaCloudUploadAlt className="text-xl text-primary" />
+                            key={index}
+                            className="flex items-start gap-4 p-3 rounded-xl border border-border-light dark:border-border-dark bg-bg-card-light dark:bg-bg-card-dark group animate-in fade-in slide-in-from-left-4">
+                            <div className="w-40 h-40 rounded-lg overflow-hidden shrink-0 border border-border-light/50 dark:border-border-dark/50 cursor-pointer bg-bg-light dark:bg-bg-dark relative">
+                                <img
+                                    src={img}
+                                    alt={`Image ${index + 1}`}
+                                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src =
+                                            'https://placehold.co/400x400?text=Invalid+URL';
+                                    }}
+                                />
+                                <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[8px] text-white font-black uppercase tracking-widest">
+                                    #{index + 1}
+                                </div>
                             </div>
-                            <span className="font-semibold text-sm">
-                                {placeholder || t('common.uploadOrSelect')}
-                            </span>
-                        </button>
+                            <div className="flex w-full flex-col justify-center h-40 gap-3">
+                                <div className="space-y-1.5">
+                                    <p className="text-[10px] font-black text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest ml-1">
+                                        <FaLink className="inline mr-2" size={10} />
+                                        {t('common.imageUrl')}
+                                    </p>
+                                    <Input
+                                        value={img}
+                                        className="w-full"
+                                        placeholder={t('common.enterUrl', 'Enter URL...')}
+                                        onChange={(event) =>
+                                            handleEditUrl(index, event.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(index)}
+                                        className="px-4 py-2 flex-1 text-xs font-black uppercase tracking-widest rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2">
+                                        <FaTrash />
+                                        {t('common.remove')}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Add More Area */}
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(true)}
+                    className="w-full h-32 rounded-xl border-2 border-dashed border-border-light/40 dark:border-border-dark/40 hover:border-primary/60 dark:hover:border-primary/60 hover:bg-primary/5 transition-all flex items-center justify-center gap-4 text-text-muted-light dark:text-text-muted-dark group">
+                    <div className="w-12 h-12 rounded-2xl bg-bg-light dark:bg-bg-dark flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform text-primary border border-border-light dark:border-border-dark">
+                        <FaPlus className="text-xl" />
                     </div>
-                )}
+                    <div className="flex flex-col items-start">
+                        <span className="font-black text-xs uppercase tracking-[0.2em] text-text-light dark:text-text-dark">
+                            {t('common.addMoreImages', 'Add More Images')}
+                        </span>
+                        <span className="text-[10px] opacity-60">
+                            {placeholder || t('common.uploadOrSelectOrPaste')}
+                        </span>
+                    </div>
+                </button>
             </div>
 
             <Modal
@@ -287,7 +307,7 @@ export default function InputImg({
                                             className="absolute inset-0 opacity-0 cursor-pointer z-10"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
-                                                if (file) uploadAndSelect(file);
+                                                if (file) uploadAndAdd(file);
                                             }}
                                         />
                                         <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20">
@@ -314,7 +334,6 @@ export default function InputImg({
                                         className="w-full h-full object-cover mirror"
                                     />
 
-                                    {/* Camera Selector Overlay - Top */}
                                     <div className="absolute top-4 left-4 right-4 z-30 opacity-40 hover:opacity-100 transition-opacity">
                                         <div className="bg-black/60 backdrop-blur-md rounded-xl p-1 border border-white/10">
                                             <Select
@@ -342,7 +361,6 @@ export default function InputImg({
                                         </div>
                                     </div>
 
-                                    {/* Uploading Overlay */}
                                     {(isUploading || isLoading) && (
                                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-40">
                                             <div className="flex flex-col items-center gap-4">
@@ -354,7 +372,6 @@ export default function InputImg({
                                         </div>
                                     )}
 
-                                    {/* Controls Overlay - Bottom */}
                                     <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-8 z-30 opacity-100 group-focus-within:opacity-100 transition-opacity">
                                         <button
                                             type="button"
@@ -376,12 +393,8 @@ export default function InputImg({
                                                 <div className="w-12 h-12 rounded-full bg-primary shadow-inner" />
                                             </div>
                                         </button>
-
                                         <div className="w-14 h-14" />
-                                        {/* Spacer to keep capture button centered since we have 2 buttons on left/center */}
                                     </div>
-
-                                    {/* Grid Overlay for professional camera feel */}
                                     <div className="absolute inset-0 pointer-events-none border border-white/10" />
                                     <div className="absolute inset-x-0 top-1/3 border-t border-white/5 pointer-events-none" />
                                     <div className="absolute inset-x-0 top-2/3 border-t border-white/5 pointer-events-none" />
@@ -405,8 +418,8 @@ export default function InputImg({
                                             type="button"
                                             onClick={() => handleSelectImage(img)}
                                             className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                                                value === img
-                                                    ? 'border-primary ring-2 ring-primary/30'
+                                                value.includes(img)
+                                                    ? 'border-primary ring-2 ring-primary/30 shadow-lg'
                                                     : 'border-border-light/10 dark:border-border-dark/10 hover:border-primary/50'
                                             }`}>
                                             <img
@@ -416,11 +429,11 @@ export default function InputImg({
                                             />
                                             <div
                                                 className={`absolute inset-0 transition-colors flex items-center justify-center ${
-                                                    value === img
+                                                    value.includes(img)
                                                         ? 'bg-primary/20'
                                                         : 'bg-black/0 group-hover:bg-black/10'
                                                 }`}>
-                                                {value === img && (
+                                                {value.includes(img) && (
                                                     <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform scale-100 transition-transform">
                                                         <FaCheck />
                                                     </div>

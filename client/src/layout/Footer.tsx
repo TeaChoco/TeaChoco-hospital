@@ -62,7 +62,7 @@ export default function Footer() {
                         <a
                             target="_blank"
                             rel="noopener noreferrer"
-                            href="https://github.com/TeaChoco"
+                            href="https://github.com/TeaChoco/TeaChoco-hospital"
                             className="group flex items-center gap-2 px-4 py-2 rounded-full bg-bg-paper-light-100 dark:bg-bg-paper-dark-100 border border-border-light/50 dark:border-border-dark/50 hover:border-primary/50 hover:bg-primary/10 transition-all">
                             <FaGithub className="text-lg group-hover:text-primary transition-colors" />
                             <span className="text-sm font-bold text-text-light/70 dark:text-text-dark/70 group-hover:text-primary transition-colors">

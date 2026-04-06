@@ -1,4 +1,4 @@
-//-Path: "TeaChoco-Hospital/client/src/types/medicine.ts"
+//-Path: "TeaChoco-Hospital/server/src/types/medicine.ts"
 
 export enum MealTime {
     BREAKFAST = 'breakfast',
@@ -7,6 +7,16 @@ export enum MealTime {
     SLEEP = 'sleep',
     ANYTIME = 'anytime',
     AS_NEEDED = 'as_needed',
+}
+
+export enum DayOfWeek {
+    MONDAY = 'monday',
+    TUESDAY = 'tuesday',
+    WEDNESDAY = 'wednesday',
+    THURSDAY = 'thursday',
+    FRIDAY = 'friday',
+    SATURDAY = 'saturday',
+    SUNDAY = 'sunday',
 }
 
 export enum FoodRelation {

@@ -9,6 +9,7 @@ import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { ResponseDoctorDto } from './dto/response-doctor.dto';
 import { Doctor, DoctorDocument } from './schemas/doctor.schema';
+import { ApiOutMetaSchema } from 'src/types/dto';
 
 @Injectable()
 export class DoctorsService {
@@ -25,6 +26,18 @@ export class DoctorsService {
         @InjectModel(Doctor.name, nameDB)
         private readonly doctorModel: Model<Doctor>,
     ) {}
+
+    getNewData(data: CreateDoctorDto): ApiOutMetaSchema<Doctor> {
+        return {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            nickname: data.nickname,
+            hospitalId: data.hospitalId,
+            department: data.department,
+            contactNumber: data.contactNumber,
+            picture: data.picture,
+        };
+    }
 
     async findAll(auth: Auth) {
         const doctors = await this.doctorModel.find();
@@ -43,31 +56,14 @@ export class DoctorsService {
     }
 
     async create(auth: Auth, data: CreateDoctorDto) {
-        const newData = await this.apiService.create(auth, data, (data) => ({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            nickname: data.nickname,
-            hospitalId: data.hospitalId,
-            department: data.department,
-            contactNumber: data.contactNumber,
-            picture: data.picture,
-        }));
-
+        const newData = await this.apiService.create(auth, data, this.getNewData);
         const doctor = new this.doctorModel(newData);
         return await doctor.save();
     }
 
     async update(auth: Auth, id: string, data: UpdateDoctorDto) {
         const doctor = await this.findOne(auth, id);
-        const newData = await this.apiService.update(auth, doctor, data, (data) => ({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            nickname: data.nickname,
-            hospitalId: data.hospitalId,
-            department: data.department,
-            contactNumber: data.contactNumber,
-            picture: data.picture,
-        }));
+        const newData = await this.apiService.update(auth, doctor, data, this.getNewData);
         return await this.doctorModel.findByIdAndUpdate(id, newData, { new: true });
     }
 

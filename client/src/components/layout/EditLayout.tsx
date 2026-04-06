@@ -174,43 +174,43 @@ export default function EditLayout<Data extends ApiData<object>>({
 
     const handleSave = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (id && data && user) {
-            try {
-                const save = {
-                    ...data,
-                    _id: id,
-                    user_id: user.user_id,
-                    createdBy: user.user_id,
-                    updatedBy: user.user_id,
-                    createdAt: Date.now(),
-                    updatedAt: Date.now(),
-                    __v: 0,
-                } as Data;
+        try {
+            if (!id || !data || !user) throw new Error('Invalid data');
+            if (error) throw new Error(error);
+            const save = {
+                ...data,
+                _id: id,
+                user_id: user.user_id,
+                createdBy: user.user_id,
+                updatedBy: user.user_id,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                __v: 0,
+            } as Data;
 
-                setIsSaving(true);
-                const callback = await onSave(save, id);
-                if (callback) {
-                    setInitialData(JSON.stringify(data));
-                    navigate(toBack);
-                }
-                setIsSaving(false);
-            } catch (error: any) {
-                console.error(error);
-                const serverError = error.response?.data?.message;
-                setError(
-                    Array.isArray(serverError)
-                        ? serverError.join(', ')
-                        : typeof serverError === 'string'
-                          ? serverError
-                          : error instanceof Error
-                            ? error.message
-                            : typeof error === 'string'
-                              ? error
-                              : typeof error === 'object'
-                                ? JSON.stringify(error)
-                                : 'Something went wrong',
-                );
+            setIsSaving(true);
+            const callback = await onSave(save, id);
+            if (callback) {
+                setInitialData(JSON.stringify(data));
+                navigate(toBack);
             }
+            setIsSaving(false);
+        } catch (error: any) {
+            console.error(error);
+            const serverError = error.response?.data?.message;
+            setError(
+                Array.isArray(serverError)
+                    ? serverError.join(', ')
+                    : typeof serverError === 'string'
+                      ? serverError
+                      : error instanceof Error
+                        ? error.message
+                        : typeof error === 'string'
+                          ? error
+                          : typeof error === 'object'
+                            ? JSON.stringify(error)
+                            : 'Something went wrong',
+            );
         }
     };
 
