@@ -18,4 +18,4 @@ RUN pnpm build
 EXPOSE 3000
 
 # ใช้ shell form
-CMD ["node", "--max-old-space-size=512", "dist/src/main"]
+CMD ["node", "--max-old-space-size=512", "dist/main"]
