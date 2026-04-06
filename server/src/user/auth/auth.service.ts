@@ -1,7 +1,7 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.service.ts"
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { nameDB } from '../../hooks/mongodb';
 import { ReqUserDto } from '../dto/user.dto';
@@ -28,16 +28,13 @@ export class AuthService {
         private readonly userModel: Model<UserDocument>,
     ) {}
 
-    get cookieOption(): {
-        secure: boolean;
-        partitioned: boolean;
-        sameSite: 'lax' | 'none';
-    } {
+    get cookieOption(): CookieOptions {
         const isDev = this.secureService.isDev();
         return {
             secure: !isDev,
+            httpOnly: true,
             partitioned: !isDev,
-            sameSite: isDev ? 'lax' : 'none',
+            sameSite: 'none',
         };
     }
 
@@ -45,18 +42,11 @@ export class AuthService {
         const sevenDays = 7 * 24 * 60 * 60 * 1000;
         const finalMaxAge = !isNaN(maxAge) && maxAge > 0 ? maxAge : sevenDays;
         this.logger.log(finalMaxAge, this.cookieOption);
-        res.cookie('access_token', token, {
-            maxAge: finalMaxAge,
-            httpOnly: true,
-            ...this.cookieOption,
-        });
+        res.cookie('access_token', token, { maxAge: finalMaxAge, ...this.cookieOption });
     }
 
     clearCookie(res: Response) {
-        res.clearCookie('access_token', {
-            httpOnly: true,
-            ...this.cookieOption,
-        });
+        res.clearCookie('access_token', this.cookieOption);
     }
 
     async signinQr(
