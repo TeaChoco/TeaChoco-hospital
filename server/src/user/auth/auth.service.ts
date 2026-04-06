@@ -33,7 +33,6 @@ export class AuthService {
         return {
             secure: !isDev,
             httpOnly: true,
-            partitioned: !isDev,
             sameSite: 'none',
         };
     }

@@ -26,6 +26,7 @@ async function bootstrap() {
         origin: secureService.getAllowedUrls(),
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
 
     if (secureService.isDev()) {
