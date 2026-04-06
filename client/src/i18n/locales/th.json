@@ -433,7 +433,6 @@
         "productVisualization": "รูปภาพผลิตภัณฑ์",
         "expiryDate": "วันหมดอายุ",
         "fullPackage": "บรรจุภัณฑ์ทั้งหมด",
-        "unitsPerStrip": "จำนวนต่อแผง",
         "stripsPerBox": "แผงต่อกล่อง",
         "tableName": "รายการยา",
         "tableBrand": "ยี่ห้อ",

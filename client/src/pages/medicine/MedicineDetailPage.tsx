@@ -336,7 +336,8 @@ export default function MedicineDetailPage() {
                                                     {t('medicines.prescribingHospital')}
                                                 </p>
                                                 <h4 className="text-xl font-black tracking-tight leading-tight">
-                                                    {medicine.hospital?.hospitalId ||
+                                                    {/* TODO: Get doctor name from doctor store */}
+                                                    {medicine.hospital?.doctorId ||
                                                         t('medicines.unknownProvider')}
                                                 </h4>
                                             </div>
