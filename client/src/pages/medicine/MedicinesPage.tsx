@@ -27,7 +27,7 @@ export default function MedicinesPage() {
             placeholder={t('medicines.placeholder')}
             description={t('medicines.description')}
             isGrid={viewType === 'grid'}
-            buttons={(NewButton) => (
+            buttons={() => (
                 <div className="flex bg-white dark:bg-slate-800 p-1 rounded-xl border border-border-light dark:border-border-dark shadow-xs">
                     <button
                         onClick={() => setViewType('grid')}
@@ -91,7 +91,7 @@ export default function MedicinesPage() {
                                         <tr
                                             key={med._id}
                                             onClick={() => navigator(`/medicines/${med._id}`)}
-                                            className="group hover:bg-primary/[0.02] dark:hover:bg-primary/[0.05] cursor-pointer transition-colors">
+                                            className="group hover:bg-primary/2 dark:hover:bg-primary/5 cursor-pointer transition-colors">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-10 h-10 rounded-xl bg-primary/5 dark:bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
@@ -123,7 +123,8 @@ export default function MedicinesPage() {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-sm font-bold text-text-light dark:text-text-dark">
-                                                {med.dosage.frequencyPerDay}x {t('medicines.dosesDaily')}
+                                                {med.dosage.frequencyPerDay}x{' '}
+                                                {t('medicines.dosesDaily')}
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <span
@@ -138,7 +139,10 @@ export default function MedicinesPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <FaChevronRight className="text-text-muted-light opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" size={12} />
+                                                <FaChevronRight
+                                                    className="text-text-muted-light opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+                                                    size={12}
+                                                />
                                             </td>
                                         </tr>
                                     ))}
