@@ -42,7 +42,6 @@ export class SiginQrData {
     static getData(qr_data: string | SiginQrData): SiginQrData {
         try {
             if (typeof qr_data === 'string' && qr_data.startsWith('http')) {
-                console.log(qr_data);
                 const url = new URL(qr_data);
                 const token = url.searchParams.get('token');
                 if (!token) throw new Error('No token');
