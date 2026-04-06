@@ -2,16 +2,16 @@
 import Paper from '../custom/Paper';
 import Editor from '../custom/Editor';
 import { Obj } from '@teachoco-dev/cli';
+import { FiActivity } from 'react-icons/fi';
 import { useAuth } from '../../hooks/useAuth';
 import { useSwal } from '../../hooks/useSwal';
-import ItemSkeleton from '../custom/ItemSkeleton';
 import type { Allows } from '../../types/auth';
 import { useTranslation } from 'react-i18next';
 import type { ApiData } from '../../types/types';
+import ItemSkeleton from '../custom/ItemSkeleton';
 import { useEffect, useMemo, useState } from 'react';
 import type { OutApiData, Title } from '../../types/types';
 import { useLayoutStore } from '../../store/useLayoutStore';
-import { FiActivity } from 'react-icons/fi';
 import { FaTrash, FaCode, FaXmark, FaArrowLeft, FaCircleExclamation } from 'react-icons/fa6';
 import { Link, Navigate, useLocation, useNavigate, useParams, useBlocker } from 'react-router-dom';
 
@@ -59,26 +59,34 @@ export default function EditLayout<Data extends ApiData<object>>({
     const [initialData, setInitialData] = useState<string>('');
     const { detailLayout, setDetailLayout } = useLayoutStore();
 
-    const findData = () => {
-        if (!id) return;
-        const found = find(id);
-        if (found)
-            return Obj.omit(
-                found,
-                '_id',
-                'user_id',
-                'createdAt',
-                'updatedAt',
-                'createdBy',
-                'updatedBy',
-                '__v',
-            ) as OutApiData<Data>;
+    /**
+     * Finds and cleans the data, then merges it with newData to ensure all fields are present.
+     * @param {string} searchId The ID to search for.
+     * @returns {OutApiData<Data>} The merged data.
+     */
+    const getSafeData = (searchId?: string): OutApiData<Data> => {
+        if (!searchId || searchId === 'new') return newData;
+        const found = find(searchId);
+        if (!found) return newData;
+        
+        // Merge newData with the found record (omitting meta fields)
+        // This ensures new fields added to newData template exist in loaded records
+        const cleaned = Obj.omit(
+            found,
+            '_id',
+            'user_id',
+            'createdAt',
+            'updatedAt',
+            'createdBy',
+            'updatedBy',
+            '__v',
+        ) as OutApiData<Data>;
+
+        return { ...newData, ...cleaned };
     };
 
-    const [data, setData] = useState<OutApiData<Data> | undefined>(() => {
-        if (id === 'new') return newData;
-        return findData();
-    });
+    const [data, setData] = useState<OutApiData<Data> | undefined>(() => getSafeData(id));
+    const [isNotFound, setIsNotFound] = useState(false);
 
     const canEdit = user?.allows?.some(
         (allow) => allow.user_id === user?.user_id && allow[title.toLowerCase() as keyof Allows],
@@ -111,11 +119,14 @@ export default function EditLayout<Data extends ApiData<object>>({
 
     useEffect(() => {
         if (!authLoading) {
-            const found = id === 'new' ? newData : findData();
-            if (found) {
-                setData(found);
-                setInitialData(JSON.stringify(found));
-            }
+            const safeData = getSafeData(id);
+            setData(safeData);
+            setInitialData(JSON.stringify(safeData));
+            
+            // Track if the record was actually found in edit mode
+            if (id !== 'new' && !find(id!)) setIsNotFound(true);
+            else setIsNotFound(false);
+            
             setDataLoading(false);
         }
     }, [id, newData, authLoading]);
@@ -215,34 +226,7 @@ export default function EditLayout<Data extends ApiData<object>>({
     };
 
     if (loading || authLoading || dataLoading) return <Skeleton />;
-    if (!data)
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] p-6">
-                <Paper
-                    variant="100"
-                    className="max-w-md w-full p-10 flex flex-col items-center text-center space-y-6 border-t-4 border-red-500 shadow-xl">
-                    <div className="p-5 bg-red-50 dark:bg-red-900/20 rounded-full text-red-500 animate-pulse">
-                        <FaCircleExclamation size={48} />
-                    </div>
-                    <div className="space-y-2">
-                        <h2 className="text-2xl font-black text-text-light dark:text-text-dark tracking-tight">
-                            {t('editLayout.recordNotFound')}
-                        </h2>
-                        <p className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark leading-relaxed">
-                            {t('editLayout.notFoundInfo', {
-                                title: t(`navbar.${title.toLowerCase()}`),
-                            })}
-                        </p>
-                    </div>
-                    <Link
-                        to={toBack}
-                        className="btn btn-primary w-full flex items-center justify-center gap-2 group">
-                        <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
-                        {t('editLayout.goBack')}
-                    </Link>
-                </Paper>
-            </div>
-        );
+    if (!data) return <Skeleton />;
 
     return (
         <>
@@ -267,6 +251,33 @@ export default function EditLayout<Data extends ApiData<object>>({
                 </div>
             </div>
             <form onSubmit={handleSave} className="space-y-6">
+                {isNotFound && (
+                    <div className="animate-in fade-in slide-in-from-top-4 duration-300">
+                        <Paper
+                            variant="100"
+                            className="p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex flex-col md:flex-row items-center gap-6 shadow-lg shadow-amber-500/5">
+                            <div className="p-4 bg-amber-500/20 rounded-2xl text-amber-500 animate-pulse shrink-0">
+                                <FaCircleExclamation size={32} />
+                            </div>
+                            <div className="flex-1 space-y-2 text-center md:text-left py-1">
+                                <p className="text-lg font-black text-amber-600 dark:text-amber-400 tracking-tight">
+                                    {t('editLayout.recordNotFound')}
+                                </p>
+                                <p className="text-sm font-medium text-amber-500/80 leading-relaxed max-w-lg">
+                                    {t('editLayout.notFoundInfo', {
+                                        title: t(`navbar.${title.toLowerCase()}`),
+                                    })}
+                                </p>
+                            </div>
+                            <Link
+                                to={toBack}
+                                className="btn bg-amber-500 text-white hover:bg-amber-600 px-8 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-amber-500/20">
+                                {t('editLayout.goBack')}
+                            </Link>
+                        </Paper>
+                    </div>
+                )}
+
                 {error && (
                     <div className="animate-in fade-in slide-in-from-top-4 duration-300">
                         <Paper

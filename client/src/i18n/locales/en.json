@@ -39,7 +39,17 @@
         "noImages": "No images found",
         "uploadingToDb": "Uploading to Database...",
         "clickToUpload": "Click to upload or drag and drop",
-        "uploadInfo": "New images will be saved to the database and selected automatically."
+        "uploadInfo": "New images will be saved to the database and selected automatically.",
+        "clearAll": "Clear All",
+        "daysAbbr": {
+            "monday": "Mon",
+            "tuesday": "Tue",
+            "wednesday": "Wed",
+            "thursday": "Thu",
+            "friday": "Fri",
+            "saturday": "Sat",
+            "sunday": "Sun"
+        }
     },
     "navbar": {
         "appName": "TeaChoco Hospital",
@@ -417,6 +427,10 @@
         "isInactiveMsg": "Medicine is Inactive",
         "activate": "Activate",
         "deactivate": "Deactivate",
+        "medicationDays": "Medication Days",
+        "everyDay": "Everyday",
+        "everyDayDefault": "Take medicine everyday if no specific days are selected.",
+        "selectedDaysOnly": "Take medicine only on the selected days.",
         "footerInfo": "Pharmacy records stored for medication safety tracking",
         "dosesDaily": "Doses Daily",
         "productVisualization": "Product Visualization",
