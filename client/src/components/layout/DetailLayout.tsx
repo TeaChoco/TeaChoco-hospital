@@ -55,10 +55,10 @@ export default function DetailLayout<Data extends { _id: string }>({
 
     return (
         <div className="relative">
-            <Link to={toBack} className="btn-icon-dark absolute top-2 left-2 z-1">
+            <Link to={toBack} className="btn-icon-dark absolute top-2 left-2 z-50">
                 <FaArrowLeft />
             </Link>
-            <div className="absolute top-2 right-2 flex gap-2 z-1">
+            <div className="absolute top-2 right-2 flex gap-2 z-50">
                 <Link to={editTo} className="btn-icon-dark">
                     <FaPen />
                 </Link>

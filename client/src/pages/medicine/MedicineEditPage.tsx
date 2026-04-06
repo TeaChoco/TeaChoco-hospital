@@ -14,14 +14,15 @@ import {
     FaNotesMedical,
     FaPrescription,
     FaCalendarDays,
+    FaUserDoctor,
     FaPrescriptionBottle,
 } from 'react-icons/fa6';
 import {
     MealTime,
+    DayOfWeek,
     MedicineType,
     MedicineUnit,
     type Medicine,
-    DayOfWeek,
     StorageCondition,
 } from '../../types/medicine';
 import { useMemo } from 'react';
@@ -33,14 +34,16 @@ import Paper from '../../components/custom/Paper';
 import Select from '../../components/custom/Select';
 import InputDate from '../../components/custom/InputDate';
 import { Title, type OutApiData } from '../../types/types';
+import TakeInstruction from './components/TakeInstruction';
 import EditLayout from '../../components/layout/EditLayout';
 import { useMedicines } from '../../store/useMedicineStore';
 import { useHospitals } from '../../store/useHospitalStore';
-import TakeInstruction from './components/TakeInstruction';
+import { useDoctors } from '../../store/useDoctorStore';
 import InputMultiImg from '../../components/custom/InputMultiImg';
 
 export default function MedicineEditPage() {
     const { t } = useTranslation();
+    const { doctors } = useDoctors();
     const { medicines, resetMedicines } = useMedicines();
     const { hospitals, resetHospitals } = useHospitals();
 
@@ -73,10 +76,11 @@ export default function MedicineEditPage() {
             },
             hospital: {
                 hospitalId: '',
+                doctorId: '',
                 dispenseDate: new Date(),
                 prescriptionDate: new Date(),
             },
-            endDate: new Date(),
+            endDate: undefined,
             startDate: new Date(),
             expiryDate: undefined,
             storageConditions: [],
@@ -428,31 +432,59 @@ export default function MedicineEditPage() {
                                 />
                             </div>
 
-                            <Select
-                                options={[
-                                    { value: '', label: t('medicines.unknownProvider') },
-                                    ...(hospitals?.map((hospital) => ({
-                                        label: hospital.name,
-                                        value: hospital._id,
-                                        icon: <FaHospital />,
-                                    })) || []),
-                                ]}
-                                label={t('medicines.prescribingHospital')}
-                                value={data.hospital.hospitalId}
-                                icon={<FaHospital />}
-                                onChange={(event) =>
-                                    setData(
-                                        (prev) =>
-                                            prev && {
-                                                ...prev,
-                                                hospital: {
-                                                    ...prev.hospital,
-                                                    hospitalId: event.target.value,
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <Select
+                                    options={[
+                                        { value: '', label: t('medicines.unknownProvider') },
+                                        ...(hospitals?.map((hospital) => ({
+                                            label: hospital.name,
+                                            value: hospital._id,
+                                            icon: <FaHospital />,
+                                        })) || []),
+                                    ]}
+                                    label={t('medicines.prescribingHospital')}
+                                    value={data.hospital.hospitalId}
+                                    icon={<FaHospital />}
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    hospital: {
+                                                        ...prev.hospital,
+                                                        hospitalId: event.target.value,
+                                                    },
                                                 },
-                                            },
-                                    )
-                                }
-                            />
+                                        )
+                                    }
+                                />
+
+                                <Select
+                                    options={[
+                                        { value: '', label: t('medicines.unknownDoctor') },
+                                        ...(doctors?.map((doctor) => ({
+                                            label: `${doctor.firstName} ${doctor.lastName}`,
+                                            value: doctor._id,
+                                            icon: <FaUserDoctor />,
+                                        })) || []),
+                                    ]}
+                                    label={t('medicines.prescribingDoctor')}
+                                    value={data.hospital.doctorId || ''}
+                                    icon={<FaUserDoctor />}
+                                    onChange={(event) =>
+                                        setData(
+                                            (prev) =>
+                                                prev && {
+                                                    ...prev,
+                                                    hospital: {
+                                                        ...prev.hospital,
+                                                        doctorId: event.target.value,
+                                                    },
+                                                },
+                                        )
+                                    }
+                                />
+                            </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
                                 <div className="flex items-center gap-4">

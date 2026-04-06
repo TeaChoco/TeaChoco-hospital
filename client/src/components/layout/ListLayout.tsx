@@ -123,7 +123,12 @@ export default function ListLayout<Data>({
                         children
                     ) : (
                         <>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            <div
+                                className={
+                                    isGrid
+                                        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                                        : ''
+                                }>
                                 {children(filteredDatas)}
                             </div>
                             {filteredDatas.length === 0 && (
