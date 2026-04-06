@@ -29,21 +29,22 @@ export class AuthService {
     ) {}
 
     get cookieOption(): {
-        // secure: boolean;
-        // partitioned: boolean;
-        // sameSite: 'lax' | 'none';
+        secure: boolean;
+        partitioned: boolean;
+        sameSite: 'lax' | 'none';
     } {
         const isDev = this.secureService.isDev();
         return {
-            // secure: !isDev,
-            // partitioned: !isDev,
-            // sameSite: isDev ? 'lax' : 'none',
+            secure: !isDev,
+            partitioned: !isDev,
+            sameSite: isDev ? 'lax' : 'none',
         };
     }
 
     setCookie(res: Response, token: string, maxAge: number) {
         const sevenDays = 7 * 24 * 60 * 60 * 1000;
         const finalMaxAge = !isNaN(maxAge) && maxAge > 0 ? maxAge : sevenDays;
+        this.logger.log(finalMaxAge, this.cookieOption);
         res.cookie('access_token', token, {
             maxAge: finalMaxAge,
             httpOnly: true,
