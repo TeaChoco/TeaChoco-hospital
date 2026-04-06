@@ -12,9 +12,9 @@ export class AuthMiddleware implements NestMiddleware {
 
     private readonly publicGets = [
         '/',
-        '/socket-ui',
         '/public**',
-        '/api/img/**',
+        '/api/img**',
+        '/socket-ui',
         '/user/auth/google/callback',
     ];
 

@@ -35,7 +35,6 @@ export class AuthService {
     } {
         const isDev = this.secureService.isDev();
         return {
-            // ในเครื่องตัวเองสลับไปใช้ lax และปิด secure เพื่อให้ทดสอบผ่าน http ได้
             secure: !isDev,
             partitioned: !isDev,
             sameSite: isDev ? 'lax' : 'none',
@@ -43,9 +42,10 @@ export class AuthService {
     }
 
     setCookie(res: Response, token: string, maxAge: number) {
-        if (maxAge < 0) throw new BadRequestException('Invalid maxAge: ' + maxAge); // ป้องกันค่าติดลบ
+        const sevenDays = 7 * 24 * 60 * 60 * 1000;
+        const finalMaxAge = !isNaN(maxAge) && maxAge > 0 ? maxAge : sevenDays;
         res.cookie('access_token', token, {
-            maxAge,
+            maxAge: finalMaxAge,
             httpOnly: true,
             ...this.cookieOption,
         });
@@ -95,7 +95,10 @@ export class AuthService {
         if (responseAt < now) throw new BadRequestException('response expiresAt is expired');
         this.cacheManager.del(`signin-qr_${data.request.socketId}`);
         const result = await this.signin(save.response.user);
-        const maxAge = new Date(save.response.user.expiresAt).getTime() - now;
+        const expiresTime = save.response.user?.expiresAt
+            ? new Date(save.response.user.expiresAt).getTime()
+            : now + 7 * 24 * 60 * 60 * 1000;
+        const maxAge = expiresTime - now;
         return { ...result, maxAge };
     }
 
