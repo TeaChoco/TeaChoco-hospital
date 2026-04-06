@@ -3,7 +3,7 @@ import Input, { type InputProps } from './Input';
 
 export type InputDateProps = Omit<InputProps, 'type' | 'value'> & {
     value?: Date;
-    setValue?: (value: Date) => void;
+    setValue?: (value?: Date) => void;
 };
 
 export default function InputDate(props: InputDateProps) {
@@ -25,7 +25,8 @@ export default function InputDate(props: InputDateProps) {
             value={formatDate(value)}
             className={`no-clear ${className || ''}`}
             onChange={(event) => {
-                const date = new Date(event.target.value);
+                const { value } = event.target;
+                const date = value ? new Date(value) : undefined;
                 onChange?.(event);
                 setValue?.(date);
             }}

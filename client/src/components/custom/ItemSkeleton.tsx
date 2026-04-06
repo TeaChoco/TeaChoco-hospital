@@ -19,38 +19,88 @@ export default function ItemSkeleton() {
                         <Skeleton variant="circular" width={80} height={80} />
                         <div className="flex-1 space-y-2">
                             <Skeleton variant="text" width="40%" height={24} />
-                            <Skeleton variant="text" width="20%" height={16} className="opacity-50" />
+                            <Skeleton
+                                variant="text"
+                                width="20%"
+                                height={16}
+                                className="opacity-50"
+                            />
                         </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border-light dark:border-border-dark">
                         <div className="space-y-3">
-                            <Skeleton variant="text" width="30%" height={16} className="opacity-30" />
-                            <Skeleton variant="rounded" width="100%" height={40} className="opacity-20" />
+                            <Skeleton
+                                variant="text"
+                                width="30%"
+                                height={16}
+                                className="opacity-30"
+                            />
+                            <Skeleton
+                                variant="rounded"
+                                width="100%"
+                                height={40}
+                                className="opacity-20"
+                            />
                         </div>
                         <div className="space-y-3">
-                            <Skeleton variant="text" width="30%" height={16} className="opacity-30" />
-                            <Skeleton variant="rounded" width="100%" height={40} className="opacity-20" />
+                            <Skeleton
+                                variant="text"
+                                width="30%"
+                                height={16}
+                                className="opacity-30"
+                            />
+                            <Skeleton
+                                variant="rounded"
+                                width="100%"
+                                height={40}
+                                className="opacity-20"
+                            />
                         </div>
                         <div className="space-y-3">
-                            <Skeleton variant="text" width="30%" height={16} className="opacity-30" />
-                            <Skeleton variant="rounded" width="100%" height={40} className="opacity-20" />
+                            <Skeleton
+                                variant="text"
+                                width="30%"
+                                height={16}
+                                className="opacity-30"
+                            />
+                            <Skeleton
+                                variant="rounded"
+                                width="100%"
+                                height={40}
+                                className="opacity-20"
+                            />
                         </div>
                         <div className="space-y-3">
-                            <Skeleton variant="text" width="30%" height={16} className="opacity-30" />
-                            <Skeleton variant="rounded" width="100%" height={40} className="opacity-20" />
+                            <Skeleton
+                                variant="text"
+                                width="30%"
+                                height={16}
+                                className="opacity-30"
+                            />
+                            <Skeleton
+                                variant="rounded"
+                                width="100%"
+                                height={40}
+                                className="opacity-20"
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="bg-bg-card-light dark:bg-bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark space-y-4">
-                     <Skeleton variant="text" width="20%" height={20} className="mb-4" />
-                     <Skeleton variant="rounded" width="100%" height={120} className="opacity-20" />
+                    <Skeleton variant="text" width="20%" height={20} className="mb-4" />
+                    <Skeleton variant="rounded" width="100%" height={120} className="opacity-20" />
                 </div>
             </div>
-            
+
             <div className="flex gap-4">
-                <Skeleton variant="rounded" width="100%" height={48} className="rounded-xl opacity-30" />
+                <Skeleton
+                    variant="rounded"
+                    width="100%"
+                    height={48}
+                    className="rounded-xl opacity-30"
+                />
             </div>
         </div>
     );
