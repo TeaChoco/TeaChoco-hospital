@@ -199,7 +199,6 @@ export default function AllowPage() {
                     </div>
                     {isScanner ? (
                         <QRScanner
-                            isDev
                             header={t('accessControl.scanHeader')}
                             onScan={(result) => {
                                 const data = SiginQrData.getData(result);
@@ -218,7 +217,6 @@ export default function AllowPage() {
                         />
                     ) : (
                         <QRGenerator
-                            isDev
                             value={value}
                             newValue={newValue}
                             header={t('accessControl.remoteAccessQR')}

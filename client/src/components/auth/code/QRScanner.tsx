@@ -2,17 +2,16 @@
 import Input from '../../custom/Input';
 import Select from '../../custom/Select';
 import Activity from '../../custom/Activity';
+import { isDev } from '../../../configs/env';
 import { useState, useRef, useEffect } from 'react';
 import { BrowserQRCodeReader } from '@zxing/browser';
 
 export default function QRScanner({
-    isDev,
-    header,
     onScan,
+    header,
     description,
 }: {
     header: string;
-    isDev?: boolean;
     description?: string;
     onScan?: (result: string) => void;
 }) {

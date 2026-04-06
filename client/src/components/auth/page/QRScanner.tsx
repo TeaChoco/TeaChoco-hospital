@@ -9,7 +9,6 @@ export default function QRScannerPage() {
     return (
         <Paper variant="200" className="w-full max-w-md mx-auto">
             <QRScanner
-                isDev
                 header="Scan QR Code"
                 onScan={(result) => urlSigninQr(result)}
                 description="Point your camera at the QR code to login"

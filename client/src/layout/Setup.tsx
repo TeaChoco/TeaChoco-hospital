@@ -12,7 +12,9 @@ export default function Setup({ children }: { children: React.ReactNode }) {
     return (
         <I18nextProvider i18n={i18n}>
             <ThemeModeProvider>
-                <div className="fixed bottom-1 right-1 z-100">Socket ID: {id}</div>
+                <div className="fixed bottom-1 right-1 z-100 text-white/50 pointer-events-none">
+                    Socket ID: {id}
+                </div>
                 {children}
             </ThemeModeProvider>
         </I18nextProvider>

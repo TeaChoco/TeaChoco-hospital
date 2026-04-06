@@ -11,6 +11,8 @@ const env = {
     apiTokenKey: import.meta.env.VITE_API_TOKEN_KEY,
 };
 
+export const isDev = env.mode === 'development';
+
 /**
  * ตรวจสอบว่า environment variables ที่จำเป็นถูกกำหนดไว้ครบถ้วนหรือไม่
  * @throws {Error} ถ้ามีตัวแปรที่จำเป็นขาดหายไป

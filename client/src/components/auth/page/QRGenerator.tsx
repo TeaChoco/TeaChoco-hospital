@@ -32,7 +32,6 @@ export default function QRGeneratorPage() {
     return (
         <Paper variant="200" className="w-full max-w-sm mx-auto">
             <QRGenerator
-                isDev
                 value={value}
                 newValue={newValue}
                 header="Scan to Login"

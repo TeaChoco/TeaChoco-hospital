@@ -2,6 +2,7 @@
 import Select from '../../custom/Select';
 import { QRCodeSVG } from 'qrcode.react';
 import Activity from '../../custom/Activity';
+import { isDev } from '../../../configs/env';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { expiresMaxQrCode, useSigninQrStore } from '../../../store/useSigninQrStore';
 import { FaClock, FaRedo, FaExclamationTriangle, FaLock, FaEyeSlash, FaEye } from 'react-icons/fa';
@@ -14,7 +15,6 @@ export enum Level {
 }
 
 export default function QRGenerator({
-    isDev,
     value,
     header,
     newValue,
@@ -22,7 +22,6 @@ export default function QRGenerator({
 }: {
     value?: string;
     header: string;
-    isDev?: boolean;
     newValue: () => void;
     description?: string;
 }) {
