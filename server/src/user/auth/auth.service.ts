@@ -29,15 +29,15 @@ export class AuthService {
     ) {}
 
     get cookieOption(): {
-        secure: boolean;
-        partitioned: boolean;
-        sameSite: 'lax' | 'none';
+        // secure: boolean;
+        // partitioned: boolean;
+        // sameSite: 'lax' | 'none';
     } {
         const isDev = this.secureService.isDev();
         return {
-            secure: !isDev,
-            partitioned: !isDev,
-            sameSite: isDev ? 'lax' : 'none',
+            // secure: !isDev,
+            // partitioned: !isDev,
+            // sameSite: isDev ? 'lax' : 'none',
         };
     }
 
