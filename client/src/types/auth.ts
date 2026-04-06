@@ -62,7 +62,7 @@ export interface UserQuery extends QueryOptions {
     lastLoginAt?: boolean;
 }
 
-export type SigninQrResult = {
+export type SigninResult = {
     user?: User;
     maxAge: number;
     message?: string;

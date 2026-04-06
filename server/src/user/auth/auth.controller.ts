@@ -13,14 +13,14 @@ import {
 } from '@nestjs/common';
 import { Auth } from '../../types/auth';
 import { AuthService } from './auth.service';
-import { SiginQrDto, SigninQrResultDto } from './dto/signin-qr.dto';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
-import { ReqUserDto, UserLoginDto } from '../dto/user.dto';
 import { LocalAuthGuard } from './guard/local-auth.guard';
+import { ReqUserDto, UserLoginDto } from '../dto/user.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
+import { SiginQrDto, SigninResultDto } from './dto/signin-qr.dto';
 import { ApiTags, ApiBody, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('User Auth')
@@ -48,7 +48,7 @@ export class AuthController {
     async signinQr(
         @Res({ passthrough: true }) res: Response,
         @Body() body: SiginQrDto,
-    ): Promise<SigninQrResultDto> {
+    ): Promise<SigninResultDto> {
         // this.logger.log('body: ', body);
         try {
             const result = await this.authService.signinQr(body);
@@ -77,16 +77,18 @@ export class AuthController {
         required: true,
         type: UserLoginDto,
     })
-    async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    async login(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ): Promise<SigninResultDto> {
         const { accessToken } = await this.authService.login(req.user as ReqUserDto);
-        if (accessToken) {
-            const result = await this.authService.signin(req.user as ReqUserDto);
-            this.authService.setCookie(res, accessToken, 7 * 24 * 60 * 60 * 1000);
-            return {
-                result,
-                message: 'Login successful',
-            };
-        }
+        if (!accessToken) throw new BadRequestException({ message: 'Login failed' });
+        const result = await this.authService.signin(req.user as ReqUserDto);
+        this.authService.setCookie(res, accessToken, 7 * 24 * 60 * 60 * 1000);
+        return {
+            ...result,
+            message: 'Login successful',
+        };
     }
 
     @Get()
@@ -96,7 +98,7 @@ export class AuthController {
         const user = req.user as Auth;
         if (!user) return null;
         const responseUser = await this.authService.signin(user);
-        return responseUser.user;
+        return responseUser.user ?? null;
     }
 
     @Get('google')

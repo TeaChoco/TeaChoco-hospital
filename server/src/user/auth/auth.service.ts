@@ -6,7 +6,7 @@ import { nameDB } from '../../hooks/mongodb';
 import { ReqUserDto } from '../dto/user.dto';
 import { UserService } from '../user.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { SiginQrDto, SigninQrResultDto } from './dto/signin-qr.dto';
+import { SiginQrDto, SigninResultDto } from './dto/signin-qr.dto';
 import { CookieOptions, Response } from 'express';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
@@ -47,7 +47,7 @@ export class AuthService {
         res.clearCookie('access_token', this.cookieOption);
     }
 
-    async signinQr(data: SiginQrDto): Promise<SigninQrResultDto> {
+    async signinQr(data: SiginQrDto): Promise<SigninResultDto> {
         // this.logger.log(logSiginQr(data));
         if (!data.request) throw new BadRequestException('Invalid request data');
         if (!data.response) throw new BadRequestException('Invalid response data');
@@ -86,7 +86,7 @@ export class AuthService {
             ? new Date(save.response.user.expiresAt).getTime()
             : now + 7 * 24 * 60 * 60 * 1000;
         const maxAge = expiresTime - now;
-        return { ...result, maxAge } as SigninQrResultDto;
+        return { ...result, maxAge } as SigninResultDto;
     }
 
     async login(user: ReqUserDto) {
@@ -109,9 +109,7 @@ export class AuthService {
         }
     }
 
-    async signin(
-        user: ReqUserDto,
-    ): Promise<{ access_token: string; user: ResponseUserDto | null }> {
+    async signin(user: ReqUserDto): Promise<SigninResultDto> {
         const userDB = await this.userModel.findOne({ email: user.email }).exec();
         if (!userDB) return this.signup(user);
         const responseUser = await this.userService.responseUser({ auth: true }, userDB);
@@ -163,10 +161,8 @@ export class AuthService {
             lastLoginAt: userDB.lastLoginAt,
         };
 
-        return {
-            access_token: this.jwtService.sign(payload),
-            user: responseUser,
-        };
+        const access_token = this.jwtService.sign(payload);
+        return { access_token, user: responseUser } as SigninResultDto;
     }
 
     async signup(user: ReqUserDto) {

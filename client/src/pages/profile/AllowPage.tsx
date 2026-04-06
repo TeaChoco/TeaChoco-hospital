@@ -15,7 +15,7 @@ import QRGenerator from '../../components/auth/code/QRGenerator';
 import { SiginQrData, SiginQrType } from '../../types/signin-qr';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePermissionsStore } from '../../store/usePermissionsStore';
-import { type Allow, Resource, type SigninQrResult } from '../../types/auth';
+import { type Allow, Resource, type SigninResult } from '../../types/auth';
 import { FaArrowLeft, FaCheckCircle, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
 
 export type PermissionMatrix = Record<Resource, Allow>;
@@ -39,7 +39,7 @@ export default function AllowPage() {
     const [isScanner, setIsScanner] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { permissions, updatePermission } = usePermissionsStore();
-    const [scanResult, setScanResult] = useState<SigninQrResult | null>(null);
+    const [scanResult, setScanResult] = useState<SigninResult | null>(null);
 
     useEffect(() => {
         if (error) {
@@ -94,7 +94,7 @@ export default function AllowPage() {
 
     useEvent(
         'signin-qr-result',
-        (data: SigninQrResult) => {
+        (data: SigninResult) => {
             setScanResult(data);
         },
         [],

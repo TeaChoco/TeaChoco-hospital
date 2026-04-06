@@ -2,7 +2,7 @@
 import { Socket, Server } from 'socket.io';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { logSiginQr, SiginQrDto, SigninQrResultDto } from '../../user/auth/dto/signin-qr.dto';
+import { logSiginQr, SiginQrDto, SigninResultDto } from '../../user/auth/dto/signin-qr.dto';
 
 @Injectable()
 export class SocketService {
@@ -50,7 +50,7 @@ export class SocketService {
         }
     }
 
-    async signinQrResult(targetSocketId: string, data: SigninQrResultDto): Promise<void> {
+    async signinQrResult(targetSocketId: string, data: SigninResultDto): Promise<void> {
         this.server.to(targetSocketId).emit('signin-qr-result', data);
     }
 }
