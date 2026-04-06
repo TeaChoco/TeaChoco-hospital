@@ -50,7 +50,11 @@ function ListItem({
             <div className="flex items-center gap-2 text-xs text-text-muted-light dark:text-text-muted-dark">
                 <div className="w-5 h-5 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
                     {userPicture ? (
-                        <img src={userPicture} alt={userName} className="w-full h-full object-cover" />
+                        <img
+                            src={userPicture}
+                            alt={userName}
+                            className="w-full h-full object-cover"
+                        />
                     ) : (
                         <FiUser size={10} />
                     )}
@@ -113,7 +117,9 @@ export function DoctorsList({
                         userPicture={user.picture}
                         viewUrl={`/admin/data/${doctor.user_id}/doctors/${doctor._id}`}
                         editUrl={`/admin/data/${doctor.user_id}/doctors/edit/${doctor._id}`}
-                        onDelete={() => onDelete(doctor._id, `${doctor.firstName} ${doctor.lastName}`)}
+                        onDelete={() =>
+                            onDelete(doctor._id, `${doctor.firstName} ${doctor.lastName}`)
+                        }
                     />
                 );
             })}
@@ -178,11 +184,11 @@ export function MedicinesList({
                     <ListItem
                         key={medicine._id}
                         icon={
-                            medicine.imageUrl ? (
+                            medicine.imageUrl && medicine.imageUrl.length > 0 ? (
                                 <img
-                                    src={medicine.imageUrl}
+                                    src={medicine.imageUrl[0]}
                                     alt={medicine.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
                             ) : (
                                 <div className="bg-orange-500/10 w-full h-full flex items-center justify-center">
@@ -264,11 +270,14 @@ export function AppointmentsList({
                         middle={
                             <div className="flex flex-col items-end gap-1">
                                 <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark font-medium">
-                                    {new Date(appointment.scheduledDate).toLocaleDateString('th-TH', {
-                                        day: 'numeric',
-                                        month: 'short',
-                                        year: 'numeric',
-                                    })}
+                                    {new Date(appointment.scheduledDate).toLocaleDateString(
+                                        'th-TH',
+                                        {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric',
+                                        },
+                                    )}
                                 </span>
                                 <span
                                     className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStatusBadge(appointment.status)}`}>
