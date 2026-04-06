@@ -78,7 +78,7 @@ export default function MedicineEditPage() {
             },
             endDate: new Date(),
             startDate: new Date(),
-            expiryDate: new Date(),
+            expiryDate: undefined,
             storageConditions: [],
             frequencyDays: [],
             package: {
