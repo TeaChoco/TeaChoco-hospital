@@ -102,6 +102,7 @@ export class CreateMedicineDto extends ApiMetaDto {
     dosage: MedicineDosageDto;
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
@@ -111,6 +112,7 @@ export class CreateMedicineDto extends ApiMetaDto {
     startDate?: Date;
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,
@@ -120,6 +122,7 @@ export class CreateMedicineDto extends ApiMetaDto {
     endDate?: Date;
 
     @IsDate()
+    @IsOptional()
     @Type(() => Date)
     @ApiProperty({
         type: Date,

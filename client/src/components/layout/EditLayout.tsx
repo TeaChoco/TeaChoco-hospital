@@ -14,6 +14,7 @@ import type { OutApiData, Title } from '../../types/types';
 import { useLayoutStore } from '../../store/useLayoutStore';
 import { FaTrash, FaCode, FaXmark, FaArrowLeft, FaCircleExclamation } from 'react-icons/fa6';
 import { Link, Navigate, useLocation, useNavigate, useParams, useBlocker } from 'react-router-dom';
+import Activity from '../custom/Activity';
 
 /**
  * EditLayout component to provide a consistent layout for editing or creating data.
@@ -68,7 +69,7 @@ export default function EditLayout<Data extends ApiData<object>>({
         if (!searchId || searchId === 'new') return newData;
         const found = find(searchId);
         if (!found) return newData;
-        
+
         // Merge newData with the found record (omitting meta fields)
         // This ensures new fields added to newData template exist in loaded records
         const cleaned = Obj.omit(
@@ -122,11 +123,11 @@ export default function EditLayout<Data extends ApiData<object>>({
             const safeData = getSafeData(id);
             setData(safeData);
             setInitialData(JSON.stringify(safeData));
-            
+
             // Track if the record was actually found in edit mode
             if (id !== 'new' && !find(id!)) setIsNotFound(true);
             else setIsNotFound(false);
-            
+
             setDataLoading(false);
         }
     }, [id, newData, authLoading]);
@@ -185,9 +186,9 @@ export default function EditLayout<Data extends ApiData<object>>({
 
     const handleSave = async (event: React.FormEvent) => {
         event.preventDefault();
+        setError(null);
         try {
             if (!id || !data || !user) throw new Error('Invalid data');
-            if (error) throw new Error(error);
             const save = {
                 ...data,
                 _id: id,
@@ -238,9 +239,11 @@ export default function EditLayout<Data extends ApiData<object>>({
                     {t('editLayout.edit')} {t(`navbar.${title.toLowerCase()}`)}
                 </h1>
                 <div className="absolute right-0 flex items-center gap-2">
-                    <Link to={toDetail} className={`btn-icon-dark`}>
-                        <FiActivity size={15} />
-                    </Link>
+                    <Activity visible={id !== 'new'}>
+                        <Link to={toDetail} className={`btn-icon-dark`}>
+                            <FiActivity size={15} />
+                        </Link>
+                    </Activity>
                     <button
                         onClick={() =>
                             setDetailLayout({ ...detailLayout, editJson: !detailLayout.editJson })
