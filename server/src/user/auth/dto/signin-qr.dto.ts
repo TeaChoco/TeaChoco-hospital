@@ -2,7 +2,7 @@
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ReqUserDto } from '../../dto/user.dto';
-import { IsDate, IsNumber, IsObject, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 
 export enum SiginQrType {
     AuthScanUnauth = 'auth-scan-unauth',
@@ -83,6 +83,42 @@ export class SiginQrDto {
     request?: RequestDto;
     response?: ResponseDto;
     senderSocketId?: string;
+}
+
+export class SigninQrResultDto {
+    @IsObject()
+    @IsOptional()
+    @ApiProperty({
+        type: ReqUserDto,
+        example: 'user',
+        description: 'User',
+    })
+    user?: ReqUserDto;
+
+    @IsNumber()
+    @ApiProperty({
+        type: Number,
+        example: 'maxAge',
+        description: 'Max age',
+    })
+    maxAge: number;
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({
+        type: String,
+        example: 'message',
+        description: 'Message',
+    })
+    message?: string;
+
+    @IsString()
+    @ApiProperty({
+        type: String,
+        example: 'access_token',
+        description: 'Access token',
+    })
+    access_token: string;
 }
 
 export function logSiginQr(data?: SiginQrDto): SiginQrDto {

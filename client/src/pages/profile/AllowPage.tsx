@@ -6,16 +6,17 @@ import { useTranslation } from 'react-i18next';
 import { PermissionRow } from './PermissionRow';
 import Input from '../../components/custom/Input';
 import Paper from '../../components/custom/Paper';
+import Modal from '../../components/custom/Modal';
 import { useSocket } from '../../hooks/useSocket';
 import Switch from '../../components/custom/Switch';
-import { type Allow, Resource } from '../../types/auth';
 import QRScanner from '../../components/auth/code/QRScanner';
 import { useSigninQrStore } from '../../store/useSigninQrStore';
 import QRGenerator from '../../components/auth/code/QRGenerator';
 import { SiginQrData, SiginQrType } from '../../types/signin-qr';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePermissionsStore } from '../../store/usePermissionsStore';
-import { FaArrowLeft, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
+import { type Allow, Resource, type SigninQrResult } from '../../types/auth';
+import { FaArrowLeft, FaCheckCircle, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
 
 export type PermissionMatrix = Record<Resource, Allow>;
 
@@ -38,6 +39,7 @@ export default function AllowPage() {
     const [isScanner, setIsScanner] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { permissions, updatePermission } = usePermissionsStore();
+    const [scanResult, setScanResult] = useState<SigninQrResult | null>(null);
 
     useEffect(() => {
         if (error) {
@@ -89,6 +91,14 @@ export default function AllowPage() {
 
     // Handle incoming Remote Access Requests
     useEvent('signin-qr', (data: SiginQrData) => handleSigninQr(data), [handleSigninQr]);
+
+    useEvent(
+        'signin-qr-result',
+        (data: SigninQrResult) => {
+            setScanResult(data);
+        },
+        [],
+    );
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-0">
@@ -224,6 +234,60 @@ export default function AllowPage() {
                     )}
                 </Paper>
             </div>
+            {scanResult && (
+                <Modal
+                    isOpen={!!scanResult}
+                    onClose={() => setScanResult(null)}
+                    className="max-w-sm"
+                    title={t('accessControl.resultTitle', 'Authentication Result')}>
+                    <div className="flex flex-col items-center text-center space-y-6 pt-2">
+                        <div className="relative">
+                            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center animate-pulse">
+                                <FaCheckCircle className="text-4xl text-green-500" />
+                            </div>
+                            <div className="absolute -inset-2 bg-green-500/5 rounded-full -z-10 animate-ping duration-1000" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <h4 className="text-xl font-black text-text-light dark:text-text-dark">
+                                {t('accessControl.authSuccess', 'Access Granted!')}
+                            </h4>
+                            <p className="text-sm text-text-light/60 dark:text-text-dark/60 leading-relaxed px-4">
+                                {scanResult.message ||
+                                    t('accessControl.defaultSuccess', 'Device linked successfully')}
+                            </p>
+                        </div>
+
+                        {scanResult.user && (
+                            <Paper
+                                variant="200"
+                                className="w-full p-4 flex items-center gap-4 bg-primary/5 border border-primary/10">
+                                {scanResult.user.picture && (
+                                    <img
+                                        src={scanResult.user.picture}
+                                        alt=""
+                                        className="w-10 h-10 rounded-full border-2 border-primary/20"
+                                    />
+                                )}
+                                <div className="text-left">
+                                    <p className="text-xs font-black text-primary uppercase tracking-widest">
+                                        {t('common.user', 'User')}
+                                    </p>
+                                    <p className="text-sm font-bold truncate max-w-[180px]">
+                                        {scanResult.user.name}
+                                    </p>
+                                </div>
+                            </Paper>
+                        )}
+
+                        <button
+                            onClick={() => setScanResult(null)}
+                            className="btn btn-primary w-full py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                            {t('common.done', 'Done')}
+                        </button>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 }

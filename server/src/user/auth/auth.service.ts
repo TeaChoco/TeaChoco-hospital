@@ -1,13 +1,13 @@
 //-Path: "TeaChoco-Hospital/server/src/user/auth/auth.service.ts"
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
-import { CookieOptions, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { nameDB } from '../../hooks/mongodb';
 import { ReqUserDto } from '../dto/user.dto';
 import { UserService } from '../user.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { SiginQrDto } from './dto/signin-qr.dto';
+import { SiginQrDto, SigninQrResultDto } from './dto/signin-qr.dto';
+import { CookieOptions, Response } from 'express';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { SecureService } from '../../secure/secure.service';
 import { User, UserDocument } from '../schemas/user.schema';
@@ -33,14 +33,13 @@ export class AuthService {
         return {
             secure: !isDev,
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: isDev ? 'lax' : 'none',
         };
     }
 
     setCookie(res: Response, token: string, maxAge: number) {
         const sevenDays = 7 * 24 * 60 * 60 * 1000;
         const finalMaxAge = !isNaN(maxAge) && maxAge > 0 ? maxAge : sevenDays;
-        this.logger.log(finalMaxAge, this.cookieOption);
         res.cookie('access_token', token, { maxAge: finalMaxAge, ...this.cookieOption });
     }
 
@@ -48,9 +47,7 @@ export class AuthService {
         res.clearCookie('access_token', this.cookieOption);
     }
 
-    async signinQr(
-        data: SiginQrDto,
-    ): Promise<{ access_token: string; user: ResponseUserDto | null; maxAge: number }> {
+    async signinQr(data: SiginQrDto): Promise<SigninQrResultDto> {
         // this.logger.log(logSiginQr(data));
         if (!data.request) throw new BadRequestException('Invalid request data');
         if (!data.response) throw new BadRequestException('Invalid response data');
@@ -89,7 +86,7 @@ export class AuthService {
             ? new Date(save.response.user.expiresAt).getTime()
             : now + 7 * 24 * 60 * 60 * 1000;
         const maxAge = expiresTime - now;
-        return { ...result, maxAge };
+        return { ...result, maxAge } as SigninQrResultDto;
     }
 
     async login(user: ReqUserDto) {

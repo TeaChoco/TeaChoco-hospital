@@ -9,7 +9,7 @@ interface SocketState {
     error: string | null;
     connectSocket: (user: any) => void;
     disconnectSocket: () => void;
-    emitEvent: (event: string, data?: any) => void;
+    emitEvent: (event: string, data: any) => void;
     onEvent: <T = any>(event: string, callback: (data: T) => void) => () => void;
 }
 

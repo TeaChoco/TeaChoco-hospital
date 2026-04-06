@@ -12,7 +12,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SocketService } from './socket.service';
-import { SiginQrDto } from '../../user/auth/dto/signin-qr.dto';
+import { SiginQrDto, SigninQrResultDto } from '../../user/auth/dto/signin-qr.dto';
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -41,6 +41,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         @ConnectedSocket() client: Socket,
     ): Promise<string> {
         await this.socketService.signinQr(client, data);
+        return 'ok';
+    }
+
+    @SubscribeMessage('signin-qr-result')
+    async handleSigninQrResult(
+        @MessageBody() body: { targetSocketId: string; data: SigninQrResultDto },
+    ): Promise<string> {
+        const { targetSocketId, data } = body;
+        await this.socketService.signinQrResult(targetSocketId, data);
         return 'ok';
     }
 }

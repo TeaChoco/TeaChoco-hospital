@@ -25,7 +25,7 @@ export default function Signin() {
     const { tab } = useParams<{ tab: TabType }>();
     const [searchParams] = useSearchParams();
     const activeTab: TabType = tab || 'google';
-    const { isConnected, useEvent } = useSocket();
+    const { isConnected, useEvent, emit } = useSocket();
     const { isAuthenticated, loading, error } = useAuth();
     const [queryError, setQueryError] = useState<string | null>(null);
     const [querySource, setQuerySource] = useState<string | null>(null);
@@ -55,9 +55,14 @@ export default function Signin() {
         console.log('useEvent signin-qr: ', data);
         const qrData = SiginQrData.getData(data);
         try {
+            if (!qrData.response) throw new Error('Invalid response data');
             const response = await authAPI.signinQr(qrData);
             console.log('response: ', response);
-            if (response) window.location.href = '/';
+            emit('signin-qr-result', {
+                data: response.data,
+                targetSocketId: qrData.response.socketId,
+            });
+            if (response.data) window.location.href = '/';
         } catch (error: any) {
             setQueryError(error.message);
             console.error(error);

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { Auth } from '../../types/auth';
 import { AuthService } from './auth.service';
-import { SiginQrDto } from './dto/signin-qr.dto';
+import { SiginQrDto, SigninQrResultDto } from './dto/signin-qr.dto';
 import type { Request, Response } from 'express';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ReqUserDto, UserLoginDto } from '../dto/user.dto';
@@ -45,7 +45,10 @@ export class AuthController {
         required: true,
         type: SiginQrDto,
     })
-    async signinQr(@Res({ passthrough: true }) res: Response, @Body() body: SiginQrDto) {
+    async signinQr(
+        @Res({ passthrough: true }) res: Response,
+        @Body() body: SiginQrDto,
+    ): Promise<SigninQrResultDto> {
         // this.logger.log('body: ', body);
         try {
             const result = await this.authService.signinQr(body);
@@ -54,7 +57,7 @@ export class AuthController {
             const { access_token, maxAge } = result;
             this.authService.setCookie(res, access_token, maxAge);
             return {
-                result,
+                ...result,
                 message: 'Signin QR successful',
             };
         } catch (error) {

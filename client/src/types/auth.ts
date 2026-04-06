@@ -61,3 +61,10 @@ export interface UserQuery extends QueryOptions {
     updatedAt?: boolean;
     lastLoginAt?: boolean;
 }
+
+export type SigninQrResult = {
+    user?: User;
+    maxAge: number;
+    message?: string;
+    access_token: string;
+};
