@@ -23,7 +23,7 @@ export default function MedicinesPage() {
             description={t('medicines.description')}
             filter={(med, search) =>
                 med.name.toLowerCase().includes(search.toLowerCase()) ||
-                med.genericName.toLowerCase().includes(search.toLowerCase())
+                med.genericName?.toLowerCase().includes(search.toLowerCase())
             }>
             {(filteredDatas) =>
                 filteredDatas.map((med) => (

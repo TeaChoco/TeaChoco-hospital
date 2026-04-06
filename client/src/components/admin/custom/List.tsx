@@ -197,7 +197,7 @@ export function MedicinesList({
                             )
                         }
                         title={medicine.name}
-                        subtitle={`${medicine.genericName} ${medicine.brand ? `• ${medicine.brand}` : ''}`}
+                        subtitle={`${medicine.genericName || '-'} ${medicine.brand ? `• ${medicine.brand}` : ''}`}
                         middle={
                             <span
                                 className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold border ${

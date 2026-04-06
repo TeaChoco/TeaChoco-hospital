@@ -129,7 +129,7 @@ export type Medicine = ApiData<{
     // Interface หลักสำหรับยา
     // Basic Information
     name: string; // ชื่อยา (ทางการค้า)
-    genericName: string; // ชื่อสามัญทางยา
+    genericName?: string; // ชื่อสามัญทางยา
     brand?: string; // ยี่ห้อ
 
     // Type and Category

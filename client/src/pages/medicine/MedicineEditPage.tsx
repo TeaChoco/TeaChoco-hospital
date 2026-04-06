@@ -139,7 +139,6 @@ export default function MedicineEditPage() {
                                     }
                                 />
                                 <Input
-                                    required
                                     label={t('medicines.genericComposition')}
                                     placeholder={t('medicines.genericCompositionPlaceholder')}
                                     value={data?.genericName || ''}
